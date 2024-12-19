@@ -1,0 +1,4 @@
+[19-Dec-2024 05:51:32 UTC] PHP Fatal error:  Uncaught Error: Interface "Illuminate\Contracts\Container\Container" not found in /home/enkpeutk/web.sprintpay.online/vendor/laravel/framework/src/Illuminate/Container/Container.php:18
+Stack trace:
+#0 {main}
+  thrown in /home/enkpeutk/web.sprintpay.online/vendor/laravel/framework/src/Illuminate/Container/Container.php on line 18

@@ -1,0 +1,4 @@
+[27-Oct-2024 15:52:49 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function env() in /home/enkpeutk/web.sprintpay.online/config/database.php:18
+Stack trace:
+#0 {main}
+  thrown in /home/enkpeutk/web.sprintpay.online/config/database.php on line 18
