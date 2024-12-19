@@ -3212,6 +3212,7 @@ class TransactionController extends Controller
 
            $tid = new TidConfig();
            $tid->serial_no = $request->serial_no;
+           $tid->terminal_id = $request->sertidial_no;
            $tid->user_id = 1;
            $tid->save();
 
@@ -3232,5 +3233,30 @@ class TransactionController extends Controller
 
     }
 
+
+    public function get_details(request $request)
+    {
+
+        $get_d = TidConfig::where('serial_no', $request->serial_no)->first() ?? null;
+        if($get_d == null){
+
+            return response()->json([
+                'status' => false,
+                'message' => "Terminal has not be set on config"
+
+            ], 422);
+        }
+
+        $details = TidConfig::where('serial_no', $request->serial_no)->first() ?? null;
+        return response()->json([
+            'status' => false,
+            'terminal' => $details,
+        ], 200);
+
+ 
+
+    }
+
+    
 
 }

@@ -30,6 +30,8 @@ Route::get('check-vendor', [TransactionController::class, 'check_vendor']);
 
 Route::post('register-pos', [TransactionController::class, 'register_pos']);
 
+Route::post('get-details', [TransactionController::class, 'get_details']);
+
 
 
 Route::post('fund-merchant', [TransactionController::class, 'fund_merchant']);
