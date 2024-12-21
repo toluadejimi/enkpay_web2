@@ -41,9 +41,8 @@ class TelegramController extends Controller
         if (stripos($message, 'hello') !== false) {
             $replyText = "Hello! $username welcome to Sprintpay Bot 😊\n\n
              What would you like me to help you with? \n
-             _____________________________________________
             1. To fund your account | Reply with Fund\n
-            2. To resolve your transaction | Reply with Resolve\n
+            2. To resolve your transaction | Reply with Resolve
 
             ";
         } elseif (stripos($message, 'help') !== false) {
@@ -54,9 +53,9 @@ class TelegramController extends Controller
         } elseif (stripos($message, 'hi') !== false) {
             $replyText = "Hello! $username  welcome to Sprintpay Bot😊 \n\n
             What would you like me to help you with?\n
-           _____________________________________________
             1. To fund your account | Reply with Fund\n
             2. To resolve your transaction | Reply with Resolve\n
+            3. To get Merchant Code | Reply with MCODE\n
 
             ";
         } else {
@@ -64,6 +63,25 @@ class TelegramController extends Controller
         }
 
 
-        $this->telegram->sendMessage($chatId, $replyText);
+
+        if (stripos($message, 'fund') !== false) {
+            $replyText = "To fund your account please reply with\n\n
+
+             Ex.: Amount - 2000 | merchantcode - 123456 | email - email@gmail.com
+
+             >>>>>>>>>>>>>>>>>>>>>>>
+
+             Reply MCODE to get Merchant Code
+
+            ";
+        } elseif (stripos($message, 'help') !== false) {
+            $replyText = "You can ask me anything!";
+
+        }else{
+
+        }
+
+
+            $this->telegram->sendMessage($chatId, $replyText);
     }
 }
