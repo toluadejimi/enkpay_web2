@@ -116,10 +116,25 @@ class TelegramController extends Controller
 
             $mcode = $extractedData['Merchant Code'];
             $ck_code = Webkey::where('merchant_code', $mcode)->first()->site_name ?? null;
+            $email = $extractedData['email'];
+            $url = Webkey::where('merchant_code', $mcode)->first()->verify_url ?? null;
+            $ck_account =  checkuser_name($email, $url);
 
-            if($ck_code == null){
+
+
+            if($ck_code == null ){
                 $replyText = "Merchant code invalid ❌ \n".
                     "Please check the merchant code and try again | $mcode";
+            }elseif ($ck_account == 0) {
+                $replyText = "$email | Account not found on  | $ck_code ❌ \n".
+                    "Please check the email or merchant code and try again | $mcode";
+            }elseif($ck_account == 1){
+
+
+
+
+                $replyText = "Fetch account";
+
             }
 
 

@@ -3211,5 +3211,51 @@ if (!function_exists('verifypelpayreslove')) {
 //
 //    }
 
+    function checkuser_name($email, $url)
+    {
+
+
+        $databody = array(
+            "email" => $email,
+        );
+
+        $post_data = json_encode($databody);
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => "$url",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => $post_data,
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json'
+            ),
+        ));
+
+
+        $var = curl_exec($curl);
+        curl_close($curl);
+        $var = json_decode($var);
+        $res = $var->username ?? null;
+
+        if($res == "Not Found, Pleas try again"){
+            return 0;
+        }else{
+            return 1;
+        }
+
+
+
+
+
+
+    }
+
 }
 
