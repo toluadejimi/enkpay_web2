@@ -37,11 +37,11 @@ class TelegramController extends Controller
     protected function autoReply($chatId, $message)
     {
         if (stripos($message, 'hello') !== false) {
-            $replyText = "Hello! welcome to Sprintpay Bot
-             What would you like me to help you with?\n\n
-
+            $replyText = "Hello! welcome to Sprintpay Bot\n\n
+             What would you like me to help you with?\n
+             _____________________________________________
             1. To fund your account | Reply with Fund\n
-            2. To reslove your transaction | Reply with Resolve\n
+            2. To resolve your transaction | Reply with Resolve\n
 
             ";
         } elseif (stripos($message, 'help') !== false) {
@@ -51,10 +51,10 @@ class TelegramController extends Controller
 
         } elseif (stripos($message, 'hi') !== false) {
             $replyText = "Hello! welcome to Sprintpay Bot\n\n
-            What would you like me to help you with?\n\n
-
+            What would you like me to help you with?\n
+           _____________________________________________
             1. To fund your account | Reply with Fund\n
-            2. To reslove your transaction | Reply with Resolve\n
+            2. To resolve your transaction | Reply with Resolve\n
 
             ";
         } else {
