@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Webkey;
 use App\Services\TelegramService;
 use Illuminate\Http\Request;
 
@@ -79,7 +80,26 @@ class TelegramController extends Controller
             $replyText = "To resolve your account please reply with\n\n".
             "Ex.: session_id - 00993987446365453636364743";
 
-        } elseif (stripos($message, 'MCODE') !== false) {
+        }
+
+        elseif (stripos($message, 'title') !== false) {
+
+            $title = trim(strstr($message, '-'));
+            $sitename = Webkey::where('merchant_code', $title)->first()->site_name ?? null;
+
+            if($sitename != null){
+                $replyText = "Merchant code valid 😊\n".
+                    "Site name.: $sitename";
+            }else{
+
+                $replyText = "Merchant code invalid ❌ \n".
+                    "Please check the merchant code and try again";
+            }
+
+
+        }
+
+        elseif (stripos($message, 'MCODE') !== false) {
 
             $replyText = "To get your site merchant code please rely with the website title:\n\n" .
                 "title   -  ex: storemarket\n";
