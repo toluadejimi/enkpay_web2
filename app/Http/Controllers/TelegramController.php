@@ -37,12 +37,37 @@ class TelegramController extends Controller
     protected function autoReply($chatId, $message)
     {
         if (stripos($message, 'hello') !== false) {
-            $replyText = "Hello! How can I help you?";
+            $replyText = "Hello! welcome to Sprintpay Bot
+             What would you like me to help you with?\n\n
+
+            1. To fund your account | Reply with Fund\n
+            2. To reslove your transaction | Reply with Resolve\n
+
+            ";
         } elseif (stripos($message, 'help') !== false) {
             $replyText = "You can ask me anything!";
+
+
+
+        } elseif (stripos($message, 'hi') !== false) {
+            $replyText = "Hello! welcome to Sprintpay Bot\n\n
+            What would you like me to help you with?\n\n
+
+            1. To fund your account | Reply with Fund\n
+            2. To reslove your transaction | Reply with Resolve\n
+
+            ";
         } else {
             $replyText = "I'm not sure how to respond to that.";
         }
+
+
+
+
+
+
+
+
 
         $this->telegram->sendMessage($chatId, $replyText);
     }
