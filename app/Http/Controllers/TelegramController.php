@@ -39,16 +39,11 @@ class TelegramController extends Controller
     protected function autoReply($chatId, $message, $username)
     {
 
-        if (stripos($message, 'MCODE') !== false) {
+        if (stripos($message, 'mcode') !== false) {
             $replyText = "To get your site merchant code please rely with the website title:\n\n" .
                 "title   -  ex: storemarket\n";
 
         }
-
-
-
-
-
 
 
 
