@@ -88,13 +88,42 @@ class TelegramController extends Controller
             $sitename = Webkey::where('merchant_code', $title)->first()->site_name ?? null;
 
             if($sitename != null){
-                $replyText = "Merchant code valid 😊\n".
+                $replyText = "$title | Merchant code valid 😊\n".
                     "Site name.: $sitename";
             }else{
 
                 $replyText = "Merchant code invalid ❌ \n".
                     "Please check the merchant code and try again | $title";
             }
+
+
+        }
+
+
+        elseif (stripos($message, 'amount') !== false) {
+
+
+            $pattern = "/(Amount|Merchant Code|Email)\s*-\s*(.+)/";
+            $extractedData = [];
+            if (preg_match_all($pattern, $message, $matches, PREG_SET_ORDER)) {
+                foreach ($matches as $match) {
+                    $key = trim($match[1]); // Key (e.g., Amount, Merchant Code)
+                    $value = trim($match[2]); // Value (e.g., 2000, 123456)
+                    $extractedData[$key] = $value;
+                }
+            }
+
+            $extractedData = [
+                'Amount' => '2000',
+                'Merchant Code' => '123456',
+                'Email' => 'email@gmail.com'
+            ];
+            $resultString = "";
+            foreach ($extractedData as $key => $value) {
+                $resultString .= "$key: $value\n";
+            }
+
+            $replyText = "result.: $resultString";
 
 
         }
