@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CableController;
 use App\Http\Controllers\CharmController;
+use App\Http\Controllers\TelegramController;
 use App\Http\Controllers\WovenController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -27,12 +28,7 @@ use App\Http\Controllers\VirtualAccount\VirtualController;
 
 Route::get('check-vendor', [TransactionController::class, 'check_vendor']);
 
-
-Route::post('register-pos', [TransactionController::class, 'register_pos']);
-
-Route::post('get-details', [TransactionController::class, 'get_details']);
-
-
+Route::any('/telegram-webhook', [TelegramController::class, 'webhook']);
 
 Route::post('fund-merchant', [TransactionController::class, 'fund_merchant']);
 
