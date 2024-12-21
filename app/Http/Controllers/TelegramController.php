@@ -54,8 +54,8 @@ class TelegramController extends Controller
             $replyText = "Hello! $username, welcome to Sprintpay Bot 😊\n\n" .
                 "What would you like me to help you with?\n\n" .
                 "1. To fund your account         | Reply with 'Fund'\n" .
-                "2. To resolve your transaction  | Reply with 'Resolve'\n";
-
+                "2. To resolve your transaction  | Reply with 'Resolve'\n".
+                "3. To get Merchant Code | Reply with MCODE";
 
         } else {
             $replyText = "I'm not sure how to respond to that.";
@@ -83,7 +83,9 @@ class TelegramController extends Controller
             $replyText = "Hello! $username, welcome to Sprintpay Bot 😊\n\n" .
                 "What would you like me to help you with?\n\n" .
                 "1. To fund your account         | Reply with 'Fund'\n" .
-                "2. To resolve your transaction  | Reply with 'Resolve'\n";
+                "2. To resolve your transaction  | Reply with 'Resolve'\n".
+                "3. To get Merchant Code | Reply with MCODE";
+
 
         }
 
