@@ -93,7 +93,7 @@ class TelegramController extends Controller
             }else{
 
                 $replyText = "Merchant code invalid ❌ \n".
-                    "Please check the merchant code and try again";
+                    "Please check the merchant code and try again | $title";
             }
 
 
