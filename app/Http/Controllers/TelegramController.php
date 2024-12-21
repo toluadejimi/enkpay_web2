@@ -116,19 +116,20 @@ class TelegramController extends Controller
 
             $mcode = $extractedData['Merchant Code'];
             $ck_code = Webkey::where('merchant_code', $mcode)->first()->site_name ?? null;
+
             if($ck_code == null){
                 $replyText = "Merchant code invalid ❌ \n".
                     "Please check the merchant code and try again | $mcode";
             }
 
 
-            $resultString = "";
-            foreach ($extractedData as $key => $value) {
-                $resultString .= "$key: $value\n";
-            }
-
-            $replyText = "result.: $resultString".$mcode.$ck_code;
-
+//            $resultString = "";
+//            foreach ($extractedData as $key => $value) {
+//                $resultString .= "$key: $value\n";
+//            }
+//
+//            $replyText = "result.: $resultString".$mcode.$ck_code;
+//
 
         }
 
