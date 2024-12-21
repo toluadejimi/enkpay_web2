@@ -84,7 +84,7 @@ class TelegramController extends Controller
 
         elseif (stripos($message, 'title') !== false) {
 
-            $title = trim(strstr($message, '-'));
+            $title = trim(substr(strstr($message, '-'), 1));
             $sitename = Webkey::where('merchant_code', $title)->first()->site_name ?? null;
 
             if($sitename != null){
