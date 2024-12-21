@@ -127,7 +127,7 @@ class TelegramController extends Controller
                 $resultString .= "$key: $value\n";
             }
 
-            $replyText = "result.: $resultString";
+            $replyText = "result.: $resultString".$mcode;
 
 
         }
