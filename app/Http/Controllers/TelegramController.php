@@ -26,19 +26,21 @@ class TelegramController extends Controller
         if (isset($update['message'])) {
             $chatId = $update['message']['chat']['id'];
             $message = $update['message']['text'];
+            $username = $update['message']['from']['username'];
+
 
             // Auto-reply logic
-            $this->autoReply($chatId, $message);
+            $this->autoReply($chatId, $message, $username);
         }
 
         return response()->json(['status' => 'success']);
     }
 
-    protected function autoReply($chatId, $message)
+    protected function autoReply($chatId, $message, $username)
     {
         if (stripos($message, 'hello') !== false) {
-            $replyText = "Hello! welcome to Sprintpay Bot\n\n
-             What would you like me to help you with?\n
+            $replyText = "Hello! $username welcome to Sprintpay Bot 😊\n\n
+             What would you like me to help you with? \n
              _____________________________________________
             1. To fund your account | Reply with Fund\n
             2. To resolve your transaction | Reply with Resolve\n
@@ -50,7 +52,7 @@ class TelegramController extends Controller
 
 
         } elseif (stripos($message, 'hi') !== false) {
-            $replyText = "Hello! welcome to Sprintpay Bot\n\n
+            $replyText = "Hello! $username  welcome to Sprintpay Bot😊 \n\n
             What would you like me to help you with?\n
            _____________________________________________
             1. To fund your account | Reply with Fund\n
@@ -60,13 +62,6 @@ class TelegramController extends Controller
         } else {
             $replyText = "I'm not sure how to respond to that.";
         }
-
-
-
-
-
-
-
 
 
         $this->telegram->sendMessage($chatId, $replyText);
