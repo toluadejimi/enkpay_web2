@@ -113,11 +113,6 @@ class TelegramController extends Controller
                 }
             }
 
-            $extractedData = [
-                'Amount' => '2000',
-                'Merchant Code' => '123456',
-                'Email' => 'email@gmail.com'
-            ];
             $resultString = "";
             foreach ($extractedData as $key => $value) {
                 $resultString .= "$key: $value\n";
