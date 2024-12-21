@@ -38,6 +38,21 @@ class TelegramController extends Controller
 
     protected function autoReply($chatId, $message, $username)
     {
+
+        if (stripos($message, 'MCODE') !== false) {
+            $replyText = "To get your site merchant code please rely with the website title:\n\n" .
+                "title   -  ex: storemarket\n";
+
+        }
+
+
+
+
+
+
+
+
+
         if (stripos($message, 'hello') !== false) {
             $replyText = "Hello! $username, welcome to Sprintpay Bot 😊\n\n" .
                 "What would you like me to help you with?\n\n" .
@@ -55,7 +70,7 @@ class TelegramController extends Controller
                 "What would you like me to help you with?\n\n" .
                 "1. To fund your account         | Reply with 'Fund'\n" .
                 "2. To resolve your transaction  | Reply with 'Resolve'\n".
-                "3. To get Merchant Code | Reply with MCODE";
+                "3. To get Merchant Code | Reply with 'MCODE'";
 
         } else {
             $replyText = "I'm not sure how to respond to that.";
@@ -84,7 +99,7 @@ class TelegramController extends Controller
                 "What would you like me to help you with?\n\n" .
                 "1. To fund your account         | Reply with 'Fund'\n" .
                 "2. To resolve your transaction  | Reply with 'Resolve'\n".
-                "3. To get Merchant Code | Reply with MCODE";
+                "3. To get Merchant Code | Reply with 'MCODE'";
 
 
         }
