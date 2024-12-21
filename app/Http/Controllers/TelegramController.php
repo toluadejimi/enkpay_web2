@@ -39,25 +39,24 @@ class TelegramController extends Controller
     protected function autoReply($chatId, $message, $username)
     {
         if (stripos($message, 'hello') !== false) {
-            $replyText = "Hello! $username welcome to Sprintpay Bot 😊\n\n
-             What would you like me to help you with? \n
-            1. To fund your account | Reply with Fund\n
-            2. To resolve your transaction | Reply with Resolve
+            $replyText = "Hello! $username, welcome to Sprintpay Bot 😊\n\n" .
+                "What would you like me to help you with?\n\n" .
+                "1. To fund your account         | Reply with 'Fund'\n" .
+                "2. To resolve your transaction  | Reply with 'Resolve'\n";
 
-            ";
+
         } elseif (stripos($message, 'help') !== false) {
             $replyText = "You can ask me anything!";
 
 
 
         } elseif (stripos($message, 'hi') !== false) {
-            $replyText = "Hello! $username  welcome to Sprintpay Bot😊 \n\n
-            What would you like me to help you with?\n
-            1. To fund your account | Reply with Fund\n
-            2. To resolve your transaction | Reply with Resolve\n
-            3. To get Merchant Code | Reply with MCODE\n
+            $replyText = "Hello! $username, welcome to Sprintpay Bot 😊\n\n" .
+                "What would you like me to help you with?\n\n" .
+                "1. To fund your account         | Reply with 'Fund'\n" .
+                "2. To resolve your transaction  | Reply with 'Resolve'\n";
 
-            ";
+
         } else {
             $replyText = "I'm not sure how to respond to that.";
         }
@@ -65,30 +64,27 @@ class TelegramController extends Controller
 
 
         if (stripos($message, 'fund') !== false) {
-            $replyText = "To fund your account please reply with\n\n
+            $replyText = "To fund your account, please reply with the following details:\n\n" .
+                "Example:\n" .
+                "Amount        - 2000\n" .
+                "Merchant Code - 123456\n" .
+                "Email         - email@gmail.com\n\n" .
+                ">>>>>>>>>>>>>>>>>>>>>>>>>>\n\n" .
+                "Reply with 'MCODE' to get your Merchant Code.";
 
-             Ex.: Amount - 2000 \n merchantcode - 123456 \n email - email@gmail.com
 
-             >>>>>>>>>>>>>>>>>>>>>>>
-
-             Reply MCODE to get Merchant Code
-
-            ";
         } elseif (stripos($message, 'resolve') !== false) {
 
-            $replyText = "To resolve your account please reply with\n\n
-             Ex.: session_id - 00993987446365453636364743
-            ";
+            $replyText = "To resolve your account please reply with\n\n".
+            "Ex.: session_id - 00993987446365453636364743";
 
         }else{
 
-            $replyText = "Hello! $username  welcome to Sprintpay Bot😊 \n\n
-            What would you like me to help you with?\n
-            1. To fund your account | Reply with Fund\n
-            2. To resolve your transaction | Reply with Resolve\n
-            3. To get Merchant Code | Reply with MCODE\n
+            $replyText = "Hello! $username, welcome to Sprintpay Bot 😊\n\n" .
+                "What would you like me to help you with?\n\n" .
+                "1. To fund your account         | Reply with 'Fund'\n" .
+                "2. To resolve your transaction  | Reply with 'Resolve'\n";
 
-            ";
         }
 
 
