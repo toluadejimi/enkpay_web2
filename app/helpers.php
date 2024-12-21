@@ -3247,7 +3247,7 @@ if (!function_exists('verifypelpayreslove')) {
         if($res == "Not Found, Pleas try again"){
             return 0;
         }else{
-            return 1;
+            return $res;
         }
 
 
