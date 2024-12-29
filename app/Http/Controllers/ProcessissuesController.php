@@ -149,6 +149,9 @@ class ProcessissuesController extends Controller
 
 
         $key = Transfertransaction::where('id', $request->id)->first()->key ?? null;
+        $roamount = Transfertransaction::where('id', $request->id)->first()->amount ?? null;
+        $roemail = Transfertransaction::where('id', $request->id)->first()->email ?? null;
+
         if($key == null){
             return back()->with('error', "No key found");
         }
@@ -159,10 +162,10 @@ class ProcessissuesController extends Controller
 
 
             $set = Setting::where('id', 1)->first();
-            if ($request->amount > 15000) {
-                $p_amount = $request->amount - $set->psb_cap;
+            if ($roamount > 15000) {
+                $p_amount = $roamount - $set->psb_cap;
             } else {
-                $p_amount = $request->amount - $set->psb_charge;
+                $p_amount = $roamount - $set->psb_charge;
             }
 
 
@@ -172,7 +175,7 @@ class ProcessissuesController extends Controller
 
 
             $url = Webkey::where('key', $key)->first()->url_fund;
-            $user_email = $request->email ?? null;
+            $user_email = $roemail ?? null;
             $amount = $p_amount;
             $order_id = "DIRECTRESOLVE".random_int(000000000, 999999999);
             $site_name = Webkey::where('key', $key)->first()->site_name;
@@ -189,7 +192,7 @@ class ProcessissuesController extends Controller
             $trasnaction->credit = $p_amount;
             $trasnaction->note = "Direct Resolve | for $user_email";
             $trasnaction->fee = $fee ?? 0;
-            $trasnaction->amount = $request->amount;
+            $trasnaction->amount = $roamount;
             $trasnaction->e_charges = 0;
             $trasnaction->charge = $payable ?? 0;
             $trasnaction->enkPay_Cashout_profit = 0;
