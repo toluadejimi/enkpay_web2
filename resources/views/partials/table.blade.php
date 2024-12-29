@@ -22,9 +22,22 @@
             <td>{{$item->created_at}}</td>
             <td>
                 @if($item->status == 0)
-                    <a href="#" class="btn btn-warning">Pending</a>
+                    <a href="repush?id={{$item->id}}" onclick="return confirmrepush2();" class="btn btn-warning">Pending</a>
+
+                    <script>
+                        function confirmrepush2() {
+                            return confirm('Are you sure you want to Push');
+                        }
+                    </script>
+
+
                 @elseif($item->status == 3)
-                    <a href="#" class="btn btn-danger">Rejected</a>
+                    <a href="repush?id={{$item->id}}" onclick="return confirmrepush();" class="btn btn-danger">Rejected</a>
+                    <script>
+                        function confirmrepush() {
+                            return confirm('Are you sure you want to Push');
+                        }
+                    </script>
                 @elseif($item->status == 4)
                     <a href="#" class="btn btn-success">User Funded</a>
                 @elseif($item->status == 5)
