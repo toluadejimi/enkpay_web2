@@ -206,6 +206,9 @@ class ProcessissuesController extends Controller
             $type ="epayment";
             $session_id = "DRESOLVE";
             $fund = credit_user_wallet($url, $user_email, $amount, $order_id, $type, $session_id);
+
+            Transfertransaction::where('id', $request->id)->update(['status' => 2]);
+
             return back()->with('message', "$user_email has been funded $amount on $site_name");
 
     }
