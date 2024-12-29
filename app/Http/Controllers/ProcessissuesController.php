@@ -164,9 +164,9 @@ class ProcessissuesController extends Controller
 
             $set = Setting::where('id', 1)->first();
             if ($roamount > 15000) {
-                $p_amount = $roamount - $set->psb_cap;
+                $p_amount = $roamount - 300;
             } else {
-                $p_amount = $roamount - $set->psb_charge;
+                $p_amount = $roamount - 100;
             }
 
 
@@ -206,7 +206,7 @@ class ProcessissuesController extends Controller
 
             $type ="epayment";
             $session_id = "DRESOLVE";
-            $fund = credit_user_wallet($url, $user_email, $amount, $order_id, $type, $session_id);
+            $fund = credit_user_wallet($url, $user_email, $p_amount, $order_id, $type, $session_id);
 
             Transfertransaction::where('id', $request->id)->update(['status' => 2]);
 
