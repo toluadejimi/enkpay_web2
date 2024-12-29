@@ -31,13 +31,6 @@ class AppServiceProvider extends ServiceProvider
             DB::disconnect();
         });
 
-        app()->terminating(function () {
-            $ip = Request::ip(); // Get client IP
-            $url = Request::url(); // Get request URL
-
-            Log::info("Request from IP: " . $ip . " to " . $url . "|". date('y-m-d h-i-s'));
-
-        });
 
     }
 }
