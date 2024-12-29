@@ -164,9 +164,9 @@ class ProcessissuesController extends Controller
 
             $set = Setting::where('id', 1)->first();
             if ($roamount > 15000) {
-                $p_amount = $roamount - 300;
+                $p_amount = $roamount - 0;
             } else {
-                $p_amount = $roamount - 100;
+                $p_amount = $roamount - 0;
             }
 
 
