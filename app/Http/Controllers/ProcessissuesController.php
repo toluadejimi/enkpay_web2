@@ -151,6 +151,7 @@ class ProcessissuesController extends Controller
         $key = Transfertransaction::where('id', $request->id)->first()->key ?? null;
         $roamount = Transfertransaction::where('id', $request->id)->first()->amount ?? null;
         $roemail = Transfertransaction::where('id', $request->id)->first()->email ?? null;
+        $account_no = Transfertransaction::where('id', $request->id)->first()->account_no ?? null;
 
         if($key == null){
             return back()->with('error', "No key found");
@@ -199,7 +200,7 @@ class ProcessissuesController extends Controller
             $trasnaction->balance = $balance;
             $trasnaction->status = 1;
             $trasnaction->save();
-            $message = "Business funded | Direct resolve for | $user_email | $p_amount | $user->first_name " . " " . $user->last_name;
+            $message = "Business funded | Direct resolve for | $account_no | $user_email | $p_amount | $user->first_name " . " " . $user->last_name;
             send_notification($message);
 
 
