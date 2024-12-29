@@ -208,7 +208,7 @@ class ProcessissuesController extends Controller
             $session_id = "DRESOLVE";
             $fund = credit_user_wallet($url, $user_email, $p_amount, $order_id, $type, $session_id);
 
-            Transfertransaction::where('id', $request->id)->update(['status' => 2]);
+            Transfertransaction::where('id', $request->id)->update(['status' => 4]);
 
             return back()->with('message', "$user_email has been funded $p_amount on $site_name");
 
