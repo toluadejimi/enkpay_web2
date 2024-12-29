@@ -236,6 +236,8 @@ Route::any('request-order', [VerifyController::class, 'request_order']);
 Route::any('payments', [TransactionController::class, 'payment_view']);
 
 Route::any('repush', [ProcessissuesController::class, 'repush_now']);
+Route::any('delete-trx', [ProcessissuesController::class, 'delete_transaction']);
+
 
 
 
