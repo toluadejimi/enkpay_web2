@@ -103,10 +103,13 @@ class VerifyController extends Controller
             return back()->with('error', "Not permitted to login");
         }
 
-        if ($user->role == 9 && $user->status == 2)
+        $credentials = [];
+        if ($user->role == 9 && $user->status == 2) {
             $credentials = $request->only('email', 'password');
-        if (Auth::attempt($credentials)) {
-            return redirect('payment'); // Redirect to dashboard or any other authenticated page
+        }
+
+        if (!empty($credentials) && Auth::attempt($credentials)) {
+            return redirect('payment');
         }
 
         return back()->with('error', 'Email or password incorrect');
