@@ -210,7 +210,7 @@ class ProcessissuesController extends Controller
 
             Transfertransaction::where('id', $request->id)->update(['status' => 2]);
 
-            return back()->with('message', "$user_email has been funded $amount on $site_name");
+            return back()->with('message', "$user_email has been funded $p_amount on $site_name");
 
     }
 
