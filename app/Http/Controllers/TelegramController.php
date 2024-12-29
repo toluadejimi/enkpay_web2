@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Setting;
 use App\Models\Webkey;
 use App\Services\TelegramService;
 use Illuminate\Http\Request;
@@ -130,6 +131,15 @@ class TelegramController extends Controller
                 $replyText = "$email | Account not found on  | $ck_code ❌ \n".
                     "Please check the email or merchant code and try again | $mcode";
             }else{
+
+
+
+
+
+
+
+
+
                 $replyText = "Account found on | $ck_code | ✅ \n\n".
                     "username         |  $ck_account\n".
                     "Amount to fund   |  $amount\n".

@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Services\TelegramService;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -24,6 +25,12 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useBootstrap();
+        app()->terminating(function () {
+            DB::disconnect();
+
+            $message = date('ymd his').">>>>>>>| Database connection closed successfully";
+            send_notification($message);
+        });
 
     }
 }

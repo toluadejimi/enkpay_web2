@@ -3257,5 +3257,21 @@ if (!function_exists('verifypelpayreslove')) {
 
     }
 
+
+    function get_account_details()
+    {
+
+        $set = Setting::where('id', 1)->first();
+        $data['psb_cap'] = $set->psb_cap;
+        $data['psb_charge'] = $set->psb_charge;
+        $data['charm'] = $set->charm;
+        $data['woven'] = $set->woven;
+
+
+
+
+
+    }
+
 }
 
