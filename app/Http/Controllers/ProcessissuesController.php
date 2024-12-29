@@ -144,6 +144,13 @@ class ProcessissuesController extends Controller
 
 
 
+    public function delete_transaction(request $request)
+    {
+        Transfertransaction::where('id', $request->id)->delete();
+        return back()->with('message', "Transaction Deleted Successfully");
+
+    }
+
     public function repush_now(request $request)
     {
 

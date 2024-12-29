@@ -32,7 +32,7 @@
 
 
                 @elseif($item->status == 3)
-                    <a href="repush?id={{$item->id}}" onclick="return confirmrepush();" class="btn btn-danger">Rejected</a>
+                    <a href="repush?id={{$item->id}}" onclick="return confirmrepush();" class="btn btn-pending">Pending</a>
                     <script>
                         function confirmrepush() {
                             return confirm('Are you sure you want to Push');
@@ -46,6 +46,15 @@
                     <a href="#" class="btn btn-success">Completed</a>
                 @endif
             </td>
+
+            <td>
+                @if($item->status != 4)
+                <a href="delete-trx?id={{$item->id}}" onclick="return confirmrepush();" class="btn btn-danger">Delete</a>
+                @endif
+            </td>
+
+
+
         </tr>
     @endforeach
     </tbody>
