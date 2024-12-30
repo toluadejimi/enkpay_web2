@@ -90,8 +90,12 @@ class TelegramController extends Controller
                 if($trx->status == 4){
                     $email = $trx->email;
                     $date = $trx->created_at;
+                    $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
+                    $amount = number_format($trx->amount);
+
                     $replyText = "Session ID  | $title | has already been funded 🥺 \n\n".
-                    "The transaction has already been funded to | $email | on  $date";
+                    "This transaction has already been funded to | $email | on | $date | website:- $sitename | Amount:- $amount";
+
                 }elseif($trx->status == 0){
                     $replyText = "Session ID found | $title | ✅ \n".
                         $tran = json_encode($trx);
