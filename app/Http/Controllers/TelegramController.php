@@ -114,8 +114,7 @@ class TelegramController extends Controller
         } elseif (stripos($message, 'wema') !== false) {
 
             $title = trim(substr(strstr($message, '-'), 1));
-
-            $trx = Transfertransaction::where('session_id', $title)->first() ?? null;
+            $trx = Transfertransaction::where('account_no', $title)->first() ?? null;
             if ($trx == null) {
 
                 $replyText = "Session ID | $title | not found ❌ \n" .
