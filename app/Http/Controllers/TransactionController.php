@@ -685,7 +685,7 @@ class TransactionController extends Controller
         }
 
         // Block the IP after too many requests
-        if ($attempts > 2) {
+        if ($attempts > 5) {
             $message = "Too many requests from your IP | $ip";
             send_notification($message);
 
