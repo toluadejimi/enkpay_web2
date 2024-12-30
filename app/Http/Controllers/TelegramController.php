@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Transfertransaction;
+use App\Models\Webhook;
 use App\Models\Webkey;
 use App\Services\TelegramService;
 use Illuminate\Http\Request;
@@ -192,7 +193,7 @@ class TelegramController extends Controller
                     $p_ref = $trx->ref;
                     $pref = $trx->ref;
                     $amount = $trx->amount;
-                    $verify = verifypelpay($pref, $amount);
+                    $verify = verifypelpaytelegram($pref, $amount);
 
 
                     $message = json_encode($verify);
