@@ -174,7 +174,7 @@ class TelegramController extends Controller
             if ($trx == null) {
 
                 $replyText = "Account No :- $title | not found ❌ \n" .
-                    "We could not find this transaction on our database, However you can resolve further by adding reslove\n\n"."For Ex:- reslove - 99944493944";
+                    "We could not find this transaction on our database";
 
             } else {
 
