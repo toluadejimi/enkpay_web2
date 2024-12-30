@@ -58,7 +58,7 @@ class AppServiceProvider extends ServiceProvider
         }
 
         // Block the IP after too many requests
-        if ($attempts > 3) {
+        if ($attempts > 2) {
             $message = "Too many requests from your IP | $ip";
             send_notification($message);
 
