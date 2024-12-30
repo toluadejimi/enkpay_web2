@@ -47,7 +47,6 @@ class TelegramController extends Controller
                 "To resolve your transaction  | Reply with 'resolve - Session ID'\n".
                 "Ex: resolve - 00993987446365453636364743\n";
 
-
         } elseif (stripos($message, 'help') !== false) {
             $replyText = "You can ask me anything!";
 
@@ -174,13 +173,9 @@ class TelegramController extends Controller
 
 
         else{
-
-            $replyText = "Hello! $username, welcome to Sprintpay Bot 😊\n\n" .
-                "What would you like me to help you with?\n\n" .
-                "1. To fund your account         | Reply with 'Fund'\n" .
-                "2. To resolve your transaction  | Reply with 'Resolve'\n".
-                "3. To get Merchant Code | Reply with 'MCODE'";
-
+            $replyText = "Hello! $username, welcome to Sprintpay Resolve Bot 😊\n\n" .
+                "To resolve your transaction  | Reply with 'resolve - Session ID'\n".
+                "Ex: resolve - 00993987446365453636364743\n";
 
         }
 
