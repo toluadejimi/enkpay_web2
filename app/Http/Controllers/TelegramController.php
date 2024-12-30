@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Setting;
 use App\Models\Transfertransaction;
 use App\Models\Webkey;
 use App\Services\TelegramService;
@@ -45,8 +44,8 @@ class TelegramController extends Controller
 
         if (stripos($message, 'hello') !== false) {
             $replyText = "Hello! $username, welcome to Sprintpay Resolve Bot 😊\n\n" .
-                "To resolve your transaction  | Reply with 'resolve - Session ID'\n".
-                "Ex: resolve - 00993987446365453636364743\n";
+                "To resolve your transaction  | Reply with 'Bank - Session ID or Account No'\n" .
+                "Ex: 9psb - 00993987446365453636364743\n";
 
         } elseif (stripos($message, 'help') !== false) {
             $replyText = "You can ask me anything!";
@@ -54,8 +53,8 @@ class TelegramController extends Controller
 
         } elseif (stripos($message, 'hi') !== false) {
             $replyText = "Hello! $username, welcome to Sprintpay Resolve Bot 😊\n\n" .
-                "To resolve your transaction  | Reply with 'resolve - Session ID'\n".
-                "Ex: resolve - 00993987446365453636364743\n";
+                "To resolve your transaction  | Reply with 'Bank - Session ID or AccountNo'\n" .
+                "Ex: wema - 9773463748\n";
 
 
         } else {
@@ -73,36 +72,34 @@ class TelegramController extends Controller
                 "Reply with 'MCODE' to get your Merchant Code.";
 
 
-        } elseif (stripos($message, 'resolve') !== false) {
+        } elseif (stripos($message, '9psb') !== false) {
 
             $title = trim(substr(strstr($message, '-'), 1));
 
-
             $trx = Transfertransaction::where('session_id', $title)->first() ?? null;
-            if($trx == null){
+            if ($trx == null) {
 
-                $replyText = "Session ID | $title | not found ❌ \n".
+                $replyText = "Session ID | $title | not found ❌ \n" .
                     "Please kindly check the session ID you entered and try again";
 
+            } else {
 
-            }else{
-
-                if($trx->status == 4){
+                if ($trx->status == 4) {
                     $email = $trx->email;
                     $date = $trx->created_at;
                     $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
                     $amount = number_format($trx->amount);
 
-                    $replyText = "Session ID  | $title | has already been funded 🥺 \n\n".
-                    "This transaction has already been funded to | $email | on | $date | website:- $sitename | Amount:- $amount";
+                    $replyText = "Session ID  | $title | has already been funded 🥺 \n\n" .
+                        "This transaction has already been funded to | $email | on | $date | website:- $sitename | Amount:- $amount";
 
-                }elseif($trx->status == 0){
-                    $replyText = "Session ID found | $title | ✅ \n".
+                } elseif ($trx->status == 0) {
+                    $replyText = "Session ID found | $title | ✅ \n" .
                         $tran = json_encode($trx);
                     "Here is the transaction  | $tran";
-                }else{
+                } else {
 
-                    $replyText = "Session ID found | $title | ✅ \n".
+                    $replyText = "Session ID found | $title | ✅ \n" .
                         $tran = json_encode($trx);
                     "Here is the transaction  | $tran";
 
@@ -112,31 +109,107 @@ class TelegramController extends Controller
             }
 
 
+        } elseif (stripos($message, 'wema') !== false) {
+
+            $title = trim(substr(strstr($message, '-'), 1));
+
+            $trx = Transfertransaction::where('session_id', $title)->first() ?? null;
+            if ($trx == null) {
+
+                $replyText = "Session ID | $title | not found ❌ \n" .
+                    "Please kindly check the session ID you entered  and try again or try using account no";
+
+            } else {
+
+                if ($trx->status == 4) {
+                    $email = $trx->email;
+                    $date = $trx->created_at;
+                    $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
+                    $amount = number_format($trx->amount);
+
+                    $replyText = "Session ID  | $title | has already been funded 🥺 \n\n" .
+                        "This transaction has already been funded to | $email | on | $date | website:- $sitename | Amount:- $amount";
+
+                } elseif ($trx->status != 4) {
+
+                    $p_ref = $trx->ref;
+                    $pref = $trx->ref;
+                    $amount = $trx->amount;
+                    $verify = verifypelpay($pref, $amount);
+                    if ($verify['code'] == 0) {
+
+                        $email = $trx->email;
+                        $date = $trx->created_at;
+                        $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
+                        $amount = number_format($trx->amount);
+
+                        $replyText = "Session ID  | $title | is still pending 🥺 \n\n" .
+                            "We are sorry for any inconveniences!,\n" . "This transaction is still pending from the bank | $email | on | $date | website:- $sitename | Amount:- $amount \n\n" .
+                            "I will keep notifying the bank about the transaction but if you can wait, you can file a dispute from your bank app";
+
+                    } elseif ($verify['code'] == 4) {
+                        $email = $trx->email;
+                        $date = $trx->created_at;
+                        $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
+                        $amount = number_format($trx->amount);
 
 
+                        $replyText = "Session ID  | $title | has already been funded ✅ \n\n" .
+                            "This transaction has already been funded to | $email | on | $date | website:- $sitename | Amount:- $amount";
 
 
-        }
+                    } elseif ($verify['code'] == 5) {
+                        $email = $trx->email;
+                        $date = $trx->created_at;
+                        $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
+                        $amount = number_format($trx->amount);
 
-        elseif (stripos($message, 'title') !== false) {
+                        $replyText = "Session ID  | $title | partial payment 🥺 \n\n" .
+                            "You paid incomplete amount\n" . "  Transaction Details - | $email | on | $date | website:- $sitename | Amount:- $amount \n\n" .
+                            "The money will be sent back to your bank account within 48hrs, if no transaction after 48hrs, please raise a dispute on your bank app";
+
+                    } else {
+
+                        $email = $trx->email;
+                        $date = $trx->created_at;
+                        $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
+                        $amount = number_format($trx->amount);
+
+                        $replyText = "Session ID  | $title | Reslove Error 🥺 \n\n" .
+                            "We could not verify this transaction this time,  contact support";
+
+
+                    }
+
+
+                } else {
+
+                    $replyText = "Session ID found | $title | ✅ \n" .
+                        $tran = json_encode($trx);
+                    "Here is the transaction  | $tran";
+
+                }
+
+
+            }
+
+
+        } elseif (stripos($message, 'title') !== false) {
 
             $title = trim(substr(strstr($message, '-'), 1));
             $sitename = Webkey::where('merchant_code', $title)->first()->site_name ?? null;
 
-            if($sitename != null){
-                $replyText = "$title | Merchant code valid 😊\n".
+            if ($sitename != null) {
+                $replyText = "$title | Merchant code valid 😊\n" .
                     "Site name.: $sitename";
-            }else{
+            } else {
 
-                $replyText = "Merchant code invalid ❌ \n".
+                $replyText = "Merchant code invalid ❌ \n" .
                     "Please check the merchant code and try again | $title";
             }
 
 
-        }
-
-
-        elseif (stripos($message, 'amount') !== false) {
+        } elseif (stripos($message, 'amount') !== false) {
 
 
             $pattern = "/(Amount|Merchant Code|Email)\s*-\s*(.+)/";
@@ -155,23 +228,21 @@ class TelegramController extends Controller
             $ck_code = Webkey::where('merchant_code', $mcode)->first()->site_name ?? null;
             $email = $extractedData['Email'];
             $url = Webkey::where('merchant_code', $mcode)->first()->verify_url ?? null;
-            $ck_account =  checkuser_name($email, $url);
+            $ck_account = checkuser_name($email, $url);
 
 
-
-            if($ck_code == null ){
-                $replyText = "Merchant code invalid ❌ \n".
+            if ($ck_code == null) {
+                $replyText = "Merchant code invalid ❌ \n" .
                     "Please check the merchant code and try again | $mcode";
-            }elseif ($ck_account == 0) {
-                $replyText = "$email | Account not found on  | $ck_code ❌ \n".
+            } elseif ($ck_account == 0) {
+                $replyText = "$email | Account not found on  | $ck_code ❌ \n" .
                     "Please check the email or merchant code and try again | $mcode";
-            }else{
+            } else {
 
 
-
-                $replyText = "Account found on | $ck_code | ✅ \n\n".
-                    "username         |  $ck_account\n".
-                    "Amount to fund   |  $amount\n".
+                $replyText = "Account found on | $ck_code | ✅ \n\n" .
+                    "username         |  $ck_account\n" .
+                    "Amount to fund   |  $amount\n" .
                     "Bank Account   |  Account\n";
             }
 
@@ -184,37 +255,24 @@ class TelegramController extends Controller
 //            $replyText = "result.: $resultString".$mcode.$ck_code;
 //
 
-        }
-
-        elseif (stripos($message, 'MCODE') !== false) {
+        } elseif (stripos($message, 'MCODE') !== false) {
 
             $replyText = "To get your site merchant code please rely with the website title:\n\n" .
                 "title   -  ex: storemarket\n";
 
-        }
-
-
-        elseif (stripos($message, 'id') !== false) {
+        } elseif (stripos($message, 'id') !== false) {
 
             $replyText = "To get your site merchant code please rely with the website title:\n\n" .
                 "title   -  ex: storemarket\n";
 
-        }
-
-
-
-
-
-
-
-        else{
+        } else {
             $replyText = "Hello! $username, welcome to Sprintpay Resolve Bot 😊\n\n" .
-                "To resolve your transaction  | Reply with 'resolve - Session ID'\n".
-                "Ex: resolve - 00993987446365453636364743\n";
+                "To resolve your transaction  | Reply with 'resolve - Session ID or Account No'\n" .
+                "Ex: Wema - 9999485893\n";
 
         }
 
 
-            $this->telegram->sendMessage($chatId, $replyText);
+        $this->telegram->sendMessage($chatId, $replyText);
     }
 }

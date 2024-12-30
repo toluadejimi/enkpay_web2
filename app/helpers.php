@@ -2089,10 +2089,8 @@ if (!function_exists('verifypelpay')) {
 
 
                     } else {
-                        $message = "====> Fools trying to do stuffs \n
-            =======>" . json_decode($var);
-                        send_notification($message);
-                        return null;
+
+                        return "error";
                     }
                 } catch (\Exception $th) {
                     return $th->getMessage();
