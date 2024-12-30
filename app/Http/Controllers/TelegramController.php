@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Setting;
+use App\Models\Transfertransaction;
 use App\Models\Webkey;
 use App\Services\TelegramService;
 use Illuminate\Http\Request;
@@ -76,8 +77,24 @@ class TelegramController extends Controller
 
             $title = trim(substr(strstr($message, '-'), 1));
 
-                $replyText = "Merchant code invalid ❌ \n".
-                    "Here is my session id | $title";
+
+            $trx = Transfertransaction::where('session_id', $title)->first() ?? null;
+            if($trx == null){
+
+                $replyText = "Session ID | $title | not found ❌ \n".
+                    "Please kindly check the session ID you entered and try again";
+            }else{
+
+
+
+                $replyText = "Session ID found | $title | ✅ \n".
+                    $tran = json_encode($trx);
+                    "Here is the transaction  | $tran";
+
+            }
+
+
+
 
 
 
