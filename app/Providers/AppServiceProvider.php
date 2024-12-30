@@ -40,7 +40,7 @@ class AppServiceProvider extends ServiceProvider
             DB::disconnect();
 
             $connectionsAfter = DB::select("SHOW STATUS WHERE `variable_name` = 'Threads_connected'");
-             $message = "'Active connections after disconnecting: " . $connectionsAfter[0]->Value);
+             $message = "'Active connections after disconnecting: " . $connectionsAfter[0]->Value;
             send_notification($message);;
 
         });
