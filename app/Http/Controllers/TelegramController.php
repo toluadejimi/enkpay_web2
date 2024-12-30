@@ -64,14 +64,71 @@ class TelegramController extends Controller
         }
 
 
-        if (stripos($message, 'fund') !== false) {
-            $replyText = "To fund your account, please reply with the following details:\n\n" .
-                "Example:\n" .
-                "Amount        - 2000\n" .
-                "Merchant Code - 123456\n" .
-                "Email         - email@gmail.com\n\n" .
-                ">>>>>>>>>>>>>>>>>>>>>>>>>>\n\n" .
-                "Reply with 'MCODE' to get your Merchant Code.";
+        if (stripos($message, 'wemamore') !== false) {
+            $title = trim(substr(strstr($message, '-'), 1));
+            $trx = Transfertransaction::where('account_no', $title)->first() ?? null;
+
+            $pref = $trx->ref;
+            $amount = $trx->amount;
+            $verify = verifypelpay($pref, $amount);
+            if ($verify['code'] == 0) {
+
+                $email = $trx->email;
+                $date = $trx->created_at;
+                $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
+                $amount = number_format($trx->amount);
+
+                $replyText = "Account No:- $title | is still pending 🥺 \n\n" .
+                    "We are sorry for any inconveniences!,\n" . "This transaction is still pending from the bank | $email | on | $date | website:- $sitename | Amount:- $amount \n\n" .
+                    "I will keep notifying the bank about the transaction but if you can wait, you can file a dispute from your bank app";
+
+            }
+
+            elseif ($verify['code'] == 9) {
+                $email = $trx->email;
+                $date = $trx->created_at;
+                $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
+                $amount = number_format($trx->amount);
+
+                $replyText = "Account No:- $title | Transaction Failed ❌ \n\n" .
+                    "This transaction failed on our end.\n\n".
+                    "Transaction Details:- | Email:- $email | Date and time:- $date | Website:- $sitename | Amount:- $amount \n\n" .
+                    "If you have been debited, Please raise a dispute for reversal on your bank app.";
+
+
+            } elseif ($verify['code'] == 4) {
+                $email = $trx->email;
+                $date = $trx->created_at;
+                $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
+                $amount = number_format($trx->amount);
+
+
+                $replyText = "Account No:- $title  | Transaction already been funded ✅ \n\n" .
+                    "This transaction has already been funded to | $email | on | $date | website:- $sitename | Amount:- $amount";
+
+
+            } elseif ($verify['code'] == 5) {
+                $email = $trx->email;
+                $date = $trx->created_at;
+                $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
+                $amount = number_format($trx->amount);
+
+                $replyText = "Account No:- $title  | partial payment 🥺 \n\n" .
+                    "You paid incomplete amount\n" . "  Transaction Details - | $email | on | $date | website:- $sitename | Amount:- $amount \n\n" .
+                    "The money will be sent back to your bank account within 48hrs, if no transaction after 48hrs, please raise a dispute on your bank app";
+
+            } else {
+
+                $email = $trx->email;
+                $date = $trx->created_at;
+                $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
+                $amount = number_format($trx->amount);
+
+                $replyText = "Session ID  | $title | Reslove Error 🥺 \n\n" .
+                    "We could not verify this transaction this time,  contact support";
+
+
+            }
 
 
         } elseif (stripos($message, '9psb') !== false) {
@@ -80,7 +137,6 @@ class TelegramController extends Controller
 
             $trx = Transfertransaction::where('session_id', $title)->first() ?? null;
             if ($trx == null) {
-
                 $replyText = "Session ID | $title | not found ❌ \n" .
                     "Please kindly check the session ID you entered and try again";
 
@@ -117,8 +173,8 @@ class TelegramController extends Controller
             $trx = Transfertransaction::where('account_no', $title)->first() ?? null;
             if ($trx == null) {
 
-                $replyText = "Session ID | $title | not found ❌ \n" .
-                    "Please kindly check the session ID you entered  and try again or try using account no";
+                $replyText = "Account No :- $title | not found ❌ \n" .
+                    "We could not find this transaction on our database, However you can resolve further by adding reslove\n\n"."For Ex:- reslove - 99944493944";
 
             } else {
 
