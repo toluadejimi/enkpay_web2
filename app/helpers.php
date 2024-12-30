@@ -1952,12 +1952,12 @@ function verifypelpaytelegram($pref)
     if ($var->requestSuccessful == true) {
 
         if ($var->responseData->transactionStatus == "Processing") {
-            return [ 'code' => 0 ];
+            return 0;
 
         }
 
         if ($var->responseData->transactionStatus == "Failed") {
-            return [ 'code' => 9 ];
+            return 9;
 
         }
 
