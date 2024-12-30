@@ -83,13 +83,27 @@ class TelegramController extends Controller
 
                 $replyText = "Session ID | $title | not found ❌ \n".
                     "Please kindly check the session ID you entered and try again";
+
+
             }else{
 
-
-
-                $replyText = "Session ID found | $title | ✅ \n".
-                    $tran = json_encode($trx);
+                if($trx->status == 4){
+                    $email = $trx->email;
+                    $date = $trx->created_at;
+                    $replyText = "Session ID  | $title | has already been funded 🥺 \n\n".
+                    "The transaction has already been funded to | $email | on  $date";
+                }elseif($trx->status == 0){
+                    $replyText = "Session ID found | $title | ✅ \n".
+                        $tran = json_encode($trx);
                     "Here is the transaction  | $tran";
+                }else{
+
+                    $replyText = "Session ID found | $title | ✅ \n".
+                        $tran = json_encode($trx);
+                    "Here is the transaction  | $tran";
+
+                }
+
 
             }
 
