@@ -23,17 +23,15 @@ class CharmController extends Controller
         $message = "wema Webhook=======>" . json_encode($request->all());
         send_notification($message);
 
-//        $webh = Webhook::where('account_no', $request->customer->account->virtualAccountNumber)->first() ?? null;
-//
-//        if ($webh == null){
-//            $webhook = new Webhook();
-//            $webhook->account_no = $request->customer->account->virtualAccountNumber;
-//            $webhook->amount = $request->order->amount;
-//            $webhook->sessionId = $request->transaction->sessionId;
-//            $webhook->save();
-//
-//
-//        }
+
+        $webh = Webhook::where('account_no', $request->customer['account']['virtualAccountNumber'])->first() ?? null;
+        if ($webh == null){
+            $webhook = new Webhook();
+            $webhook->account_no =$request->customer['account']['virtualAccountNumber'];
+            $webhook->amount = $request->order['amount'];
+            $webhook->sessionId = $request->transaction['sessionId'];
+            $webhook->save();
+        }
 
         return response()->json([
             'status' => "success",
