@@ -1973,10 +1973,7 @@ function verifypelpaytelegram($pref)
 
 
                 if ($pstatus == 4) {
-                    return [
-                        'code' => 4
-                    ];
-
+                    return 4;
                 }
 
 
@@ -1986,20 +1983,6 @@ function verifypelpaytelegram($pref)
                     $url = url('')."/success?trans_id=$ref&amount=$amount";
                     return 4;
 
-
-                }
-
-
-
-                $trx = Transfertransaction::where('account_no', $acc_no)
-                    ->where([
-                        'status' => 0
-                    ])->first() ?? null;
-
-
-                if ($trx == null) {
-
-                   return 8;
 
                 }
 
