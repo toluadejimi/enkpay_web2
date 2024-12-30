@@ -1960,6 +1960,11 @@ if (!function_exists('verifypelpay')) {
 
             }
 
+            if ($var->responseData->transactionStatus == "Failed") {
+                return [ 'code' => 9 ];
+
+            }
+
             if ($var->responseData->transactionStatus == "Successful" && $var->responseData->message == "Successful") {
 
                 try {
@@ -2126,6 +2131,10 @@ if (!function_exists('verifypelpay')) {
                 ];
 
             }
+
+
+
+
 
         }
 

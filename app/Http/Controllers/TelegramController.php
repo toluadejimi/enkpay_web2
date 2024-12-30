@@ -128,8 +128,8 @@ class TelegramController extends Controller
                     $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
                     $amount = number_format($trx->amount);
 
-                    $replyText = "Session ID  | $title | has already been funded 🥺 \n\n" .
-                        "This transaction has already been funded to | $email | on | $date | website:- $sitename | Amount:- $amount";
+                    $replyText = "Account No:- $title  | has already been funded 🥺 \n\n" .
+                        "This transaction has already been funded to | Email-: $email | Date/Time:- $date | Website:- $sitename | Amount:- $amount";
 
                 } elseif ($trx->status != 4) {
 
@@ -144,9 +144,23 @@ class TelegramController extends Controller
                         $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
                         $amount = number_format($trx->amount);
 
-                        $replyText = "Session ID  | $title | is still pending 🥺 \n\n" .
+                        $replyText = "Account No:- $title | is still pending 🥺 \n\n" .
                             "We are sorry for any inconveniences!,\n" . "This transaction is still pending from the bank | $email | on | $date | website:- $sitename | Amount:- $amount \n\n" .
                             "I will keep notifying the bank about the transaction but if you can wait, you can file a dispute from your bank app";
+
+                    }
+
+                    elseif ($verify['code'] == 9) {
+                        $email = $trx->email;
+                        $date = $trx->created_at;
+                        $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
+                        $amount = number_format($trx->amount);
+
+                        $replyText = "Account No:- $title | Transaction Failed ❌ \n\n" .
+                            "This transaction failed on our end.\n\n".
+                            "Transaction Details:- | Email:- $email | Date and time:- $date | Website:- $sitename | Amount:- $amount \n\n" .
+                            "If you have been debited, Please raise a dispute on your bank app.";
+
 
                     } elseif ($verify['code'] == 4) {
                         $email = $trx->email;
@@ -155,7 +169,7 @@ class TelegramController extends Controller
                         $amount = number_format($trx->amount);
 
 
-                        $replyText = "Session ID  | $title | has already been funded ✅ \n\n" .
+                        $replyText = "Account No:- $title  | Transaction already been funded ✅ \n\n" .
                             "This transaction has already been funded to | $email | on | $date | website:- $sitename | Amount:- $amount";
 
 
@@ -165,7 +179,7 @@ class TelegramController extends Controller
                         $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
                         $amount = number_format($trx->amount);
 
-                        $replyText = "Session ID  | $title | partial payment 🥺 \n\n" .
+                        $replyText = "Account No:- $title  | partial payment 🥺 \n\n" .
                             "You paid incomplete amount\n" . "  Transaction Details - | $email | on | $date | website:- $sitename | Amount:- $amount \n\n" .
                             "The money will be sent back to your bank account within 48hrs, if no transaction after 48hrs, please raise a dispute on your bank app";
 
