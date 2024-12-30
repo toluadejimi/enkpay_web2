@@ -30,9 +30,21 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useBootstrap();
+
+
         app()->terminating(function () {
+            $connections = DB::select("SHOW STATUS WHERE `variable_name` = 'Threads_connected'");
+            $message = "Active connections before disconnecting: " . $connections[0]->Value;
+            send_notification($message);
+
             DB::disconnect();
+
+            $connectionsAfter = DB::select("SHOW STATUS WHERE `variable_name` = 'Threads_connected'");
+             $message = "'Active connections after disconnecting: " . $connectionsAfter[0]->Value);
+            send_notification($message);;
+
         });
+
 
         $ip = Request::ip();
         $key = "ip_attempts:{$ip}";
@@ -46,7 +58,7 @@ class AppServiceProvider extends ServiceProvider
         }
 
         // Block the IP after too many requests
-        if ($attempts > 5) {
+        if ($attempts > 3) {
             $message = "Too many requests from your IP | $ip";
             send_notification($message);
 
