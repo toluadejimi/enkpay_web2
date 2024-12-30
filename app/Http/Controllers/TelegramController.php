@@ -159,7 +159,7 @@ class TelegramController extends Controller
                         $replyText = "Account No:- $title | Transaction Failed ❌ \n\n" .
                             "This transaction failed on our end.\n\n".
                             "Transaction Details:- | Email:- $email | Date and time:- $date | Website:- $sitename | Amount:- $amount \n\n" .
-                            "If you have been debited, Please raise a dispute on your bank app.";
+                            "If you have been debited, Please raise a dispute for reversal on your bank app.";
 
 
                     } elseif ($verify['code'] == 4) {
