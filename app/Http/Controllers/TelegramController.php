@@ -44,8 +44,9 @@ class TelegramController extends Controller
 
         if (stripos($message, 'hello') !== false) {
             $replyText = "Hello! $username, welcome to Sprintpay Resolve Bot 😊\n\n" .
-                "To resolve your transaction  | Reply with 'Bank - Session ID or Account No'\n" .
-                "Ex: 9psb - 00993987446365453636364743\n";
+                "To resolve your transaction  | Reply with 'Bank - Session ID or Account No'\n\n" .
+                "Ex: 9psb - 00993987446365453636364743\n\n".
+                "Wema - 99337747474";
 
         } elseif (stripos($message, 'help') !== false) {
             $replyText = "You can ask me anything!";
@@ -53,8 +54,9 @@ class TelegramController extends Controller
 
         } elseif (stripos($message, 'hi') !== false) {
             $replyText = "Hello! $username, welcome to Sprintpay Resolve Bot 😊\n\n" .
-                "To resolve your transaction  | Reply with 'Bank - Session ID or AccountNo'\n" .
-                "Ex: wema - 9773463748\n";
+                "To resolve your transaction  | Reply with 'Bank - Session ID or Account No'\n\n" .
+                "Ex: 9psb - 00993987446365453636364743\n\n".
+                "Wema - 99337747474";
 
 
         } else {
@@ -267,8 +269,9 @@ class TelegramController extends Controller
 
         } else {
             $replyText = "Hello! $username, welcome to Sprintpay Resolve Bot 😊\n\n" .
-                "To resolve your transaction  | Reply with 'resolve - Session ID or Account No'\n" .
-                "Ex: Wema - 9999485893\n";
+                "To resolve your transaction  | Reply with 'Bank - Session ID or Account No'\n\n" .
+                "Ex: 9psb - 00993987446365453636364743\n\n".
+                "Wema - 99337747474";
 
         }
 
