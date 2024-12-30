@@ -193,6 +193,15 @@ class TelegramController extends Controller
                     $pref = $trx->ref;
                     $amount = $trx->amount;
                     $verify = verifypelpay($pref, $amount);
+
+
+                    $message = json_encode($verify);
+
+                    $replyText = $message;
+
+
+
+
                     if ($verify == 0) {
                         $email = $trx->email;
                         $date = $trx->created_at;
