@@ -199,10 +199,7 @@ class TelegramController extends Controller
 
                     $replyText = $message;
 
-
-
-
-                    if ($verify == 0) {
+                    if ($verify == "0") {
                         $email = $trx->email;
                         $date = $trx->created_at;
                         $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
