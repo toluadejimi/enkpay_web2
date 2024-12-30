@@ -211,7 +211,7 @@ class TelegramController extends Controller
 
                     }
 
-                    elseif ($verify  == 9) {
+                    elseif ($verify  == "9") {
                         $email = $trx->email;
                         $date = $trx->created_at;
                         $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
