@@ -1953,7 +1953,6 @@ function verifypelpaytelegram($pref)
 
         if ($var->responseData->transactionStatus == "Processing") {
             return 0;
-
         }
 
         if ($var->responseData->transactionStatus == "Failed") {
