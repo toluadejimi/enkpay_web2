@@ -8,6 +8,7 @@ use App\Models\Transfertransaction;
 use App\Models\Ttmfb;
 use App\Models\User;
 use App\Models\VirtualAccount;
+use App\Models\Webhook;
 use App\Models\Webkey;
 use App\Models\Webtransfer;
 use Illuminate\Support\Carbon;
@@ -1928,8 +1929,6 @@ if (!function_exists('verifypelpay')) {
     function verifypelpay($pref)
     {
 
-
-
         $token = tokenkey();
         $url = env('PELPAYURL');
         $curl = curl_init();
@@ -1952,7 +1951,6 @@ if (!function_exists('verifypelpay')) {
         $var = curl_exec($curl);
         curl_close($curl);
         $var = json_decode($var);
-
 
 
         if ($var->requestSuccessful == true) {
@@ -2012,7 +2010,6 @@ if (!function_exists('verifypelpay')) {
 
 
                    $paid_amt = Transfertransaction::where('account_no', $acc_no)->update(['amount_paid' => $amount]) ?? null;
-
                     Transfertransaction::where('account_no', $acc_no)->increment('amount_paid', $amount);
                     $trx = Transfertransaction::where('account_no', $acc_no)->first() ?? null;
 
@@ -2063,11 +2060,12 @@ if (!function_exists('verifypelpay')) {
                             $trasnaction->status = 1;
                             $trasnaction->save();
 
-                            $message = "Business funded | $acc_no | $p_amount | $user->first_name " . " " . $user->last_name;
+                            $message = "Business funded | $acc_no | Charm | $p_amount | $user->first_name " . " " . $user->last_name;
                             send_notification($message);
 
                             Webtransfer::where('trans_id', $trx->trans_id)->update(['status' => 4]);
                             Transfertransaction::where('account_no', $acc_no)->update(['status' => 4, 'resolve' => 1]);
+                            Webhook::where('account_no', $acc_no)->delete() ?? null;
 
                             $trck = new Transactioncheck();
                             $trck->session_id = $pref;
