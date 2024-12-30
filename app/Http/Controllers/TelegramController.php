@@ -43,10 +43,9 @@ class TelegramController extends Controller
 
 
         if (stripos($message, 'hello') !== false) {
-            $replyText = "Hello! $username, welcome to Sprintpay Bot 😊\n\n" .
-                "What would you like me to help you with?\n\n" .
-                "1. To fund your account         | Reply with 'Fund'\n" .
-                "2. To resolve your transaction  | Reply with 'Resolve'\n";
+            $replyText = "Hello! $username, welcome to Sprintpay Resolve Bot 😊\n\n" .
+                "To resolve your transaction  | Reply with 'resolve - Session ID'\n".
+                "Ex: resolve - 00993987446365453636364743\n";
 
 
         } elseif (stripos($message, 'help') !== false) {
@@ -54,16 +53,14 @@ class TelegramController extends Controller
 
 
         } elseif (stripos($message, 'hi') !== false) {
-            $replyText = "Hello! $username, welcome to Sprintpay Bot 😊\n\n" .
-                "What would you like me to help you with?\n\n" .
-                "1. To fund your account         | Reply with 'Fund'\n" .
-                "2. To resolve your transaction  | Reply with 'Resolve'\n".
-                "3. To get Merchant Code | Reply with 'MCODE'";
+            $replyText = "Hello! $username, welcome to Sprintpay Resolve Bot 😊\n\n" .
+                "To resolve your transaction  | Reply with 'resolve - Session ID'\n".
+                "Ex: resolve - 00993987446365453636364743\n";
+
 
         } else {
             $replyText = "I'm not sure how to respond to that.";
         }
-
 
 
         if (stripos($message, 'fund') !== false) {
@@ -78,8 +75,12 @@ class TelegramController extends Controller
 
         } elseif (stripos($message, 'resolve') !== false) {
 
-            $replyText = "To resolve your account please reply with\n\n".
-            "Ex.: session_id - 00993987446365453636364743";
+            $title = trim(substr(strstr($message, '-'), 1));
+
+                $replyText = "Merchant code invalid ❌ \n".
+                    "Here is my session id | $title";
+
+
 
         }
 
@@ -134,12 +135,6 @@ class TelegramController extends Controller
 
 
 
-
-
-
-
-
-
                 $replyText = "Account found on | $ck_code | ✅ \n\n".
                     "username         |  $ck_account\n".
                     "Amount to fund   |  $amount\n".
@@ -163,6 +158,18 @@ class TelegramController extends Controller
                 "title   -  ex: storemarket\n";
 
         }
+
+
+        elseif (stripos($message, 'id') !== false) {
+
+            $replyText = "To get your site merchant code please rely with the website title:\n\n" .
+                "title   -  ex: storemarket\n";
+
+        }
+
+
+
+
 
 
 
