@@ -42,28 +42,7 @@ class AppServiceProvider extends ServiceProvider
             $connectionsAfter = DB::select("SHOW STATUS WHERE `variable_name` = 'Threads_connected'");
              $message = "'Active connections after disconnecting: " . $connectionsAfter[0]->Value;
             send_notification($message);;
-
         });
-
-
-        $ip = Request::ip();
-        $key = "ip_attempts:{$ip}";
-
-        // Increment the request count
-        $attempts = Cache::increment($key);
-
-        // Set cache expiration for the key (if it's the first request)
-        if ($attempts === 1) {
-            Cache::put($key, $attempts, now()->addMinutes(1));
-        }
-
-        // Block the IP after too many requests
-        if ($attempts > 5) {
-            $message = "Too many requests from your IP | $ip";
-            send_notification($message);
-
-            abort(Response::HTTP_TOO_MANY_REQUESTS, 'Too many requests from your IP.');
-        }
 
     }
 }

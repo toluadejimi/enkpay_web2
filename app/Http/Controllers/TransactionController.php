@@ -24,10 +24,12 @@ use App\Models\Webtransfer;
 use Faker\Factory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\Response;
 
 
 class TransactionController extends Controller
@@ -669,6 +671,26 @@ class TransactionController extends Controller
     function webpay_view(Request $request)
     {
 
+
+
+        $ip = \Illuminate\Support\Facades\Request::ip();
+        $key = "ip_attempts:{$ip}";
+
+        // Increment the request count
+        $attempts = Cache::increment($key);
+
+        // Set cache expiration for the key (if it's the first request)
+        if ($attempts === 1) {
+            Cache::put($key, $attempts, now()->addMinutes(1));
+        }
+
+        // Block the IP after too many requests
+        if ($attempts > 2) {
+            $message = "Too many requests from your IP | $ip";
+            send_notification($message);
+
+            abort(Response::HTTP_TOO_MANY_REQUESTS, 'Too many requests from your IP.');
+        }
 
 
         $data['key'] = $request->key;
@@ -3253,10 +3275,10 @@ class TransactionController extends Controller
             'terminal' => $details,
         ], 200);
 
- 
+
 
     }
 
-    
+
 
 }
