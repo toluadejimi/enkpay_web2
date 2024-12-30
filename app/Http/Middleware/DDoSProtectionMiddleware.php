@@ -10,7 +10,6 @@ class DDoSProtectionMiddleware
     protected $maxRequests = 100; // Max requests within the time window
     protected $decaySeconds = 60; // Time window in seconds
     protected $blockDuration = 300; // Block duration in seconds (5 minutes)
-
     public function handle($request, Closure $next)
     {
         $ip = $request->ip();
