@@ -30,6 +30,8 @@ class CharmController extends Controller
             $webhook->account_no =$request->customer['account']['virtualAccountNumber'];
             $webhook->amount = $request->order['amount'];
             $webhook->sessionId = $request->transaction['sessionId'];
+            $webhook->paymentReference = $request->transaction['paymentReference'];
+
             $webhook->save();
         }
 
