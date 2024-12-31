@@ -189,16 +189,37 @@ class TelegramController extends Controller
                         "This transaction has already been funded to | Email-: $email | Date/Time:- $date | Website:- $sitename | Amount:- $amount";
 
                 } elseif ($trx->status != 4) {
-
-                    $p_ref = $trx->ref;
                     $pref = $trx->ref;
-                    $amount = $trx->amount;
-                    $verify = verifypelpaytelegram($pref, $amount);
+                    $token = tokenkey();
+                    $url = env('PELPAYURL');
+                    $curl = curl_init();
+                    $url2 = "$url/api/Transaction/bypaymentreference/$pref";
+                    curl_setopt_array($curl, array(
+                        CURLOPT_URL => $url2,
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_ENCODING => '',
+                        CURLOPT_MAXREDIRS => 10,
+                        CURLOPT_TIMEOUT => 0,
+                        CURLOPT_FOLLOWLOCATION => true,
+                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                        CURLOPT_CUSTOMREQUEST => 'GET',
+                        CURLOPT_HTTPHEADER => array(
+                            'Content-Type: application/json',
+                            "Authorization: Bearer $token"
+                        ),
+                    ));
+
+                    $var = curl_exec($curl);
+                    curl_close($curl);
+                    $var = json_decode($var);
+                    $status = $var->requestSuccessful  ?? null;
 
 
-                    $message = json_encode($verify);
+
+                    $message = json_encode($var);
                     send_notification($message);
 
+                    $verify =20;
 
                     if ($verify == 0) {
                         $email = $trx->email;
