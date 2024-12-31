@@ -53,11 +53,10 @@ class TelegramController extends Controller
         } elseif (stripos($message, 'wema') !== false) {
             $title = trim(substr(strstr($message, '-'), 1));
             $trx = Transfertransaction::where('account_no', $title)->first();
-
             if ($trx) {
                 $pref = $trx->ref;
                 $amount = $trx->amount;
-                $verify = $this->verifypelpay($pref, $amount);
+                $verify = verifypelpaytelegram($pref, $amount);
 
                 switch ($verify['code']) {
                     case 0:
