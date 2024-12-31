@@ -20,17 +20,15 @@ class TelegramController extends Controller
     {
         // Get the incoming update
           $update = $request->all();
-//        $message = json_encode($request->all());
+        $message = json_encode($request->all());
 //
-//        send_notification($message);
+        send_notification($message);
 
         // Check if the update contains a message
         if (isset($update['message'])) {
             $chatId = $update['message']['chat']['id'];
             $message = $update['message']['text'];
             $username = $update['message']['from']['username'];
-
-
             // Auto-reply logic
             $this->autoReply($chatId, $message, $username);
         }
