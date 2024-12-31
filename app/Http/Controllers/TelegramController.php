@@ -129,7 +129,89 @@ class TelegramController extends Controller
                     . "Please verify the Account No and try again.";
             }
 
-        } elseif (stripos($message, '9psb') !== false) {
+        }
+
+        elseif (stripos($message, 'w') !== false) {
+            $title = trim(substr(strstr($message, '-'), 1));
+            $trx = Transfertransaction::where('account_no', $title)->first() ?? null;
+            if ($trx) {
+                $pref = $trx->ref;
+                $amount = number_format($trx->amount);
+                $email = $trx->email;
+                $date = $trx->created_at;
+                $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
+
+
+                $verify = verifypelpaytelegram($pref);
+
+                $cc = json_encode($verify);
+//               send_notification($cc);
+
+                if (!is_array($verify)) {
+                    $replyText = "Error: Unexpected response format.";
+
+                } else {
+                    switch ($verify['code']) {
+                        case 0:
+                            $replyText = "Account No: $title | still pending 🥺\n\n" .
+                                "We are sorry for any inconveniences!,\n\n"
+                                . "Transaction Details:\n"
+                                . "Email: $email\n"
+                                . "Date/Time: $date\n"
+                                . "Website: $sitename\n"
+                                . "Amount: $amount\n\n" .
+
+                                "I will keep notifying the bank about the transaction but if you can wait, you can file a dispute from your bank app";
+                            break;
+                        case 9:
+                            $replyText = "Account No: $title | Failed ❌\n\n"
+                                . "Transaction Details:\n"
+                                . "Email: $email\n"
+                                . "Date/Time: $date\n"
+                                . "Website: $sitename\n"
+                                . "Amount: $amount\n\n"
+                                ."If you have been debited, Please raise a dispute for reversal on your bank app";
+                            break;
+                        case 4:
+                            $replyText = "Account No: $title | already been funded ✅\n\n"
+                                . "Transaction Details:\n"
+                                . "Email: $email\n"
+                                . "Date/Time: $date\n"
+                                . "Website: $sitename\n"
+                                . "Amount: $amount";
+                            break;
+
+                        case 5:
+                            $replyText = "Account No: $title | part payment received. 🔄\n";
+                            break;
+
+                        case 2:
+                            $replyText = "Account No: $title | Transaction Completed ✅\n\n"
+                                . "Transaction Details:\n"
+                                . "Email: $email\n"
+                                . "Date/Time: $date\n"
+                                . "Website: $sitename\n"
+                                . "Amount: $amount";
+                            break;
+
+                        default:
+                            $replyText = "Account No: $title | processing resolve 🔄\n\n"
+                                . "Transaction Details:\n"
+                                . "Email: $email\n"
+                                . "Date/Time: $date\n"
+                                . "Website: $sitename\n"
+                                ."code:$cc";
+                            break;
+                    }
+                }
+            }
+            else {
+                $replyText = "Account no: $title | not found ❌\n"
+                    . "Please verify the Account No and try again.";
+            }
+
+        }
+        elseif (stripos($message, '9psb') !== false) {
             $title = trim(substr(strstr($message, '-'), 1));
             $trx = Transfertransaction::where('session_id', $title)->first();
 
@@ -145,7 +227,8 @@ class TelegramController extends Controller
                 $replyText = "Session ID: $title | not found ❌\n"
                     . "Please verify the session ID and try again.";
             }
-        }else {
+        }
+        else {
             $title = trim(substr(strstr($message, '-'), 1));
 
             $replyText = "Account No: $title | not found ❌\n"
