@@ -131,8 +131,8 @@ class TelegramController extends Controller
 
         }
 
-        elseif (stripos($message, 'w') !== false) {
-            $title = trim(substr(strstr($message, '-'), 1));
+        elseif (strlen($message) >= 10 && stripos($message, '961') === 0) {
+            $title = $message;
             $trx = Transfertransaction::where('account_no', $title)->first() ?? null;
             if ($trx) {
                 $pref = $trx->ref;
