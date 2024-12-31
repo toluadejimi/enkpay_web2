@@ -284,13 +284,8 @@ class TransactionController extends Controller
                 $message = "Business funded | $acct | $f_amount | $user->first_name " . " " . $user->last_name;
                 send_notification($message);
 
+                Webhook::where('account_no', $acct)->delete() ?? null;
 
-                $trck = new Transactioncheck();
-                $trck->session_id =  $request->sessionid;
-                $trck->amount =  $request->amount;
-                $trck->status =  2;
-                $trck->email =  $user_email;
-                $trck->save();
 
 
                 Webtransfer::where('trans_id', $trx->trans_id)->update(['status' => 4]);
