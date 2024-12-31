@@ -1959,10 +1959,9 @@ function verifypelpaytelegram($pref)
         return ['code' => -1, 'message' => "API response error."];
     }
 
-    if ($var->requestSuccessful !== "true") {
+    if ($var->requestSuccessful !== true) {
         $message = json_encode($var);
         send_notification($message);
-
         return ['code' => -1, 'message' => $var->message ?? "Unknown API error."];
     }
 
