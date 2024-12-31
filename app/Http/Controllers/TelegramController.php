@@ -294,23 +294,6 @@ class TelegramController extends Controller
 
         }
 
-        elseif (stripos($message, '9psb') !== false) {
-            $title = trim(substr(strstr($message, '-'), 1));
-            $trx = Transfertransaction::where('session_id', $title)->first();
-
-            if ($trx) {
-                $status = $trx->status;
-
-                if ($status == 4) {
-                    $replyText = "Session ID: $title | has already been funded 🥺\n";
-                } else {
-                    $replyText = "Session ID found | $title | ✅\n" . json_encode($trx);
-                }
-            } else {
-                $replyText = "Session ID: $title | not found ❌\n"
-                    . "Please verify the session ID and try again.";
-            }
-        }
         else {
             $title = trim(substr(strstr($message, '-'), 1));
 
