@@ -2066,7 +2066,7 @@ function verifypelpaytelegram($pref)
                     $trasnaction->status = 1;
                     $trasnaction->save();
 
-                    $message = "Business funded | $acc_no | Charm | $p_amount | $user->first_name " . " " . $user->last_name;
+                    $message = "Business funded | $acc_no | Charm | $ramount | $user->first_name " . " " . $user->last_name;
                     send_notification($message);
 
                     Webtransfer::where('trans_id', $trx->trans_id)->update(['status' => 4]);
