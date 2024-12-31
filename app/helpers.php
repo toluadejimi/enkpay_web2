@@ -2169,10 +2169,6 @@ function verifypsbtelegram($pref)
             $resolve = $var->resolve ?? null;
 
 
-            return [
-                'code' => -1 , 'message' => $var
-            ];
-
             if ($statusbb == false) {
                 return ['code' => -1, 'message' => "Transaction not found."];
             }
@@ -2183,7 +2179,6 @@ function verifypsbtelegram($pref)
 
 
             $trxs = Transfertransaction::where('account_no', $pref)->first() ?? null;
-
             $urlkey = Webkey::where('key', $trxs->key)->first()->user_id ?? null;
             $balance = User::where('id', $trxs->user_id)->first()->main_wallet;
             $user = User::where('id', $trxs->user_id)->first();
@@ -2194,21 +2189,6 @@ function verifypsbtelegram($pref)
             $user_email = $trxs->email ?? null;
             $site_name = Webkey::where('key', $trxs->key)->first()->site_name ?? null;
 
-            $trxxc = Transfertransaction::where('account_no', $pref)->first() ?? null;
-            if ($trxxc == null) {
-                $svtrx = new Transfertransaction();
-                $svtrx->account_no = $account_no;
-                $svtrx->session_id = $session_id;
-                $svtrx->status = 4;
-                $svtrx->amount = $amt;
-                $svtrx->email = $trxs->email;
-                $svtrx->note = "PSBRESOLVE";
-                $svtrx->user_id = $user->id;
-                $svtrx->transaction_type = "Resolve";
-                $svtrx->save();
-            } else {
-                Transfertransaction::where('account_no', $pref)->update(['status' => 4, 'note' => '9PSBRESOLVE', 'resolve' => 1]);
-            }
 
 
             $set = Setting::where('id', 1)->first();
@@ -2279,8 +2259,6 @@ function verifypsbtelegram($pref)
                 } else {
                     Transfertransaction::where('account_no', $pref)->update(['status' => 4, 'note' => '9PSBRESOLVE', 'resolve' => 1]);
                 }
-
-
                 Webtransfer::where('trans_id', $trxs->trans_id)->update(['status' => 4]);
                     Webhook::where('account_no', $pref)->delete() ?? null;
 
