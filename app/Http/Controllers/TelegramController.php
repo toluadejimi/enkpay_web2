@@ -63,6 +63,8 @@ class TelegramController extends Controller
 
                 $verify = verifypelpaytelegram($pref);
 
+               $cc = json_encode($verify);
+
                 if (!is_array($verify)) {
                     $replyText = "Error: Unexpected response format.";
 
@@ -107,6 +109,7 @@ class TelegramController extends Controller
                                 . "Email: $email\n"
                                 . "Date/Time: $date\n"
                                 . "Website: $sitename\n"
+                                ."code:$cc"
                                 . "Amount: $amount";
                             break;
                     }
