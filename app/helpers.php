@@ -2133,7 +2133,7 @@ function verifypsbtelegram($pref)
         }
 
 
-        if ($ckstatus == "2" || $ckstatus == "3" || $ckstatus == null) {
+        if ($ckstatus == "2" || $ckstatus == "3" || $ckstatus == 0 ) {
 
             $status = Transfertransaction::where('account_no', $pref)->first()->status ?? null;
             $email = Transfertransaction::where('account_no', $pref)->first()->email ?? null;
