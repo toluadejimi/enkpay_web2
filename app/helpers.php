@@ -1947,9 +1947,9 @@ function verifypelpaytelegram($pref)
     $var = curl_exec($curl);
     curl_close($curl);
     $var = json_decode($var);
+    $status = $var->requestSuccessful  ?? null;
 
-
-    if ($var->requestSuccessful == true) {
+    if ($status == true) {
 
         if ($var->responseData->transactionStatus == "Processing") {
             return 0;
@@ -2098,7 +2098,6 @@ function verifypelpaytelegram($pref)
         }
 
     }else{
-
         $message = $var->requestSuccessful;
         return $message;
     }
