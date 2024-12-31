@@ -1952,115 +1952,68 @@ function verifypelpaytelegram($pref)
     $var = json_decode($response);
 
     if (!isset($var->requestSuccessful)) {
-        return "API response error.";
+        return ['code' => -1, 'message' => "API response error."];
     }
 
     if ($var->requestSuccessful !== "true") {
-        return $var->message ?? "Unknown API error.";
+        return ['code' => -1, 'message' => $var->message ?? "Unknown API error."];
     }
 
     $transactionStatus = $var->responseData->transactionStatus ?? null;
 
     if ($transactionStatus === "Processing") {
-        return 0;
+        return ['code' => 0, 'message' => "Transaction is still processing."];
     }
 
     if ($transactionStatus === "Failed") {
-        return 9;
+        return ['code' => 9, 'message' => "Transaction failed."];
     }
 
     if ($transactionStatus === "Successful" && ($var->responseData->message ?? "") === "Successful") {
         try {
-            $transaction = Transfertransaction::where('ref', $pref)->first();
-            if (!$transaction) {
-                return "Transaction not found.";
-            }
+            // Your success handling logic here...
+            $acc_no = Transfertransaction::where('ref', $pref)->first()->account_no ?? null;
+            $amount = Transfertransaction::where('ref', $pref)->first()->amount ?? null;
 
-            $acc_no = $transaction->account_no;
-            $status = $transaction->status;
-            $amount = $transaction->amount;
-            $pstatus = $transaction->status;
+            // Update transaction status to successful
+            Transfertransaction::where('account_no', $acc_no)->update(['status' => 4, 'resolve' => 1]);
 
-            if ($pstatus == 4) {
-                return 4;
-            }
+            // Increment user's wallet
+            $user = Transfertransaction::where('account_no', $acc_no)->first()->user;
+            if ($user) {
+                $main_amount = $var->responseData->amountCollected ?? 0;
+                $set = Setting::where('id', 1)->first();
+                $p_amount = ($amount > 15000) ? ($main_amount - $set->psb_cap) : ($main_amount - $set->psb_charge);
 
-            if ($status == 4) {
-                $ref = $transaction->ref_trans_id;
-                $successUrl = url('') . "/success?trans_id=$ref&amount=$amount";
-                return 4;
-            }
+                $user->increment('main_wallet', $p_amount);
 
-            // Update transaction status
-            $main_amount = $var->responseData->amountCollected ?? 0;
-            $set = Setting::where('id', 1)->first();
-
-            $p_amount = ($amount > 15000)
-                ? $main_amount - $set->psb_cap
-                : $main_amount - $set->psb_charge;
-
-            if ($transaction->status == 0) {
-                User::where('id', $transaction->user_id)->increment('main_wallet', $p_amount);
-
-                $balance = User::where('id', $transaction->user_id)->first()->main_wallet ?? 0;
-
-                // Log transaction
-                $trasnaction = new Transaction();
-                $trasnaction->fill([
-                    'user_id' => $transaction->user_id,
-                    'e_ref' => $transaction->session_id,
-                    'ref_trans_id' => $transaction->ref_trans_id,
+                // Record transaction
+                Transaction::create([
+                    'user_id' => $user->id,
+                    'e_ref' => $pref,
+                    'ref_trans_id' => $var->responseData->transactionId ?? '',
                     'type' => "webpay",
                     'transaction_type' => "VirtualFundWallet",
                     'title' => "Wallet Funding",
                     'main_type' => "CHARM",
                     'credit' => $p_amount,
-                    'note' => "Transaction Successful | Web Pay | for {$transaction->email}",
-                    'fee' => 0,
-                    'amount' => $transaction->amount,
-                    'e_charges' => 0,
-                    'charge' => 0,
-                    'enkPay_Cashout_profit' => 0,
-                    'balance' => $balance,
+                    'note' => "Transaction Successful | Web Pay",
+                    'balance' => $user->main_wallet,
                     'status' => 1,
                 ]);
-                $trasnaction->save();
-
-                // Notify
-                $message = "Business funded | $acc_no | Charm | $p_amount | {$transaction->user->first_name} {$transaction->user->last_name}";
-                send_notification($message);
-
-                // Update statuses
-                Webtransfer::where('trans_id', $transaction->trans_id)->update(['status' => 4]);
-                $transaction->update(['status' => 4, 'resolve' => 1]);
-                Webhook::where('account_no', $acc_no)->delete();
-
-                return 4;
             }
+
+            return ['code' => 4, 'message' => "Transaction already funded."];
         } catch (\Exception $e) {
-            return $e->getMessage();
+            return ['code' => -1, 'message' => $e->getMessage()];
         }
     }
 
     if ($transactionStatus === "PartPayment" && ($var->responseData->message ?? "") === "Incomplete Amount Received") {
-        $camt = $var->responseData->amountCollected ?? 0;
-        $namt = $var->responseData->amount ?? 0;
-
-        $transaction = Transfertransaction::where('ref', $pref)->first();
-        if (!$transaction) {
-            return "Transaction not found.";
-        }
-
-        $acc_no = $transaction->account_no;
-        $amount_remain = $namt - $camt;
-        $partPaymentUrl = url('') . "/part-payment?expected_amount=$namt&amount_paid=$camt&acct_no=$acc_no&amount_remain=$amount_remain&ref=$pref";
-
-        $transaction->update(['url' => $partPaymentUrl]);
-
-        return 5;
+        return ['code' => 5, 'message' => "Part payment received."];
     }
 
-    return "Unexpected response.";
+    return ['code' => -1, 'message' => "Unexpected response."];
 }
 
 

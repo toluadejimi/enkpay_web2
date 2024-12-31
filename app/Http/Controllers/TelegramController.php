@@ -56,29 +56,31 @@ class TelegramController extends Controller
             if ($trx) {
                 $pref = $trx->ref;
                 $amount = $trx->amount;
-                $verify = verifypelpaytelegram($pref, $amount);
+                $verify = verifypelpaytelegram($pref);
 
-                switch ($verify['code']) {
-                    case 0:
-                        $replyText = "Account No: $title | still pending 🥺\n";
-                        break;
-                    case 9:
-                        $replyText = "Account No: $title | Failed ❌\n";
-                        break;
-                    case 4:
-                        $replyText = "Account No: $title | already been funded ✅\n";
-                        break;
-                    case 5:
-                        $replyText = "Account No: $title | partial payment 🥺\n";
-                        break;
-                    default:
-                        $replyText = "Account No: $title | Resolve Error 🥺\n"
-                            . "We could not verify this transaction this time. Please contact support.";
+                if (!is_array($verify)) {
+                    $replyText = "Error: Unexpected response format.";
+                } else {
+                    switch ($verify['code']) {
+                        case 0:
+                            $replyText = "Account No: $title | still pending 🥺\n";
+                            break;
+                        case 9:
+                            $replyText = "Account No: $title | Failed ❌\n";
+                            break;
+                        case 4:
+                            $replyText = "Account No: $title | already been funded ✅\n";
+                            break;
+                        case 5:
+                            $replyText = "Account No: $title | part payment received. 🔄\n";
+                            break;
+                        default:
+                            $replyText = "Account No: $title | {$verify['message']} ❓\n";
+                            break;
+                    }
                 }
-            } else {
-                $replyText = "Account No: $title | not found ❌\n"
-                    . "Please verify the account number and try again.";
             }
+
         } elseif (stripos($message, '9psb') !== false) {
             $title = trim(substr(strstr($message, '-'), 1));
             $trx = Transfertransaction::where('session_id', $title)->first();
