@@ -2118,6 +2118,10 @@ function verifypsbtelegram($pref)
     try {
 
         $ckstatus = Transfertransaction::where('account_no', $pref)->first()->status ?? null;
+        return [
+            'code' => -1 , 'message' => $ckstatus
+        ];
+
         if($ckstatus == null){
             return [
                 'code' => 9
