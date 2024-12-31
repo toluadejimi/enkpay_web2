@@ -1923,6 +1923,10 @@ if (!function_exists('tokenkey')) {
 
 function verifypelpaytelegram($pref)
 {
+
+    try {
+
+
     $token = tokenkey();
     $url = env('PELPAYURL');
     $url2 = "$url/api/Transaction/bypaymentreference/$pref";
@@ -1967,7 +1971,6 @@ function verifypelpaytelegram($pref)
     }
 
     if ($transactionStatus === "Successful" && ($var->responseData->message ?? "") === "Successful") {
-        try {
 
 
             $acc_no = Transfertransaction::where('ref', $pref)->first()->account_no ?? null;
@@ -2089,16 +2092,20 @@ function verifypelpaytelegram($pref)
 
             }
 
-        } catch (\Exception $e) {
-            return ['code' => -1, 'message' => $e->getMessage()];
         }
+
+
+        if ($transactionStatus === "PartPayment" && ($var->responseData->message ?? "") === "Incomplete Amount Received") {
+            return ['code' => 5, 'message' => "Part payment received."];
+        }
+
+
+    }catch (\Exception $e) {
+        return ['code' => -1, 'message' => $e->getMessage()];
     }
 
-    if ($transactionStatus === "PartPayment" && ($var->responseData->message ?? "") === "Incomplete Amount Received") {
-        return ['code' => 5, 'message' => "Part payment received."];
-    }
 
-    return ['code' => -1, 'message' => "Unexpected response."];
+
 }
 
 
