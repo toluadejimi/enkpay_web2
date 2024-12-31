@@ -2130,10 +2130,7 @@ function verifypsbtelegram($pref)
             return [
                 'code' => 4
             ];
-        }
-
-
-        if ($ckstatus == "2" || $ckstatus == "3" || $ckstatus == 0 ) {
+        }else {
 
             $status = Transfertransaction::where('account_no', $pref)->first()->status ?? null;
             $email = Transfertransaction::where('account_no', $pref)->first()->email ?? null;
@@ -2164,7 +2161,6 @@ function verifypsbtelegram($pref)
             $var = curl_exec($curl);
             curl_close($curl);
             $var = json_decode($var);
-
 
             $session_id = $var->session_id ?? null;
             $account_no = $var->account_no ?? null;
