@@ -2106,7 +2106,6 @@ function verifypelpaytelegram($pref)
     }
 
 
-
 }
 
 

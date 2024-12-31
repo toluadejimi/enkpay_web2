@@ -64,6 +64,7 @@ class TelegramController extends Controller
                 $verify = verifypelpaytelegram($pref);
 
                $cc = json_encode($verify);
+               send_notification($cc);
 
                 if (!is_array($verify)) {
                     $replyText = "Error: Unexpected response format.";
