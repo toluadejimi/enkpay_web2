@@ -122,7 +122,7 @@ class TelegramController extends Controller
             }
         }
 
-        $this->sendMessage($chatId, $replyText);
+        $this->telegram->sendMessage($chatId, $replyText);
     }
-}
 
+}
