@@ -2118,17 +2118,12 @@ function verifypsbtelegram($pref)
     try {
 
         $ckstatus = Transfertransaction::where('account_no', $pref)->first()->status ?? null;
-        return [
-            'code' => -1 , 'message' => $ckstatus
-        ];
-
         if($ckstatus == null){
             return [
                 'code' => 9
             ];
 
         }
-
 
         if ($ckstatus == "4" || $ckstatus == 4) {
             return [
@@ -2173,6 +2168,10 @@ function verifypsbtelegram($pref)
             $statusbb = $var->status ?? null;
             $resolve = $var->resolve ?? null;
 
+
+            return [
+                'code' => -1 , 'message' => $var
+            ];
 
             if ($statusbb == false) {
                 return ['code' => -1, 'message' => "Transaction not found."];
