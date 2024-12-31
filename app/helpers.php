@@ -1948,6 +1948,7 @@ function verifypelpaytelegram($pref)
     curl_close($curl);
     $var = json_decode($var);
 
+    send_notification($var);
 
     if ($var->requestSuccessful == true) {
 
