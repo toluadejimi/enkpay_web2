@@ -228,9 +228,7 @@ class TelegramController extends Controller
                             $replyText = "Account No:- $title | is still pending 🥺 \n\n" .
                                 "We are sorry for any inconveniences!,\n" . "This transaction is still pending from the bank | $email | on | $date | website:- $sitename | Amount:- $amount \n\n" .
                                 "I will keep notifying the bank about the transaction but if you can wait, you can file a dispute from your bank app";
-                        }
-
-                        if ($var->responseData->transactionStatus == "Failed") {
+                        } elseif ($var->responseData->transactionStatus == "Failed") {
 
                             $email = $trx->email;
                             $date = $trx->created_at;
@@ -243,9 +241,7 @@ class TelegramController extends Controller
                                 "If you have been debited, Please raise a dispute for reversal on your bank app.";
 
 
-                        }
-
-                        if ($var->responseData->transactionStatus == "Successful" && $var->responseData->message == "Successful") {
+                        }elseif ($var->responseData->transactionStatus == "Successful" && $var->responseData->message == "Successful") {
 
                             try {
 
@@ -363,7 +359,7 @@ class TelegramController extends Controller
                             }
 
                         }
-                        if ($var->responseData->transactionStatus == "PartPayment" && $var->responseData->message == "Incomplete Amount Received") {
+                        elseif ($var->responseData->transactionStatus == "PartPayment" && $var->responseData->message == "Incomplete Amount Received") {
 
                             $camt = $var->responseData->amountCollected;
                             $namt = $var->responseData->amount;
@@ -386,42 +382,20 @@ class TelegramController extends Controller
                             Transfertransaction::where('ref', $pref)->update(['url' => $url]);
 
 
-                            return 5;
+                            $email = $trx->email;
+                            $date = $trx->created_at;
+                            $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
+                            $amount = number_format($trx->amount);
+
+                            $replyText = "Account No:- $title  | partial payment 🥺 \n\n" .
+                                "You paid incomplete amount\n" . "  Transaction Details - | $email | on | $date | website:- $sitename | Amount:- $amount \n\n" .
+                                "The money will be sent back to your bank account within 48hrs, if no transaction after 48hrs, please raise a dispute on your bank app";
+
 
                         }
 
 
                     }else{
-                        $message = "e no show";
-                        send_notification($message);
-                    }
-
-
-
-                    $verify =20;
-
-                    if ($verify == 0) {
-
-
-                    }
-
-                    elseif ($verify  == 9) {
-
-
-                    } elseif ($verify  == 4) {
-
-
-                    } elseif ($verify == 5) {
-                        $email = $trx->email;
-                        $date = $trx->created_at;
-                        $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
-                        $amount = number_format($trx->amount);
-
-                        $replyText = "Account No:- $title  | partial payment 🥺 \n\n" .
-                            "You paid incomplete amount\n" . "  Transaction Details - | $email | on | $date | website:- $sitename | Amount:- $amount \n\n" .
-                            "The money will be sent back to your bank account within 48hrs, if no transaction after 48hrs, please raise a dispute on your bank app";
-
-                    } else {
 
                         $email = $trx->email;
                         $date = $trx->created_at;
@@ -432,7 +406,10 @@ class TelegramController extends Controller
                             "We could not verify this transaction this time,  contact support";
 
 
+                        $message = json_encode($var);
+                        send_notification($message);
                     }
+
 
 
                 } else {
