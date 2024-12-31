@@ -1952,11 +1952,17 @@ function verifypelpaytelegram($pref)
     curl_close($curl);
     $var = json_decode($response);
 
+
+
     if (!isset($var->requestSuccessful)) {
+
         return ['code' => -1, 'message' => "API response error."];
     }
 
     if ($var->requestSuccessful !== "true") {
+        $message = json_encode($var);
+        send_notification($message);
+
         return ['code' => -1, 'message' => $var->message ?? "Unknown API error."];
     }
 
