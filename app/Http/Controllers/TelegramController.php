@@ -200,7 +200,7 @@ class TelegramController extends Controller
 
                     $replyText = $message;
 
-                    if ($verify == "0") {
+                    if ($verify == 0) {
                         $email = $trx->email;
                         $date = $trx->created_at;
                         $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
@@ -212,7 +212,7 @@ class TelegramController extends Controller
 
                     }
 
-                    elseif ($verify  == "9") {
+                    elseif ($verify  == 9) {
                         $email = $trx->email;
                         $date = $trx->created_at;
                         $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
@@ -224,7 +224,7 @@ class TelegramController extends Controller
                             "If you have been debited, Please raise a dispute for reversal on your bank app.";
 
 
-                    } elseif ($verify  == "4") {
+                    } elseif ($verify  == 4) {
                         $email = $trx->email;
                         $date = $trx->created_at;
                         $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
@@ -235,7 +235,7 @@ class TelegramController extends Controller
                             "This transaction has already been funded to | $email | on | $date | website:- $sitename | Amount:- $amount";
 
 
-                    } elseif ($verify == "5") {
+                    } elseif ($verify == 5) {
                         $email = $trx->email;
                         $date = $trx->created_at;
                         $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
