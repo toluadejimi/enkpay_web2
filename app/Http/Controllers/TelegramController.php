@@ -215,9 +215,16 @@ class TelegramController extends Controller
                     $status = $var->requestSuccessful  ?? null;
 
 
+                    if($status == true){
 
-                    $message = json_encode($var);
-                    send_notification($message);
+                        $message = "e show";
+                        send_notification($message);
+                    }else{
+                        $message = "e no show";
+                        send_notification($message);
+                    }
+
+
 
                     $verify =20;
 
