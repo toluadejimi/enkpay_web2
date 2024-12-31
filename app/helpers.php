@@ -2087,12 +2087,8 @@ function verifypelpaytelegram($pref)
                     $type = "epayment";
                     $fund = credit_user_wallet($url, $user_email, $amount, $order_id, $type, $session_id);
 
-                    return [
-                        'status' => true,
-                        'message' => "Transaction Successful",
-                        'amount' => $amount,
-                        'code' => 4
-                    ];
+                    return ['code' => 4, 'message' => "Transaction completed"];
+
                 }
 
             }
