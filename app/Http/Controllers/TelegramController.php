@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Transactioncheck;
 use App\Models\Transfertransaction;
 use App\Models\Webhook;
 use App\Models\Webkey;
+use App\Models\Webtransfer;
 use App\Services\TelegramService;
 use Illuminate\Http\Request;
 
@@ -217,8 +219,178 @@ class TelegramController extends Controller
 
                     if($status == true){
 
-                        $message = "e show";
-                        send_notification($message);
+                        if ($var->responseData->transactionStatus == "Processing") {
+                            $email = $trx->email;
+                            $date = $trx->created_at;
+                            $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
+                            $amount = number_format($trx->amount);
+
+                            $replyText = "Account No:- $title | is still pending 🥺 \n\n" .
+                                "We are sorry for any inconveniences!,\n" . "This transaction is still pending from the bank | $email | on | $date | website:- $sitename | Amount:- $amount \n\n" .
+                                "I will keep notifying the bank about the transaction but if you can wait, you can file a dispute from your bank app";
+                        }
+
+                        if ($var->responseData->transactionStatus == "Failed") {
+
+                            $email = $trx->email;
+                            $date = $trx->created_at;
+                            $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
+                            $amount = number_format($trx->amount);
+
+                            $replyText = "Account No:- $title | Transaction Failed ❌ \n\n" .
+                                "This transaction failed on our end.\n\n".
+                                "Transaction Details:- | Email:- $email | Date and time:- $date | Website:- $sitename | Amount:- $amount \n\n" .
+                                "If you have been debited, Please raise a dispute for reversal on your bank app.";
+
+
+                        }
+
+                        if ($var->responseData->transactionStatus == "Successful" && $var->responseData->message == "Successful") {
+
+                            try {
+
+                                $acc_no = Transfertransaction::where('ref', $pref)->first()->account_no ?? null;
+                                $status = Transfertransaction::where('account_no', $acc_no)->first()->status ?? null;
+                                $trx = Transfertransaction::where('account_no', $acc_no)->first() ?? null;
+                                $amount = Transfertransaction::where('account_no', $acc_no)->first()->amount ?? null;
+                                $pstatus = Transfertransaction::where('ref', $pref)->first()->status ?? null;
+
+
+                                if ($pstatus == 4) {
+                                    return 4;
+                                }
+
+
+                                if ($status == 4) {
+
+                                    $ref=$trx->ref_trans_id;
+                                    $url = url('')."/success?trans_id=$ref&amount=$amount";
+                                    return 4;
+
+
+                                }
+
+
+
+                                $paid_amt = Transfertransaction::where('account_no', $acc_no)->update(['amount_paid' => $amount]) ?? null;
+                                Transfertransaction::where('account_no', $acc_no)->increment('amount_paid', $amount);
+                                $trx = Transfertransaction::where('account_no', $acc_no)->first() ?? null;
+
+                                $main_amount = $var->responseData->amountCollected;
+                                if ($trx != null) {
+
+                                    $set = Setting::where('id', 1)->first();
+                                    if ($amount > 15000) {
+                                        $p_amount = $main_amount - $set->psb_cap;
+                                    } else {
+                                        $p_amount = $main_amount - $set->psb_charge;
+                                    }
+
+
+
+                                    if ($trx->status == 0) {
+                                        //fund Vendor
+                                        $trx = Transfertransaction::where('account_no', $acc_no)->first();
+                                        User::where('id', $trx->user_id)->increment('main_wallet', $p_amount);
+                                        $balance = User::where('id', $trx->user_id)->first()->main_wallet;
+                                        $user = User::where('id', $trx->user_id)->first();
+                                        $session_id = Transfertransaction::where('account_no', $acc_no)->first()->session_id ?? null;
+
+
+
+                                        $url = Webkey::where('key', $trx->key)->first()->url_fund ?? null;
+                                        $user_email = $trx->email ?? null;
+                                        //$amount = $trx->amount ?? null;
+                                        $order_id = $trx->ref_trans_id ?? null;
+                                        $site_name = Webkey::where('key', $trx->key)->first()->site_name ?? null;
+
+                                        $trasnaction = new Transaction();
+                                        $trasnaction->user_id = $trx->user_id;
+                                        $trasnaction->e_ref = $request->sessionid ?? $acc_no;
+                                        $trasnaction->ref_trans_id = $order_id;
+                                        $trasnaction->type = "webpay";
+                                        $trasnaction->transaction_type = "VirtualFundWallet";
+                                        $trasnaction->title = "Wallet Funding";
+                                        $trasnaction->main_type = "CHARM";
+                                        $trasnaction->credit = $p_amount;
+                                        $trasnaction->note = "Transaction Successful | Web Pay | for $user_email";
+                                        $trasnaction->fee = $fee ?? 0;
+                                        $trasnaction->amount = $trx->amount;
+                                        $trasnaction->e_charges = 0;
+                                        $trasnaction->charge = $payable ?? 0;
+                                        $trasnaction->enkPay_Cashout_profit = 0;
+                                        $trasnaction->balance = $balance;
+                                        $trasnaction->status = 1;
+                                        $trasnaction->save();
+
+                                        $message = "Business funded | $acc_no | Charm | $p_amount | $user->first_name " . " " . $user->last_name;
+                                        send_notification($message);
+
+                                        Webtransfer::where('trans_id', $trx->trans_id)->update(['status' => 4]);
+                                        Transfertransaction::where('account_no', $acc_no)->update(['status' => 4, 'resolve' => 1]);
+                                            Webhook::where('account_no', $acc_no)->delete() ?? null;
+
+                                        $trck = new Transactioncheck();
+                                        $trck->session_id = $pref;
+                                        $trck->amount = $trx->amount;
+                                        $trck->status = 2;
+                                        $trck->email = $user_email;
+                                        $trck->save();
+
+
+
+                                        $type = "epayment";
+                                        $fund = credit_user_wallet($url , $user_email, $amount, $order_id, $type, $session_id);
+
+                                        $email = $trx->email;
+                                        $date = $trx->created_at;
+                                        $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
+                                        $amount = number_format($trx->amount);
+
+
+                                        $replyText = "Account No:- $title  | Transaction already been funded ✅ \n\n" .
+                                            "This transaction has already been funded to | $email | on | $date | website:- $sitename | Amount:- $amount";
+
+                                    }
+
+
+                                } else {
+
+                                    return "error";
+                                }
+                            } catch (\Exception $th) {
+                                return $th->getMessage();
+                            }
+
+                        }
+                        if ($var->responseData->transactionStatus == "PartPayment" && $var->responseData->message == "Incomplete Amount Received") {
+
+                            $camt = $var->responseData->amountCollected;
+                            $namt = $var->responseData->amount;
+
+
+                            $ck_url = Transfertransaction::where('ref', $pref)->first()->url ?? null;
+
+                            if($ck_url != null){
+                                return 7;
+                            }
+
+                            $acc_no = Transfertransaction::where('ref', $pref)->first()->account_no ?? null;
+
+                            $ref = Transfertransaction::where('ref', $pref)->first()->amount ?? null;
+                            $expected_amount = Transfertransaction::where('ref', $pref)->first()->amount ?? null;
+
+                            $amount_remain = $namt - $camt;
+
+                            $url = url('')."/part-payment?expected_amount=$namt&amount_paid=$camt&acct_no=$acc_no&amount_remain=$amount_remain&ref=$pref";
+                            Transfertransaction::where('ref', $pref)->update(['url' => $url]);
+
+
+                            return 5;
+
+                        }
+
+
                     }else{
                         $message = "e no show";
                         send_notification($message);
@@ -229,38 +401,14 @@ class TelegramController extends Controller
                     $verify =20;
 
                     if ($verify == 0) {
-                        $email = $trx->email;
-                        $date = $trx->created_at;
-                        $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
-                        $amount = number_format($trx->amount);
 
-                        $replyText = "Account No:- $title | is still pending 🥺 \n\n" .
-                            "We are sorry for any inconveniences!,\n" . "This transaction is still pending from the bank | $email | on | $date | website:- $sitename | Amount:- $amount \n\n" .
-                            "I will keep notifying the bank about the transaction but if you can wait, you can file a dispute from your bank app";
 
                     }
 
                     elseif ($verify  == 9) {
-                        $email = $trx->email;
-                        $date = $trx->created_at;
-                        $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
-                        $amount = number_format($trx->amount);
-
-                        $replyText = "Account No:- $title | Transaction Failed ❌ \n\n" .
-                            "This transaction failed on our end.\n\n".
-                            "Transaction Details:- | Email:- $email | Date and time:- $date | Website:- $sitename | Amount:- $amount \n\n" .
-                            "If you have been debited, Please raise a dispute for reversal on your bank app.";
 
 
                     } elseif ($verify  == 4) {
-                        $email = $trx->email;
-                        $date = $trx->created_at;
-                        $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
-                        $amount = number_format($trx->amount);
-
-
-                        $replyText = "Account No:- $title  | Transaction already been funded ✅ \n\n" .
-                            "This transaction has already been funded to | $email | on | $date | website:- $sitename | Amount:- $amount";
 
 
                     } elseif ($verify == 5) {
