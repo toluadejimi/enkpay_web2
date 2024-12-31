@@ -52,7 +52,7 @@ class TelegramController extends Controller
             $replyText = "You can ask me anything!";
         } elseif (stripos($message, 'wema') !== false) {
             $title = trim(substr(strstr($message, '-'), 1));
-            $trx = Transfertransaction::where('account_no', $title)->first();
+            $trx = Transfertransaction::where('account_no', $title)->first() ?? null;
             if ($trx) {
                 $pref = $trx->ref;
                 $amount = number_format($trx->amount);
@@ -63,7 +63,7 @@ class TelegramController extends Controller
 
                 $verify = verifypelpaytelegram($pref);
 
-//               $cc = json_encode($verify);
+               $cc = json_encode($verify);
 //               send_notification($cc);
 
                 if (!is_array($verify)) {
@@ -124,6 +124,10 @@ class TelegramController extends Controller
                     }
                 }
             }
+            else {
+                $replyText = "Account no: $title | not found ❌\n"
+                    . "Please verify the Account No and try again.";
+            }
 
         } elseif (stripos($message, '9psb') !== false) {
             $title = trim(substr(strstr($message, '-'), 1));
@@ -141,31 +145,12 @@ class TelegramController extends Controller
                 $replyText = "Session ID: $title | not found ❌\n"
                     . "Please verify the session ID and try again.";
             }
-        } elseif (stripos($message, 'wema') !== false) {
+        }else {
             $title = trim(substr(strstr($message, '-'), 1));
-            $trx = Transfertransaction::where('account_no', $title)->first();
 
-            if ($trx) {
-                if ($trx->status == 4) {
-                    $replyText = "Account No: $title | has already been funded 🥺\n";
-                } else {
-                    $email = $trx->email;
-                    $date = $trx->created_at;
-                    $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? 'Unknown';
-                    $amount = number_format($trx->amount);
-
-                    $replyText = "Account No: $title | ✅\n\n"
-                        . "Transaction Details:\n"
-                        . "Email: $email\n"
-                        . "Date: $date\n"
-                        . "Website: $sitename\n"
-                        . "Amount: $amount";
-                }
-            } else {
-                $replyText = "Account No: $title | not found ❌\n"
+            $replyText = "Account No: $title | not found ❌\n"
                     . "We could not find this transaction in our database.";
             }
-        }
 
         $this->telegram->sendMessage($chatId, $replyText);
     }
