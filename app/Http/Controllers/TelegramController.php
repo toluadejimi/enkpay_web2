@@ -99,7 +99,9 @@ class TelegramController extends Controller
                         case 5:
                             $replyText = "Account No: $title | part payment received. 🔄\n";
                             break;
-                        default:
+
+
+                            default:
                             $replyText = "Account No: $title | Transaction successful ✅\n\n"
                                 . "Transaction Details:\n"
                                 . "Email: $email\n"
