@@ -2027,7 +2027,7 @@ function verifypelpaytelegram($pref)
                     $p_amount = $main_amount - $set->psb_charge;
                 }
 
-                if ($trx->status == 0) {
+                if ($trx->status == 0 || $trx->status == 3 || $trx->status == 2 || $trx->status == 1) {
                     //fund Vendor
                     $trx = Transfertransaction::where('account_no', $acc_no)->first();
                     User::where('id', $trx->user_id)->increment('main_wallet', $p_amount);
