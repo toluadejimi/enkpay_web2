@@ -2126,20 +2126,6 @@ function verifypsbtelegram($pref)
         }
 
 
-
-        $email = Transfertransaction::where('account_no', $pref)->first()->email ?? null;
-        $ckkkkkk = Transactioncheck::where('account_no', $pref)->first() ?? null;
-        $ckkkkkkstatus = Transactioncheck::where('account_no', $pref)->first()->status ?? null;
-        $ckemail = Transactioncheck::where('account_no', $pref)->first()->email ?? null;
-
-        if ($ckkkkkk != null || $ckkkkkkstatus == 2) {
-            return [
-                'code' => 4
-            ];
-
-        }
-
-
         if ($ckstatus == "4" || $ckstatus == 4) {
             return [
                 'code' => 4
@@ -2294,6 +2280,10 @@ function verifypsbtelegram($pref)
                 } else {
                     Transfertransaction::where('account_no', $pref)->update(['status' => 4, 'note' => '9PSBRESOLVE', 'resolve' => 1]);
                 }
+
+
+                Webtransfer::where('trans_id', $trxs->trans_id)->update(['status' => 4]);
+                    Webhook::where('account_no', $pref)->delete() ?? null;
 
 
                 $date = date('d M Y H:i:s');

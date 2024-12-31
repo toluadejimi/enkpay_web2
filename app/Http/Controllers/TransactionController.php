@@ -19,6 +19,7 @@ use App\Models\Ttmfb;
 use App\Models\User;
 use App\Models\VirtualAccount;
 use App\Models\Webaccount;
+use App\Models\Webhook;
 use App\Models\Webkey;
 use App\Models\Webtransfer;
 use Faker\Factory;
@@ -176,6 +177,17 @@ class TransactionController extends Controller
 
         $data['acc_no'] = $request->receiver_account_number;
         $data['amount'] = $request->amount;
+
+
+        $webh = Webhook::where('account_no', $data['acc_no'])->first() ?? null;
+        if ($webh == null){
+            $webhook = new Webhook();
+            $webhook->account_no = $data['acc_no'];
+            $webhook->amount = $data['amount'];
+            $webhook->sessionId = $request->sessionid;
+            $webhook->save();
+        }
+
 
 
         $set = Setting::where('id', 1)->first();
