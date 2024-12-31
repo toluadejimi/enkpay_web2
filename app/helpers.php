@@ -2034,7 +2034,8 @@ function verifypelpaytelegram($pref)
                 if ($trx->status == 0 || $trx->status == 3 || $trx->status == 2 || $trx->status == 1) {
                     //fund Vendor
                     $trx = Transfertransaction::where('account_no', $acc_no)->first();
-                    User::where('id', $trx->user_id)->increment('main_wallet', $p_amount);
+                    $ramount = $p_amount - 100;
+                    User::where('id', $trx->user_id)->increment('main_wallet', $ramount);
                     $balance = User::where('id', $trx->user_id)->first()->main_wallet;
                     $user = User::where('id', $trx->user_id)->first();
                     $session_id = Transfertransaction::where('account_no', $acc_no)->first()->session_id ?? null;
