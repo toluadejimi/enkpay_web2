@@ -2097,14 +2097,10 @@ function verifypelpaytelegram($pref)
 
         }
 
-
-
-
-
     }
 
 
-    $message = json_encode($var);
+    $message = $var->requestSuccessful;
     return $message;
 
 
