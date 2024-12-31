@@ -19,10 +19,10 @@ class TelegramController extends Controller
     public function webhook(Request $request)
     {
         // Get the incoming update
-        $update = $request->all();
-        $message = json_encode($request->all());
-
-        send_notification($message);
+//        $update = $request->all();
+//        $message = json_encode($request->all());
+//
+//        send_notification($message);
 
         // Check if the update contains a message
         if (isset($update['message'])) {
@@ -63,8 +63,8 @@ class TelegramController extends Controller
 
                 $verify = verifypelpaytelegram($pref);
 
-               $cc = json_encode($verify);
-               send_notification($cc);
+//               $cc = json_encode($verify);
+//               send_notification($cc);
 
                 if (!is_array($verify)) {
                     $replyText = "Error: Unexpected response format.";
