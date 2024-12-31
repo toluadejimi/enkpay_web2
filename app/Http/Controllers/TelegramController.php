@@ -193,7 +193,9 @@ class TelegramController extends Controller
                     $replyText = "Account No:- $title  | has already been funded 🥺 \n\n" .
                         "This transaction has already been funded to | Email-: $email | Date/Time:- $date | Website:- $sitename | Amount:- $amount";
 
-                } elseif ($trx->status != 4) {
+
+
+                } elseif ($trx->status == 3 || $trx->status == 2 || $trx->status == 0 || $trx->status == 1 ) {
                     $pref = $trx->ref;
                     $token = tokenkey();
                     $url = env('PELPAYURL');
