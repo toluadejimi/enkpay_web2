@@ -99,10 +99,19 @@ class TelegramController extends Controller
                                 . "Website: $sitename\n"
                                 . "Amount: $amount";
                             break;
+
                         case 5:
                             $replyText = "Account No: $title | part payment received. 🔄\n";
                             break;
 
+                        case 2:
+                            $replyText = "Account No: $title | Transaction Completed ✅\n\n"
+                                . "Transaction Details:\n"
+                                . "Email: $email\n"
+                                . "Date/Time: $date\n"
+                                . "Website: $sitename\n"
+                                . "Amount: $amount";
+                            break;
 
                             default:
                             $replyText = "Account No: $title | processing resolve 🔄\n\n"
