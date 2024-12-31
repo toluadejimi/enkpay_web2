@@ -55,27 +55,57 @@ class TelegramController extends Controller
             $trx = Transfertransaction::where('account_no', $title)->first();
             if ($trx) {
                 $pref = $trx->ref;
-                $amount = $trx->amount;
+                $amount = number_format($trx->amount);
+                $email = $trx->email;
+                $date = $trx->created_at;
+                $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
+
+
                 $verify = verifypelpaytelegram($pref);
 
                 if (!is_array($verify)) {
                     $replyText = "Error: Unexpected response format.";
+
                 } else {
                     switch ($verify['code']) {
                         case 0:
-                            $replyText = "Account No: $title | still pending 🥺\n";
+                            $replyText = "Account No: $title | still pending 🥺\n\n" .
+                                "We are sorry for any inconveniences!,\n\n"
+                                . "Transaction Details:\n"
+                                . "Email: $email\n"
+                                . "Date/Time: $date\n"
+                                . "Website: $sitename\n"
+                                . "Amount: $amount\n\n" .
+
+                                "I will keep notifying the bank about the transaction but if you can wait, you can file a dispute from your bank app";
                             break;
                         case 9:
-                            $replyText = "Account No: $title | Failed ❌\n";
+                            $replyText = "Account No: $title | Failed ❌\n\n"
+                                . "Transaction Details:\n"
+                                . "Email: $email\n"
+                                . "Date/Time: $date\n"
+                                . "Website: $sitename\n"
+                                . "Amount: $amount\n\n"
+                                ."If you have been debited, Please raise a dispute for reversal on your bank app";
                             break;
                         case 4:
-                            $replyText = "Account No: $title | already been funded ✅\n";
+                            $replyText = "Account No: $title | already been funded ✅\n\n"
+                                . "Transaction Details:\n"
+                                . "Email: $email\n"
+                                . "Date/Time: $date\n"
+                                . "Website: $sitename\n"
+                                . "Amount: $amount";
                             break;
                         case 5:
                             $replyText = "Account No: $title | part payment received. 🔄\n";
                             break;
                         default:
-                            $replyText = "Account No: $title | {$verify['message']} ❓\n";
+                            $replyText = "Account No: $title | Transaction successful ✅\n\n"
+                                . "Transaction Details:\n"
+                                . "Email: $email\n"
+                                . "Date/Time: $date\n"
+                                . "Website: $sitename\n"
+                                . "Amount: $amount";
                             break;
                     }
                 }

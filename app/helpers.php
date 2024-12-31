@@ -11,7 +11,6 @@ use App\Models\VirtualAccount;
 use App\Models\Webhook;
 use App\Models\Webkey;
 use App\Models\Webtransfer;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -1840,7 +1839,7 @@ if (!function_exists('tokenkey')) {
     {
 
 
-        $recepit = "Invoice#".random_int(0000, 9999);
+        $recepit = "Invoice#" . random_int(0000, 9999);
 
 
         $token = tokenkey();
@@ -1922,8 +1921,6 @@ if (!function_exists('tokenkey')) {
 }
 
 
-
-
 function verifypelpaytelegram($pref)
 {
     $token = tokenkey();
@@ -1971,39 +1968,127 @@ function verifypelpaytelegram($pref)
 
     if ($transactionStatus === "Successful" && ($var->responseData->message ?? "") === "Successful") {
         try {
-            // Your success handling logic here...
+
+
             $acc_no = Transfertransaction::where('ref', $pref)->first()->account_no ?? null;
-            $amount = Transfertransaction::where('ref', $pref)->first()->amount ?? null;
+            $status = Transfertransaction::where('account_no', $acc_no)->first()->status ?? null;
+            $trx = Transfertransaction::where('account_no', $acc_no)->first() ?? null;
+            $amount = Transfertransaction::where('account_no', $acc_no)->first()->amount ?? null;
+            $pstatus = Transfertransaction::where('ref', $pref)->first()->status ?? null;
 
-            // Update transaction status to successful
-            Transfertransaction::where('account_no', $acc_no)->update(['status' => 4, 'resolve' => 1]);
 
-            // Increment user's wallet
-            $user = Transfertransaction::where('account_no', $acc_no)->first()->user;
-            if ($user) {
-                $main_amount = $var->responseData->amountCollected ?? 0;
-                $set = Setting::where('id', 1)->first();
-                $p_amount = ($amount > 15000) ? ($main_amount - $set->psb_cap) : ($main_amount - $set->psb_charge);
+            if ($pstatus == 4) {
+                return [
+                    'code' => 4
+                ];
 
-                $user->increment('main_wallet', $p_amount);
-
-                // Record transaction
-                Transaction::create([
-                    'user_id' => $user->id,
-                    'e_ref' => $pref,
-                    'ref_trans_id' => $var->responseData->transactionId ?? '',
-                    'type' => "webpay",
-                    'transaction_type' => "VirtualFundWallet",
-                    'title' => "Wallet Funding",
-                    'main_type' => "CHARM",
-                    'credit' => $p_amount,
-                    'note' => "Transaction Successful | Web Pay",
-                    'balance' => $user->main_wallet,
-                    'status' => 1,
-                ]);
             }
 
-            return ['code' => 4, 'message' => "Transaction already funded."];
+
+            if ($status == 4) {
+
+                $ref = $trx->ref_trans_id;
+                $url = url('') . "/success?trans_id=$ref&amount=$amount";
+                return [
+                    'url' => $url,
+                    'code' => 4
+                ];
+
+            }
+
+
+            $trx = Transfertransaction::where('account_no', $acc_no)
+                ->where([
+                    'status' => 0
+                ])->first() ?? null;
+
+
+            if ($trx == null) {
+
+                return response()->json([
+                    'status' => false,
+                    'message' => "Account Not found in our database",
+                ]);
+
+            }
+
+
+            $paid_amt = Transfertransaction::where('account_no', $acc_no)->update(['amount_paid' => $amount]) ?? null;
+            Transfertransaction::where('account_no', $acc_no)->increment('amount_paid', $amount);
+            $trx = Transfertransaction::where('account_no', $acc_no)->first() ?? null;
+
+            $main_amount = $var->responseData->amountCollected;
+            if ($trx != null) {
+
+                $set = Setting::where('id', 1)->first();
+                if ($amount > 15000) {
+                    $p_amount = $main_amount - $set->psb_cap;
+                } else {
+                    $p_amount = $main_amount - $set->psb_charge;
+                }
+
+                if ($trx->status == 0) {
+                    //fund Vendor
+                    $trx = Transfertransaction::where('account_no', $acc_no)->first();
+                    User::where('id', $trx->user_id)->increment('main_wallet', $p_amount);
+                    $balance = User::where('id', $trx->user_id)->first()->main_wallet;
+                    $user = User::where('id', $trx->user_id)->first();
+                    $session_id = Transfertransaction::where('account_no', $acc_no)->first()->session_id ?? null;
+
+
+                    $url = Webkey::where('key', $trx->key)->first()->url_fund ?? null;
+                    $user_email = $trx->email ?? null;
+                    //$amount = $trx->amount ?? null;
+                    $order_id = $trx->ref_trans_id ?? null;
+                    $site_name = Webkey::where('key', $trx->key)->first()->site_name ?? null;
+
+                    $trasnaction = new Transaction();
+                    $trasnaction->user_id = $trx->user_id;
+                    $trasnaction->e_ref = $request->sessionid ?? $acc_no;
+                    $trasnaction->ref_trans_id = $order_id;
+                    $trasnaction->type = "webpay";
+                    $trasnaction->transaction_type = "VirtualFundWallet";
+                    $trasnaction->title = "Wallet Funding";
+                    $trasnaction->main_type = "CHARM";
+                    $trasnaction->credit = $p_amount;
+                    $trasnaction->note = "Transaction Successful | Web Pay | for $user_email";
+                    $trasnaction->fee = $fee ?? 0;
+                    $trasnaction->amount = $trx->amount;
+                    $trasnaction->e_charges = 0;
+                    $trasnaction->charge = $payable ?? 0;
+                    $trasnaction->enkPay_Cashout_profit = 0;
+                    $trasnaction->balance = $balance;
+                    $trasnaction->status = 1;
+                    $trasnaction->save();
+
+                    $message = "Business funded | $acc_no | Charm | $p_amount | $user->first_name " . " " . $user->last_name;
+                    send_notification($message);
+
+                    Webtransfer::where('trans_id', $trx->trans_id)->update(['status' => 4]);
+                    Transfertransaction::where('account_no', $acc_no)->update(['status' => 4, 'resolve' => 1]);
+                        Webhook::where('account_no', $acc_no)->delete() ?? null;
+
+                    $trck = new Transactioncheck();
+                    $trck->session_id = $pref;
+                    $trck->amount = $trx->amount;
+                    $trck->status = 2;
+                    $trck->email = $user_email;
+                    $trck->save();
+
+
+                    $type = "epayment";
+                    $fund = credit_user_wallet($url, $user_email, $amount, $order_id, $type, $session_id);
+
+                    return [
+                        'status' => true,
+                        'message' => "Transaction Successful",
+                        'amount' => $amount,
+                        'code' => 4
+                    ];
+                }
+
+            }
+
         } catch (\Exception $e) {
             return ['code' => -1, 'message' => $e->getMessage()];
         }
@@ -2017,11 +2102,7 @@ function verifypelpaytelegram($pref)
 }
 
 
-
-
-
 if (!function_exists('verifypelpay')) {
-
 
 
     function verifypelpay($pref)
@@ -2054,12 +2135,12 @@ if (!function_exists('verifypelpay')) {
         if ($var->requestSuccessful == true) {
 
             if ($var->responseData->transactionStatus == "Processing") {
-                return [ 'code' => 0 ];
+                return ['code' => 0];
 
             }
 
             if ($var->responseData->transactionStatus == "Failed") {
-                return [ 'code' => 9 ];
+                return ['code' => 9];
 
             }
 
@@ -2084,15 +2165,14 @@ if (!function_exists('verifypelpay')) {
 
                     if ($status == 4) {
 
-                        $ref=$trx->ref_trans_id;
-                        $url = url('')."/success?trans_id=$ref&amount=$amount";
+                        $ref = $trx->ref_trans_id;
+                        $url = url('') . "/success?trans_id=$ref&amount=$amount";
                         return [
                             'url' => $url,
                             'code' => 4
                         ];
 
                     }
-
 
 
                     $trx = Transfertransaction::where('account_no', $acc_no)
@@ -2111,8 +2191,7 @@ if (!function_exists('verifypelpay')) {
                     }
 
 
-
-                   $paid_amt = Transfertransaction::where('account_no', $acc_no)->update(['amount_paid' => $amount]) ?? null;
+                    $paid_amt = Transfertransaction::where('account_no', $acc_no)->update(['amount_paid' => $amount]) ?? null;
                     Transfertransaction::where('account_no', $acc_no)->increment('amount_paid', $amount);
                     $trx = Transfertransaction::where('account_no', $acc_no)->first() ?? null;
 
@@ -2127,7 +2206,6 @@ if (!function_exists('verifypelpay')) {
                         }
 
 
-
                         if ($trx->status == 0) {
                             //fund Vendor
                             $trx = Transfertransaction::where('account_no', $acc_no)->first();
@@ -2135,7 +2213,6 @@ if (!function_exists('verifypelpay')) {
                             $balance = User::where('id', $trx->user_id)->first()->main_wallet;
                             $user = User::where('id', $trx->user_id)->first();
                             $session_id = Transfertransaction::where('account_no', $acc_no)->first()->session_id ?? null;
-
 
 
                             $url = Webkey::where('key', $trx->key)->first()->url_fund ?? null;
@@ -2168,7 +2245,7 @@ if (!function_exists('verifypelpay')) {
 
                             Webtransfer::where('trans_id', $trx->trans_id)->update(['status' => 4]);
                             Transfertransaction::where('account_no', $acc_no)->update(['status' => 4, 'resolve' => 1]);
-                            Webhook::where('account_no', $acc_no)->delete() ?? null;
+                                Webhook::where('account_no', $acc_no)->delete() ?? null;
 
                             $trck = new Transactioncheck();
                             $trck->session_id = $pref;
@@ -2178,9 +2255,8 @@ if (!function_exists('verifypelpay')) {
                             $trck->save();
 
 
-
                             $type = "epayment";
-                            $fund = credit_user_wallet($url , $user_email, $amount, $order_id, $type, $session_id);
+                            $fund = credit_user_wallet($url, $user_email, $amount, $order_id, $type, $session_id);
 
                             return [
                                 'status' => true,
@@ -2208,8 +2284,8 @@ if (!function_exists('verifypelpay')) {
 
                 $ck_url = Transfertransaction::where('ref', $pref)->first()->url ?? null;
 
-                if($ck_url != null){
-                    return [ 'code' => 7 ];
+                if ($ck_url != null) {
+                    return ['code' => 7];
                 }
 
                 $acc_no = Transfertransaction::where('ref', $pref)->first()->account_no ?? null;
@@ -2219,7 +2295,7 @@ if (!function_exists('verifypelpay')) {
 
                 $amount_remain = $namt - $camt;
 
-                $url = url('')."/part-payment?expected_amount=$namt&amount_paid=$camt&acct_no=$acc_no&amount_remain=$amount_remain&ref=$pref";
+                $url = url('') . "/part-payment?expected_amount=$namt&amount_paid=$camt&acct_no=$acc_no&amount_remain=$amount_remain&ref=$pref";
                 Transfertransaction::where('ref', $pref)->update(['url' => $url]);
 
 
@@ -2231,13 +2307,10 @@ if (!function_exists('verifypelpay')) {
             }
 
 
-
-
-
         }
 
 
-        return [ 'code' => 0 ];
+        return ['code' => 0];
 
 
     }
@@ -2579,10 +2652,8 @@ if (!function_exists('verifypelpay')) {
 
 
     if (!function_exists('credit_user_wallet')) {
-        function credit_user_wallet($url , $user_email, $amount, $order_id, $type, $session_id)
+        function credit_user_wallet($url, $user_email, $amount, $order_id, $type, $session_id)
         {
-
-
 
 
             try {
@@ -2755,7 +2826,6 @@ if (!function_exists('verifypelpay')) {
 if (!function_exists('verifypelpayreslove')) {
 
 
-
     function verifypelpayreslove($pref, $amount)
     {
         $token = tokenkey();
@@ -2780,8 +2850,7 @@ if (!function_exists('verifypelpayreslove')) {
         $var = curl_exec($curl);
         curl_close($curl);
         $var = json_decode($var);
-        $status =  $var->responseData->transactionStatus ?? null;
-
+        $status = $var->responseData->transactionStatus ?? null;
 
 
         if ($status == "Failed") {
@@ -2795,7 +2864,7 @@ if (!function_exists('verifypelpayreslove')) {
         if ($var->requestSuccessful == true) {
 
             if ($var->responseData->transactionStatus == "Processing") {
-                return [ 'code' => 0 ];
+                return ['code' => 0];
 
             }
 
@@ -2847,8 +2916,6 @@ if (!function_exists('verifypelpayreslove')) {
             'errormessage' => json_encode($var),
             'code' => 0
         ];
-
-
 
 
     }
@@ -3347,15 +3414,11 @@ if (!function_exists('verifypelpayreslove')) {
         $var = json_decode($var);
         $res = $var->username ?? null;
 
-        if($res == "Not Found, Pleas try again"){
+        if ($res == "Not Found, Pleas try again") {
             return 0;
-        }else{
+        } else {
             return $res;
         }
-
-
-
-
 
 
     }
@@ -3369,9 +3432,6 @@ if (!function_exists('verifypelpayreslove')) {
         $data['psb_charge'] = $set->psb_charge;
         $data['charm'] = $set->charm;
         $data['woven'] = $set->woven;
-
-
-
 
 
     }
