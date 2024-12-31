@@ -105,13 +105,12 @@ class TelegramController extends Controller
 
 
                             default:
-                            $replyText = "Account No: $title | Transaction successful ✅\n\n"
+                            $replyText = "Account No: $title | processing resolve 🔄\n\n"
                                 . "Transaction Details:\n"
                                 . "Email: $email\n"
                                 . "Date/Time: $date\n"
                                 . "Website: $sitename\n"
-                                ."code:$cc"
-                                . "Amount: $amount";
+                                ."code:$cc";
                             break;
                     }
                 }

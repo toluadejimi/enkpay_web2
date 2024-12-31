@@ -2005,18 +2005,14 @@ function verifypelpaytelegram($pref)
             }
 
 
-            $trx = Transfertransaction::where('account_no', $acc_no)
-                ->where([
-                    'status' => 0
-                ])->first() ?? null;
-
+            $trx = Transfertransaction::where('account_no', $acc_no)->first() ?? null;
 
             if ($trx == null) {
 
-                return response()->json([
-                    'status' => false,
-                    'message' => "Account Not found in our database",
-                ]);
+                return [
+                    'code' => -1,
+                    'message' => "Account not found"
+                ];
 
             }
 
