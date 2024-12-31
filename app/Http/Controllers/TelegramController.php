@@ -197,8 +197,8 @@ class TelegramController extends Controller
 
 
                     $message = json_encode($verify);
+                    send_notification($message);
 
-                    $replyText = $message;
 
                     if ($verify == 0) {
                         $email = $trx->email;
