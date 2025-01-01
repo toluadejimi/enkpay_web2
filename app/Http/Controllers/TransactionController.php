@@ -678,8 +678,6 @@ class TransactionController extends Controller
     function webpay_view(Request $request)
     {
 
-
-
         $ip = \Illuminate\Support\Facades\Request::ip();
         $key = "ip_attempts:{$ip}";
         $attempts = Cache::increment($key);
@@ -687,11 +685,15 @@ class TransactionController extends Controller
             Cache::put($key, $attempts, now()->addMinutes(1));
         }
         if ($attempts > 5) {
-            $message = "Too many requests from your IP | $ip";
+            $url = $request->fullUrl();
+            $message = "Too many requests from your IP | $ip | $url";
             send_notification($message);
 
             abort(Response::HTTP_TOO_MANY_REQUESTS, 'Too many requests from your IP.');
         }
+
+
+
 
 
 
