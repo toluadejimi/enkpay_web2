@@ -678,6 +678,10 @@ class TransactionController extends Controller
     function webpay_view(Request $request)
     {
 
+        if($request->key == null){
+            abort(Response::HTTP_TOO_MANY_REQUESTS, 'Yo take it easy');
+        }
+
         $ip = \Illuminate\Support\Facades\Request::ip();
         $key = "ip_attempts:{$ip}";
         $attempts = Cache::increment($key);
