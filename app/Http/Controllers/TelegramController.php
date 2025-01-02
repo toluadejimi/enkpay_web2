@@ -26,8 +26,8 @@ class TelegramController extends Controller
 
         // Check if the update contains a message
         if (isset($update['message'])) {
-            $chatId = $update['message']['chat']['id'];
-            $message = $update['message']['text'];
+            $chatId = $update['message']['chat']['id'] ?? null;
+            $message = $update['message']['text'] ?? null;
             $username = $update['message']['from']['username'] ?? null;
             // Auto-reply logic
             $this->autoReply($chatId, $message, $username);
