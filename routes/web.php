@@ -293,7 +293,7 @@ Route::post('process-card-payment', [WovenController::class, 'process_card_payme
 
 
 
-Route::post('docs', [TransactionController::class, 'docs']);
+Route::get('docs', [TransactionController::class, 'docs']);
 
 
 
