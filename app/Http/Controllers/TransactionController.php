@@ -2084,6 +2084,7 @@ class TransactionController extends Controller
 
         $ref = $request->trans_id;
 
+        dd($request->all());
 
         if($ref == null){
             return response()->json([
