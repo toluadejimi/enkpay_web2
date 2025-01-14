@@ -2094,16 +2094,16 @@ class TransactionController extends Controller
                     Transaction::where('ref_trans_id', $ref)->update(['resolve' => 1]);
                     return response()->json([
                         'status' => true,
-                        'detail' => 'success',
-                        'price' => $trx->amount,
+                        'message' => 'success',
+                        'amount' => $trx->amount,
                     ], 200);
                 }
 
                 if ($trx->status == 0) {
                     return response()->json([
                         'status' => true,
-                        'detail' => 'pending',
-                        'price' => $trx->amount,
+                        'message' => 'pending',
+                        'amount' => $trx->amount,
                     ], 200);
                 }
             } else {
