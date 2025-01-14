@@ -2084,10 +2084,16 @@ class TransactionController extends Controller
 
         $ref = $request->trans_id;
 
+
+        if($ref == null){
+            return response()->json([
+                'status' => false,
+                'message' => 'Ref ID can not be null'
+            ], 500);
+        }
+
         if ($ref != null) {
-
-            $trx = Transfertransaction::where('ref_trans_id', $ref)->first() ?? null;
-
+            $trx = Transfertransaction::where('ref_trans_id', $request->trans_id)->first() ?? null;
             if ($trx != null) {
 
                 if ($trx->status == 1) {
@@ -2107,10 +2113,8 @@ class TransactionController extends Controller
                     ], 200);
                 }
             } else {
-
                 return response()->json([
                     'status' => false,
-                    'detail' => 'failed',
                     'message' => 'Transaction not found'
                 ], 500);
 
