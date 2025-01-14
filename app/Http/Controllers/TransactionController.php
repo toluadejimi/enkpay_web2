@@ -962,6 +962,7 @@ class TransactionController extends Controller
             $boomzy = $set->boomzy;
             $psb_cap = $set->psb_cap;
             $psb_charge = $set->psb_charge;
+            $woven_card = $set->woven_card;
 
 
 
@@ -976,7 +977,7 @@ class TransactionController extends Controller
             }
 
 
-            return view('boomzypay', compact('support','pamount', 'wema', 'payment_ref', 'psb_cap', 'psb_charge', 'account_name', 'boomzy', 'ninepsb', 'ninepsb_acct', 'support_number', 'opay_transfer', 'support_channel', 'kuda_transfer', 'palmpay_transfer', 'transref', 'opay_acct', 'kuda_acct', 'palmpay_acct', 'opay_acct', 'ref', 'iref', 'crypto', 'card', 'transfer', 'bank', 'pre_link', 'payable_amount', 'email', 'user_id', 'data', 'webhook', 'key', 'amount', 'p_account_no', 'trans_id', 'both_commmission', 'p_account_name', 'p_bank_name', 'total_received'));
+            return view('boomzypay', compact('support','pamount', 'woven_card', 'wema', 'payment_ref', 'psb_cap', 'psb_charge', 'account_name', 'boomzy', 'ninepsb', 'ninepsb_acct', 'support_number', 'opay_transfer', 'support_channel', 'kuda_transfer', 'palmpay_transfer', 'transref', 'opay_acct', 'kuda_acct', 'palmpay_acct', 'opay_acct', 'ref', 'iref', 'crypto', 'card', 'transfer', 'bank', 'pre_link', 'payable_amount', 'email', 'user_id', 'data', 'webhook', 'key', 'amount', 'p_account_no', 'trans_id', 'both_commmission', 'p_account_name', 'p_bank_name', 'total_received'));
 
 
         }
@@ -1146,6 +1147,7 @@ class TransactionController extends Controller
         $data['support_number'] = Webkey::where('key', $request->key)->first()->support_number ?? null;
         $data['ads'] = Advert::inRandomOrder()->first() ?? null;
         $data['marchant_url'] = Webkey::where('key', $request->key)->first()->user_url;
+        $data['woven_card'] = $set->woven_card;
 
 
 
@@ -2024,9 +2026,7 @@ class TransactionController extends Controller
 
             $trx = Webtransfer::where('trans_id', $ref)->first() ?? null;
 
-
             if ($trx != null) {
-
                 if ($trx->status == 1) {
                     Transaction::where('ref_trans_id', $ref)->update(['resolve' => 1]);
                     Transfertransaction::where('ref_trans_id', $ref)->update(['resolve' => 1]);
@@ -2086,7 +2086,7 @@ class TransactionController extends Controller
 
         if ($ref != null) {
 
-            $trx = Transfertransaction::where('trans_id', $ref)->first() ?? null;
+            $trx = Transfertransaction::where('ref_trans_id', $ref)->first() ?? null;
 
             if ($trx != null) {
 
