@@ -289,7 +289,11 @@ Route::get('decline', [TransactionController::class, 'decline']);
 
 Route::get('processing', [TransactionController::class, 'processing']);
 
+Route::post('process-card-payment', [WovenController::class, 'process_card_payment']);
 
+
+
+Route::post('docs', [TransactionController::class, 'docs']);
 
 
 

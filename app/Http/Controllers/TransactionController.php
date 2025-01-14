@@ -3294,5 +3294,11 @@ class TransactionController extends Controller
     }
 
 
+    public function docs()
+    {
+        return view('documentation');
+    }
+
+
 
 }
