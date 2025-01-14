@@ -103,7 +103,7 @@ Route::get('get-data',[DataController::class, 'get_data']);
 
 Route::get('resolve-bank',[TransactionController::class, 'resolve_bank']);
 Route::post('verify',[TransactionController::class, 'verify_woo']);
-Route::post('verify-transaction',[TransactionController::class, 'verify_others']);
+Route::any('verify-transaction',[TransactionController::class, 'verify_others']);
 
 
 
