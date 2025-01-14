@@ -2096,7 +2096,7 @@ class TransactionController extends Controller
             $trx = Transfertransaction::where('ref_trans_id', $request->trans_id)->first() ?? null;
             if ($trx != null) {
 
-                if ($trx->status == 1) {
+                if ($trx->status == 4) {
                     Transaction::where('ref_trans_id', $ref)->update(['resolve' => 1]);
                     return response()->json([
                         'status' => true,
