@@ -166,11 +166,11 @@
 <body class="bg_surface_color">
 
 <!-- preloade -->
-<div class="preload preload-container">
-    <div class="preload-logo">
-        <div class="spinner"></div>
-    </div>
-</div>
+{{--<div class="preload preload-container">--}}
+{{--    <div class="preload-logo">--}}
+{{--        <div class="spinner"></div>--}}
+{{--    </div>--}}
+{{--</div>--}}
 <!-- /preload -->
 
 
