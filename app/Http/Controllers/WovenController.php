@@ -108,6 +108,16 @@ class WovenController extends Controller
         $message = $ip. "====>".json_encode($request->all());
         send_notification($message);
 
+
+        if($request->ip() != "35.162.80.204"){
+            $message = "Wrong IP request | ===>>>".$request->ip();
+            send_notification($message);
+            return response()->json([
+                'status' => false,
+                'message' => "Wrong IP request"
+            ]);
+        }
+
         $acc_no = $request->nuban;
         $user_amount = $request->amount;
         $session_id = $request->unique_reference;
