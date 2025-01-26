@@ -267,10 +267,10 @@
 
 
                 @php
-                    if($payable_amount > 15000){
-                        $f_amount = $payable_amount + $psb_cap;
+                    if($payable_amount > 11000){
+                        $f_amount = $payable_amount + 300;
                     }else{
-                      $f_amount = $payable_amount + $psb_charge;
+                      $f_amount = $payable_amount + 100;
                     }
 
                 @endphp
@@ -328,15 +328,15 @@
                         </svg>
 
                         <div class="content">
-                            <h4><a href="#" data-bs-toggle="collapse" data-bs-target="#ninepsb"
-                                   aria-expanded="false" aria-controls="ninepsb" class="fw_6">Click to get account
+                            <h4><a href="#" data-bs-toggle="collapse" data-bs-target="#woven"
+                                   aria-expanded="false" aria-controls="woven" class="fw_6">Click to get account
                                     details</a></h4>
                             <p>No refrence required</p>
                         </div>
                     </div>
 
 
-                    <div id="ninepsb" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                    <div id="woven" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                         <div class="tf-container my-2">
                             <a id="openModalBtnninepsb" class="d-flex justify-content-center tf-btn success large">Proceed</a>
                         </div>
@@ -1051,17 +1051,7 @@
                                 messageDisplay.innerHTML = "Confirming 9psb payment...";
                             }
 
-                            const requestninepsbBtn = document.getElementById('requestninepsb');
-                            requestninepsbBtn.addEventListener("click", function () {
-                                const requestninepsbBtn = document.getElementById('requestninepsb');
 
-                                startTimerninepsb(1200, 'countdown');
-                                makeRequestninepsb();
-                                startMessageninepsb();
-                                $('#myModalninepsbshow').modal('show');
-                                requestkudaBtn.disabled = true;
-                                requestkudaBtn.hidden = true;
-                            });
                         </script>
 
 
@@ -1106,7 +1096,8 @@
 
                     <div id="cardpay" class="accordion-collapse collapse" data-bs-parent="#cardpay">
                         <div class="tf-container my-2">
-                            <a id="openModalBtncardpay" class="d-flex justify-content-center tf-btn danger large">Proceed</a>
+{{--                            <a id="openModalBtncardpay" class="d-flex justify-content-center tf-btn danger large">Proceed</a>--}}
+                            <a id="#" class="d-flex justify-content-center tf-btn danger large">Coming soon</a>
                         </div>
 
 

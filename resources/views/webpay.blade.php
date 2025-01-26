@@ -282,10 +282,10 @@
                                         <div class="row">
 
                                             @php
-                                                if($payable_amount > 15000){
-                                                    $f_amount = $payable_amount + $psb_cap;
+                                                if($payable_amount > 11000){
+                                                    $f_amount = $payable_amount + 300;
                                                 }else{
-                                                  $f_amount = $payable_amount + $psb_charge;
+                                                  $f_amount = $payable_amount + 100;
                                                 }
 
                                             @endphp
