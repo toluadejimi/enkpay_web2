@@ -3010,7 +3010,7 @@ if (!function_exists('verifypelpay')) {
         if ($status == "The process was completed successfully") {
             $data['account_no'] = $var->data->vnuban;
             $data['bank_name'] = $bank_name;
-            $data['account_name'] = "TEAMX";
+            $data['account_name'] = "WOV CHECKOUT";
             return $data;
         }
 
