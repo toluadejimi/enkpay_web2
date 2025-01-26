@@ -2964,6 +2964,14 @@ if (!function_exists('verifypelpay')) {
     {
 
 
+        if($code == "090110"){
+            $bank_name = "VFD";
+        }elseif ($code == "000017"){
+            $bank_name = "WEMA";
+        }else{
+            $bank_name = "CORONATION MERVHANT BANK";
+        }
+
 
         $key = env('WOVENKEY');
         $databody = array(
@@ -2981,7 +2989,7 @@ if (!function_exists('verifypelpay')) {
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
+            CURLOPT_TIMEOUT => 20,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'POST',
@@ -2998,9 +3006,10 @@ if (!function_exists('verifypelpay')) {
         $status = $var->message ?? null;
 
 
+
         if ($status == "The process was completed successfully") {
             $data['account_no'] = $var->data->vnuban;
-            $data['bank_name'] = $var->data->bank_name;
+            $data['bank_name'] = $bank_name;
             $data['account_name'] = "TEAMX";
             return $data;
         }
