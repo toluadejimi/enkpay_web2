@@ -12,6 +12,7 @@ use App\Models\Webkey;
 use App\Models\Webtransfer;
 use Faker\Factory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -29,7 +30,8 @@ class WovenController extends Controller
             $tremail = $faker->email;
             $phone = User::inRandomOrder()->first()->phone;
             $amtt = $data['pamount'];
-            $woven_details = woven_create($amtt, $first_name, $last_name, $tremail, $phone);
+            $code = Setting::where('id', 1)->first()->woven_collective_code;
+            $woven_details = woven_create($amtt, $code, $last_name, $tremail, $phone);
             return response()->json([
                 'account_no' => $woven_details['account_no'],
                 'account_name' => $woven_details['account_name'],
@@ -326,6 +328,123 @@ class WovenController extends Controller
                 'status' => 'paid'
             ], 200);
         }
+    }
+
+
+
+
+
+    public function process_card_payment(Request $request)
+    {
+
+
+
+        $key = env('WOVENKEY');
+        $databody = array(
+            "cardData" => $request->cardData,
+        );
+
+        $post_data = json_encode($databody);
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://api.woven.finance/v1/api/cards/initiate-debit',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => $post_data,
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json',
+                "authorization: $key"
+            ),
+        ));
+
+        $var = curl_exec($curl);
+        curl_close($curl);
+        $var = json_decode($var);
+        $status = $var->status ?? null;
+        $statusCode = $var->statusCode ?? null;
+
+
+        if($status == "success" && $statusCode == "W200"){
+            $data['payment_id'] = $var->data->paymentId;
+            $data['ref'] = $var->data->transactionRef;
+            $data['status'] = true;
+            return $data;
+
+           // return view('verifywovencard', $data);
+        }else{
+            return $var->message;
+
+        }
+
+
+    }
+
+
+    public function verify_card_woven(request $request)
+    {
+
+        $data['payment_id'] = "1716183778";
+        $data['ref'] = "wf-card-752-3jdSYD7SdhTjS5SbP__8G";
+        return view('verifywovencard', $data);
+
+
+    }
+
+
+    public function resend_otp(request $request)
+    {
+
+
+        $key = env('WOVENKEY');
+        $databody = array(
+            "paymentId" => $request->payment_id,
+            "transactionRef" => $request->ref,
+        );
+
+        $post_data = json_encode($databody);
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://api.woven.finance/v1/api/cards/resend-otp',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => $post_data,
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json',
+                "authorization: $key"
+            ),
+        ));
+
+        $var = curl_exec($curl);
+        dd($var);
+
+        curl_close($curl);
+        $var = json_decode($var);
+
+
+
+
+        $status = $var->status ?? null;
+        $statusCode = $var->statusCode ?? null;
+
+
+
+
+
+        $data['payment_id'] = "1716183778";
+        $data['ref'] = "wf-card-752-3jdSYD7SdhTjS5SbP__8G";
+        return view('verifywovencard', $data);
+
+
     }
 
 

@@ -2960,14 +2960,15 @@ if (!function_exists('verifypelpay')) {
 
     }
 
-    function woven_create($amtt, $first_name, $last_name, $tremail, $phone)
+    function woven_create($amtt, $code, $last_name, $tremail, $phone)
     {
+
 
 
         $key = env('WOVENKEY');
         $databody = array(
             "amount" => $amtt,
-            "collection_bank" => "000017",
+            "collection_bank" => $code,
             "callback_url" => url('') . "/api/woven/callback",
 
         );
@@ -2992,7 +2993,6 @@ if (!function_exists('verifypelpay')) {
         ));
 
         $var = curl_exec($curl);
-
         curl_close($curl);
         $var = json_decode($var);
         $status = $var->message ?? null;
@@ -3000,7 +3000,7 @@ if (!function_exists('verifypelpay')) {
 
         if ($status == "The process was completed successfully") {
             $data['account_no'] = $var->data->vnuban;
-            $data['bank_name'] = "WEMA";
+            $data['bank_name'] = $var->data->bank_name;
             $data['account_name'] = "TEAMX";
             return $data;
         }

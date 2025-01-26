@@ -3,7 +3,9 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <!-- Mobile Specific Metas -->
     <meta name="viewport"
           content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, viewport-fit=cover">
@@ -304,18 +306,21 @@
 <div class="transfer-card">
 
 
-    <div class="tf-container">
-
-        @if($woven == 1)
+    @if($woven == 1)
+        <div class="tf-container">
             <div id=""
                  class="accordion border-0 tf-card-block d-flex align-items-center justify-content-between">
                 <div class="accordion-item border-0">
                     <div class="inner d-flex align-items-center">
-                        <svg width="140" height="51" viewBox="0 0 142 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg width="140" height="51" viewBox="0 0 142 70" fill="none"
+                             xmlns="http://www.w3.org/2000/svg">
                             <rect width="142" height="70" rx="20" fill="#F3F5FF"/>
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M71.407 13.3346L89.257 23.3655C89.781 23.6286 90.2217 24.0333 90.5296 24.5343C90.8375 25.0353 91.0004 25.6127 91 26.2016V29.2426C91 30.6997 89.824 31.8823 88.375 31.8823H86.8V48.7765H88.9C89.457 48.7765 89.9911 48.9989 90.3849 49.395C90.7788 49.791 91 50.3282 91 50.8882C91 51.4483 90.7788 51.9854 90.3849 52.3815C89.9911 52.7775 89.457 53 88.9 53H51.1C50.543 53 50.0089 52.7775 49.6151 52.3815C49.2212 51.9854 49 51.4483 49 50.8882C49 50.3282 49.2212 49.791 49.6151 49.395C50.0089 48.9989 50.543 48.7765 51.1 48.7765H53.2V31.8823H51.625C50.176 31.8823 49 30.6997 49 29.2426V26.2016C49 25.0993 49.567 24.0856 50.4826 23.5112L68.5909 13.3346C69.0284 13.1146 69.5108 13 70 13C70.4892 13 70.9695 13.1146 71.407 13.3346ZM80.5 31.8823H59.5V48.7765H63.7V36.1058H67.9V48.7765H72.1V36.1058H76.3V48.7765H80.5V31.8823ZM70 21.3234C69.443 21.3234 68.9089 21.5459 68.5151 21.942C68.1212 22.338 67.9 22.8751 67.9 23.4352C67.9 23.9953 68.1212 24.5324 68.5151 24.9285C68.9089 25.3245 69.443 25.547 70 25.547C70.557 25.547 71.0911 25.3245 71.4849 24.9285C71.8787 24.5324 72.1 23.9953 72.1 23.4352C72.1 22.8751 71.8787 22.338 71.4849 21.942C71.0911 21.5459 70.557 21.3234 70 21.3234Z" fill="url(#paint0_linear_0_1)"/>
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                  d="M71.407 13.3346L89.257 23.3655C89.781 23.6286 90.2217 24.0333 90.5296 24.5343C90.8375 25.0353 91.0004 25.6127 91 26.2016V29.2426C91 30.6997 89.824 31.8823 88.375 31.8823H86.8V48.7765H88.9C89.457 48.7765 89.9911 48.9989 90.3849 49.395C90.7788 49.791 91 50.3282 91 50.8882C91 51.4483 90.7788 51.9854 90.3849 52.3815C89.9911 52.7775 89.457 53 88.9 53H51.1C50.543 53 50.0089 52.7775 49.6151 52.3815C49.2212 51.9854 49 51.4483 49 50.8882C49 50.3282 49.2212 49.791 49.6151 49.395C50.0089 48.9989 50.543 48.7765 51.1 48.7765H53.2V31.8823H51.625C50.176 31.8823 49 30.6997 49 29.2426V26.2016C49 25.0993 49.567 24.0856 50.4826 23.5112L68.5909 13.3346C69.0284 13.1146 69.5108 13 70 13C70.4892 13 70.9695 13.1146 71.407 13.3346ZM80.5 31.8823H59.5V48.7765H63.7V36.1058H67.9V48.7765H72.1V36.1058H76.3V48.7765H80.5V31.8823ZM70 21.3234C69.443 21.3234 68.9089 21.5459 68.5151 21.942C68.1212 22.338 67.9 22.8751 67.9 23.4352C67.9 23.9953 68.1212 24.5324 68.5151 24.9285C68.9089 25.3245 69.443 25.547 70 25.547C70.557 25.547 71.0911 25.3245 71.4849 24.9285C71.8787 24.5324 72.1 23.9953 72.1 23.4352C72.1 22.8751 71.8787 22.338 71.4849 21.942C71.0911 21.5459 70.557 21.3234 70 21.3234Z"
+                                  fill="url(#paint0_linear_0_1)"/>
                             <defs>
-                                <linearGradient id="paint0_linear_0_1" x1="70" y1="13" x2="70" y2="53" gradientUnits="userSpaceOnUse">
+                                <linearGradient id="paint0_linear_0_1" x1="70" y1="13" x2="70" y2="53"
+                                                gradientUnits="userSpaceOnUse">
                                     <stop stop-color="#0D0150"/>
                                     <stop offset="1" stop-color="#785DFF"/>
                                 </linearGradient>
@@ -324,7 +329,8 @@
 
                         <div class="content">
                             <h4><a href="#" data-bs-toggle="collapse" data-bs-target="#ninepsb"
-                                   aria-expanded="false" aria-controls="ninepsb" class="fw_6">Click to get account details</a></h4>
+                                   aria-expanded="false" aria-controls="ninepsb" class="fw_6">Click to get account
+                                    details</a></h4>
                             <p>No refrence required</p>
                         </div>
                     </div>
@@ -332,7 +338,7 @@
 
                     <div id="ninepsb" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                         <div class="tf-container my-2">
-                            <a id="openModalBtnninepsb"  class="d-flex justify-content-center tf-btn success large">Proceed</a>
+                            <a id="openModalBtnninepsb" class="d-flex justify-content-center tf-btn success large">Proceed</a>
                         </div>
 
                         <div id="myModalninepsb" class="modal">
@@ -357,11 +363,16 @@
 
                                             <div class="col-12">
                                                 <div class="text-center">
-                                                    <svg width="140" height="51" viewBox="0 0 142 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <svg width="140" height="51" viewBox="0 0 142 70" fill="none"
+                                                         xmlns="http://www.w3.org/2000/svg">
                                                         <rect width="142" height="70" rx="20" fill="#F3F5FF"/>
-                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M71.407 13.3346L89.257 23.3655C89.781 23.6286 90.2217 24.0333 90.5296 24.5343C90.8375 25.0353 91.0004 25.6127 91 26.2016V29.2426C91 30.6997 89.824 31.8823 88.375 31.8823H86.8V48.7765H88.9C89.457 48.7765 89.9911 48.9989 90.3849 49.395C90.7788 49.791 91 50.3282 91 50.8882C91 51.4483 90.7788 51.9854 90.3849 52.3815C89.9911 52.7775 89.457 53 88.9 53H51.1C50.543 53 50.0089 52.7775 49.6151 52.3815C49.2212 51.9854 49 51.4483 49 50.8882C49 50.3282 49.2212 49.791 49.6151 49.395C50.0089 48.9989 50.543 48.7765 51.1 48.7765H53.2V31.8823H51.625C50.176 31.8823 49 30.6997 49 29.2426V26.2016C49 25.0993 49.567 24.0856 50.4826 23.5112L68.5909 13.3346C69.0284 13.1146 69.5108 13 70 13C70.4892 13 70.9695 13.1146 71.407 13.3346ZM80.5 31.8823H59.5V48.7765H63.7V36.1058H67.9V48.7765H72.1V36.1058H76.3V48.7765H80.5V31.8823ZM70 21.3234C69.443 21.3234 68.9089 21.5459 68.5151 21.942C68.1212 22.338 67.9 22.8751 67.9 23.4352C67.9 23.9953 68.1212 24.5324 68.5151 24.9285C68.9089 25.3245 69.443 25.547 70 25.547C70.557 25.547 71.0911 25.3245 71.4849 24.9285C71.8787 24.5324 72.1 23.9953 72.1 23.4352C72.1 22.8751 71.8787 22.338 71.4849 21.942C71.0911 21.5459 70.557 21.3234 70 21.3234Z" fill="url(#paint0_linear_0_1)"/>
+                                                        <path fill-rule="evenodd" clip-rule="evenodd"
+                                                              d="M71.407 13.3346L89.257 23.3655C89.781 23.6286 90.2217 24.0333 90.5296 24.5343C90.8375 25.0353 91.0004 25.6127 91 26.2016V29.2426C91 30.6997 89.824 31.8823 88.375 31.8823H86.8V48.7765H88.9C89.457 48.7765 89.9911 48.9989 90.3849 49.395C90.7788 49.791 91 50.3282 91 50.8882C91 51.4483 90.7788 51.9854 90.3849 52.3815C89.9911 52.7775 89.457 53 88.9 53H51.1C50.543 53 50.0089 52.7775 49.6151 52.3815C49.2212 51.9854 49 51.4483 49 50.8882C49 50.3282 49.2212 49.791 49.6151 49.395C50.0089 48.9989 50.543 48.7765 51.1 48.7765H53.2V31.8823H51.625C50.176 31.8823 49 30.6997 49 29.2426V26.2016C49 25.0993 49.567 24.0856 50.4826 23.5112L68.5909 13.3346C69.0284 13.1146 69.5108 13 70 13C70.4892 13 70.9695 13.1146 71.407 13.3346ZM80.5 31.8823H59.5V48.7765H63.7V36.1058H67.9V48.7765H72.1V36.1058H76.3V48.7765H80.5V31.8823ZM70 21.3234C69.443 21.3234 68.9089 21.5459 68.5151 21.942C68.1212 22.338 67.9 22.8751 67.9 23.4352C67.9 23.9953 68.1212 24.5324 68.5151 24.9285C68.9089 25.3245 69.443 25.547 70 25.547C70.557 25.547 71.0911 25.3245 71.4849 24.9285C71.8787 24.5324 72.1 23.9953 72.1 23.4352C72.1 22.8751 71.8787 22.338 71.4849 21.942C71.0911 21.5459 70.557 21.3234 70 21.3234Z"
+                                                              fill="url(#paint0_linear_0_1)"/>
                                                         <defs>
-                                                            <linearGradient id="paint0_linear_0_1" x1="70" y1="13" x2="70" y2="53" gradientUnits="userSpaceOnUse">
+                                                            <linearGradient id="paint0_linear_0_1" x1="70" y1="13"
+                                                                            x2="70" y2="53"
+                                                                            gradientUnits="userSpaceOnUse">
                                                                 <stop stop-color="#0D0150"/>
                                                                 <stop offset="1" stop-color="#785DFF"/>
                                                             </linearGradient>
@@ -376,7 +387,8 @@
 
 
                                                 <div class="col-12 d-flex justify-content-center">
-                                                    <h5 class="text-center text-danger">Make sure you send exact amount to avoid delays</h5>
+                                                    <h5 class="text-center text-danger">Make sure you send exact amount
+                                                        to avoid delays</h5>
                                                 </div>
 
 
@@ -496,7 +508,6 @@
                                                                 const bankName = data.bank_name;
 
 
-
                                                                 document.getElementById('fetch').style.display = 'none';
 
 
@@ -510,7 +521,7 @@
                                                                         accountNo: data.account_no,
                                                                         name: data.account_name,
                                                                         amount: '{{$f_amount}}',
-                                                                        bankName:data.bank_name,
+                                                                        bankName: data.bank_name,
 
                                                                     }) // Replace with actual data to send
                                                                 })
@@ -1059,258 +1070,478 @@
 
                 </div>
             </div>
-        @endif
-
-
-    </div>
-
-</div>
-
-
-<div class="tf-container my-5">
-    <a href="decline?trans_id={{ $trans_id }}&key={{ $key }}" class="tf-btn danger large">Cancel
-        Transaction</a>
-</div>
-
-
-<script src="{{ url('') }}/public/assets/dist/js/bootstrap.bundle.min.js"></script>
-
-
-<script>
-    document.getElementById('CardPost').addEventListener('click', function () {
-        const url = '{{ url('') }}/api/card-transaction';
-        const data = {
-            ref: '{{ $ref }}'
-        };
-
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        })
-            .then(response => response.json())
-            .then(data => {
-
-                console.log('Response:', data);
-            })
-            .catch(error => {
-
-                console.error('Error:', error);
-            });
-    });
-</script>
-
-<script>
-    document.getElementById('openModalBtnopay').addEventListener('click', function () {
-        const url = '{{ url('') }}/api/opay-transfer-transaction';
-        const data = {
-            ref: '{{ $transref }}'
-        };
-
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Response:', data);
-            })
-            .catch(error => {
-
-                console.error('Error:', error);
-            });
-    });
-</script>
-
-
-<script>
-    document.getElementById('openModalBtnkuda').addEventListener('click', function () {
-        const url = '{{ url('') }}/api/kuda-transfer-transaction';
-        const data = {
-            ref: '{{ $transref }}'
-        };
-
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Response:', data);
-            })
-            .catch(error => {
-
-                console.error('Error:', error);
-            });
-    });
-</script>
-
-
-<script>
-    var customTimerLimitInSeconds = 2400;
-
-    function startCustomTimer() {
-        var countdown = customTimerLimitInSeconds;
-        var timerDisplay = document.getElementById('timers');
-
-        function updateTimer() {
-            var minutes = Math.floor(countdown / 60);
-            var seconds = countdown % 60;
-
-            timerDisplay.innerHTML = formatTime(minutes) + ':' + formatTime(seconds);
-
-            if (countdown === 0) {
-                window.location.href = '{{ url('') }}/decline?trans_id={{ $trans_id }}&key={{ $key}}';
-            } else {
-                countdown--;
-                setTimeout(updateTimer, 1000);
-            }
-        }
-
-        function formatTime(time) {
-            return time < 10 ? '0' + time : time;
-        }
-
-        updateTimer();
-
-        const p_account_no = document.getElementById('p_account_no').value;
-        const url = "{{ url('') }}/change-state?account_no=" + p_account_no;
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    }
-
-
-    window.onload = startCustomTimer;
-</script>
-
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-
-<script>
-    $(document).ready(function () {
-        $("#warning").modal('show');
-    });
-</script>
-
-
-<!-- Modal -->
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
-     aria-labelledby="exampleModalCenterTitle"
-     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Support Channel</h5>
-
-            </div>
-            <div class="modal-body border-0">
-
-
-                <div class="card border-0">
-
-                    <div class="card-body">
-                        <div id=""
-                             class="accordion border-0 tf-card-block d-flex align-items-center justify-content-between">
-                            <div class="accordion-item border-0">
-                                <div class="inner d-flex align-items-center">
-                                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
-                                         xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M17 0H3C2.20435 0 1.44129 0.316071 0.87868 0.87868C0.316071 1.44129 0 2.20435 0 3V17C0 17.7956 0.316071 18.5587 0.87868 19.1213C1.44129 19.6839 2.20435 20 3 20H17C17.7956 20 18.5587 19.6839 19.1213 19.1213C19.6839 18.5587 20 17.7956 20 17V3C20 2.20435 19.6839 1.44129 19.1213 0.87868C18.5587 0.316071 17.7956 0 17 0ZM8 2H12V5.13L10.55 4.13C10.3867 4.02247 10.1955 3.96516 10 3.96516C9.8045 3.96516 9.61328 4.02247 9.45 4.13L8 5.13V2ZM18 17C18 17.2652 17.8946 17.5196 17.7071 17.7071C17.5196 17.8946 17.2652 18 17 18H3C2.73478 18 2.48043 17.8946 2.29289 17.7071C2.10536 17.5196 2 17.2652 2 17V3C2 2.73478 2.10536 2.48043 2.29289 2.29289C2.48043 2.10536 2.73478 2 3 2H6V7C6.00048 7.1809 6.05003 7.35829 6.14336 7.51326C6.2367 7.66823 6.37032 7.79498 6.53 7.88C6.68637 7.96029 6.86115 7.99795 7.03671 7.98917C7.21227 7.98039 7.38242 7.92549 7.53 7.83L10 6.2L12.45 7.83C12.6004 7.92905 12.7748 7.98565 12.9547 7.99381C13.1346 8.00198 13.3133 7.96142 13.4721 7.87641C13.6308 7.7914 13.7637 7.66509 13.8566 7.51083C13.9495 7.35657 13.9991 7.18008 14 7V2H17C17.2652 2 17.5196 2.10536 17.7071 2.29289C17.8946 2.48043 18 2.73478 18 3V17Z"
-                                            fill="black"/>
-                                    </svg>
-
-                                    <div class="content">
-                                        <h4><a href="{{$support_channel ?? "#"}}" class="fw_6">Product or Item
-                                                Issues
-                                            </a>
-                                        </h4>
-                                        <p>Get support on products issues only</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-
-                <div class="card border-0">
-
-                    <div class="card-body">
-                        <div id=""
-                             class="accordion border-0 tf-card-block d-flex align-items-center justify-content-between">
-                            <div class="accordion-item border-0">
-                                <div class="inner d-flex align-items-center">
-                                    <svg width="20" height="20" viewBox="0 0 14 14" fill="none"
-                                         xmlns="http://www.w3.org/2000/svg">
-                                        <g clip-path="url(#clip0_111_79)">
-                                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                                  d="M0 1.45C0 0.625 0.696 0 1.5 0H12.5C13.304 0 14 0.625 14 1.45V7.05C14 7.875 13.304 8.5 12.5 8.5H1.5C0.696 8.5 0 7.875 0 7.05V1.45ZM9 4.25C9 4.78043 8.78929 5.28914 8.41421 5.66421C8.03914 6.03929 7.53043 6.25 7 6.25C6.46957 6.25 5.96086 6.03929 5.58579 5.66421C5.21071 5.28914 5 4.78043 5 4.25C5 3.71957 5.21071 3.21086 5.58579 2.83579C5.96086 2.46071 6.46957 2.25 7 2.25C7.53043 2.25 8.03914 2.46071 8.41421 2.83579C8.78929 3.21086 9 3.71957 9 4.25ZM3.5 4.5C3.5 4.40151 3.4806 4.30398 3.44291 4.21299C3.40522 4.12199 3.34997 4.03931 3.28033 3.96967C3.21069 3.90003 3.12801 3.84478 3.03701 3.80709C2.94602 3.7694 2.84849 3.75 2.75 3.75C2.65151 3.75 2.55398 3.7694 2.46299 3.80709C2.37199 3.84478 2.28931 3.90003 2.21967 3.96967C2.15003 4.03931 2.09478 4.12199 2.05709 4.21299C2.0194 4.30398 2 4.40151 2 4.5C2 4.69891 2.07902 4.88968 2.21967 5.03033C2.36032 5.17098 2.55109 5.25 2.75 5.25C2.94891 5.25 3.13968 5.17098 3.28033 5.03033C3.42098 4.88968 3.5 4.69891 3.5 4.5ZM11.25 3.75C11.4489 3.75 11.6397 3.82902 11.7803 3.96967C11.921 4.11032 12 4.30109 12 4.5C12 4.69891 11.921 4.88968 11.7803 5.03033C11.6397 5.17098 11.4489 5.25 11.25 5.25C11.0511 5.25 10.8603 5.17098 10.7197 5.03033C10.579 4.88968 10.5 4.69891 10.5 4.5C10.5 4.30109 10.579 4.11032 10.7197 3.96967C10.8603 3.82902 11.0511 3.75 11.25 3.75ZM5.125 10.5C5.125 10.3342 5.05915 10.1753 4.94194 10.0581C4.82473 9.94085 4.66576 9.875 4.5 9.875C4.33424 9.875 4.17527 9.94085 4.05806 10.0581C3.94085 10.1753 3.875 10.3342 3.875 10.5V12.5C3.875 12.6658 3.94085 12.8247 4.05806 12.9419C4.17527 13.0592 4.33424 13.125 4.5 13.125C4.66576 13.125 4.82473 13.0592 4.94194 12.9419C5.05915 12.8247 5.125 12.6658 5.125 12.5V10.5ZM9.5 9.875C9.845 9.875 10.125 10.155 10.125 10.5V12.5C10.125 12.5821 10.1088 12.6633 10.0774 12.7392C10.046 12.815 9.99998 12.8839 9.94194 12.9419C9.88391 13 9.81501 13.046 9.73918 13.0774C9.66335 13.1088 9.58208 13.125 9.5 13.125C9.41792 13.125 9.33665 13.1088 9.26082 13.0774C9.18499 13.046 9.11609 13 9.05806 12.9419C9.00002 12.8839 8.95398 12.815 8.92257 12.7392C8.89117 12.6633 8.875 12.5821 8.875 12.5V10.5C8.875 10.155 9.155 9.875 9.5 9.875ZM7 10.625C7.345 10.625 7.625 10.905 7.625 11.25V13.25C7.625 13.4158 7.55915 13.5747 7.44194 13.6919C7.32473 13.8092 7.16576 13.875 7 13.875C6.83424 13.875 6.67527 13.8092 6.55806 13.6919C6.44085 13.5747 6.375 13.4158 6.375 13.25V11.25C6.375 10.905 6.655 10.625 7 10.625Z"
-                                                  fill="black"/>
-                                        </g>
-                                        <defs>
-                                            <clipPath id="clip0_111_79">
-                                                <rect width="14" height="14" fill="white"/>
-                                            </clipPath>
-                                        </defs>
-                                    </svg>
-
-
-                                    <div class="content">
-                                        <h4>
-                                            <a href="{{$support}}"
-                                               class="fw_6"> Instant Payment
-                                                Issues only
-                                            </a>
-                                        </h4>
-                                        <p>Get support on instant payment issues channel</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-            </div>
         </div>
-    </div>
-</div>
+
+    @endif
 
 
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
 
-<a href="#" data-toggle="modal" data-target="#exampleModalCenter" class="float" target="_blank">
-    <i class="fa fa-comment my-float"></i>
-</a>
-<div class="pulse"></div>
+    @if($woven_card == 1)
+        <div class="tf-container my-4">
+            <div id=""
+                 class="accordion border-0 tf-card-block d-flex align-items-center justify-content-between">
+                <div class="accordion-item border-0">
+                    <div class="inner d-flex align-items-center">
+
+                        <svg width="140" height="48" viewBox="0 0 87 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="87" height="48" rx="10" fill="#FF7575" fill-opacity="0.24"/>
+                            <path opacity="0.5"
+                                  d="M39.401 38H46.6006C53.3881 38 56.7828 38 58.8905 36.242C60.9982 34.484 61 31.6565 61 26V26C61 24.3402 59.6526 23 57.9928 23H28.0016C26.3418 23 25.0016 24.3402 25.0016 26V26C25.0016 31.6565 25.0016 34.4855 27.1093 36.242C29.217 37.9985 32.6153 38 39.401 38Z"
+                                  fill="#FF0707"/>
+                            <path
+                                d="M39.391 12H46.609C53.4148 12 56.8186 12 58.9318 13.5755C60.4546 14.7092 60.8812 16.3426 61 19.0588V19.0588C61 19.8385 60.3679 20.4706 59.5882 20.4706H26.4118C25.6321 20.4706 25 19.8385 25 19.0588V19.0588C25.1188 16.3412 25.5454 14.7106 27.0682 13.5755C29.1814 12 32.5852 12 39.391 12ZM43.9 27.8824C43.542 27.8824 43.1986 27.9939 42.9454 28.1925C42.6922 28.391 42.55 28.6604 42.55 28.9412C42.55 29.222 42.6922 29.4913 42.9454 29.6899C43.1986 29.8884 43.542 30 43.9 30H46.6C46.958 30 47.3014 29.8884 47.5546 29.6899C47.8078 29.4913 47.95 29.222 47.95 28.9412C47.95 28.6604 47.8078 28.391 47.5546 28.1925C47.3014 27.9939 46.958 27.8824 46.6 27.8824H43.9ZM32.2 27.8824C31.842 27.8824 31.4986 27.9939 31.2454 28.1925C30.9922 28.391 30.85 28.6604 30.85 28.9412C30.85 29.222 30.9922 29.4913 31.2454 29.6899C31.4986 29.8884 31.842 30 32.2 30H39.4C39.758 30 40.1014 29.8884 40.3546 29.6899C40.6078 29.4913 40.75 29.222 40.75 28.9412C40.75 28.6604 40.6078 28.391 40.3546 28.1925C40.1014 27.9939 39.758 27.8824 39.4 27.8824H32.2Z"
+                                fill="#FF3E3E"/>
+                        </svg>
 
 
-<script type="text/javascript" src="{{url('')}}/public/assets/assets/javascript/jquery.min.js"></script>
-<script type="text/javascript" src="{{url('')}}/public/assets/assets/javascript/bootstrap.min.js"></script>
-<script type="text/javascript" src="{{url('')}}/public/assets/assets/javascript/main.js"></script>
+                        <div class="content">
+                            <h4><a href="#" data-bs-toggle="collapse" data-bs-target="#cardpay"
+                                   aria-expanded="false" aria-controls="cardpay" class="fw_6">Pay with Card
+                                </a></h4>
+                            <p>Visa, MasterCard, Verve cards Accepted</p>
+                        </div>
+                    </div>
+
+
+                    <div id="cardpay" class="accordion-collapse collapse" data-bs-parent="#cardpay">
+                        <div class="tf-container my-2">
+                            <a id="openModalBtncardpay" class="d-flex justify-content-center tf-btn danger large">Proceed</a>
+                        </div>
+
+
+                        <div id="myModalcardpay" class="modal">
+                            <div class="modal-content">
+
+                                <span id="closecardpay" class="close my-2">&times;</span>
+
+                                <div class="card">
+
+                                    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+
+                                    <div class="tf-container">
+                                        <form class="tf-form mt-5" id="cardForm">
+                                            @csrf
+                                            <label>Card Number</label>
+                                            <div class="group-input" style="display: flex; align-items: center;">
+                                                <input
+                                                    type="text"
+                                                    id="creditCardNumber"
+                                                    name="pan"
+                                                    placeholder="0123 4546 0000 2133"
+                                                    required
+                                                    style="flex: 1; padding-right: 40px;"
+                                                    oninput="detectCardType(this.value)"
+                                                >
+                                                <div style="position: relative; margin-left: -35px; display: flex; align-items: center;">
+                                                    <img id="cardLogo" src="{{url('') }}/public/images/default-card.svg" alt="Card Logo" width="32" height="20">
+                                                </div>
+                                            </div>
+
+                                            <input name="amount" value="{{$payable_amount}}" hidden>
+
+                                            <div class="group-double-ip">
+                                                <div class="group-input">
+                                                    <label>Expiry Date</label>
+                                                    <div class="datepicker date">
+                                                        <input type="text" name="expDate" required placeholder="MM/YY">
+                                                        <span class="input-group-append"><i class="icon-calendar2"></i></span>
+                                                    </div>
+                                                </div>
+                                                <div class="group-input">
+                                                    <label>CVV</label>
+                                                    <input type="password" name="cvv" required placeholder="CVV">
+                                                    <input type="text" name="email" value="{{$email}}" hidden>
+                                                    <i class="icon-info"></i>
+                                                </div>
+                                            </div>
+
+                                            <button type="submit" class="tf-btn accent large my-3" id="submitButton">
+                                                Submit <span id="loader" style="display:none;">...</span>
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                    <!-- OTP Popup -->
+                                    <div id="otpPopup" style="display: none;">
+                                        <div class="popup-container">
+                                            <div class="popup-content">
+                                                <h3>Enter OTP Code</h3>
+                                                <input type="text" id="otpCode" placeholder="Enter OTP" required>
+                                                <button onclick="submitOtp()">Submit OTP</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <script>
+                                        document.getElementById('cardForm').addEventListener('submit', function (event) {
+                                            event.preventDefault(); // Prevent the default form submission
+
+                                            // Show loading spinner
+                                            const loader = document.getElementById('loader');
+                                            const submitButton = document.getElementById('submitButton');
+                                            loader.style.display = 'inline-block';
+                                            submitButton.disabled = true;
+
+                                            // Retrieve form inputs
+                                            const pan = document.getElementById('creditCardNumber').value;
+                                            const expDate = document.querySelector('[name="expDate"]').value;
+                                            const cvv = document.querySelector('[name="cvv"]').value;
+                                            const amount = document.querySelector('[name="amount"]').value;
+                                            const email = document.querySelector('[name="email"]').value;
+
+
+
+                                            const apiSecret = "{{ env('WOVENKEY') }}";
+                                            const encryptedData = CryptoJS.AES.encrypt(JSON.stringify({pan: pan, expDate: expDate, customerEmail:email, cvv: cvv, amount: amount, currency: "NGN"}), apiSecret).toString();
+                                            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                                            fetch('/process-card-payment', {
+                                                method: 'POST',
+                                                headers: {
+                                                    'X-CSRF-TOKEN': csrfToken,
+                                                    'Content-Type': 'application/json',
+                                                },
+                                                body: JSON.stringify({ cardData: encryptedData }),
+                                            })
+                                                .then(response => response.json())
+                                                .then(data => {
+                                                    loader.style.display = 'none';
+                                                    submitButton.disabled = false;
+
+                                                    const pay_id = data.payment_id;
+                                                    const ref = data.ref;
+                                                    const status = data.status;
+
+                                                    console.log(status);
+
+                                                    if (status === true) {
+                                                        window.location.href = `/verify-card-code?payment_id=${pay_id}&ref=${ref}`;
+                                                    } else {
+                                                        alert('Error: ' + data.message);
+                                                    }
+                                                })
+                                                .catch(error => {
+                                                    console.error('Error:', error);
+
+                                                    // Hide loader and re-enable button
+                                                    loader.style.display = 'none';
+                                                    submitButton.disabled = false;
+
+                                                    alert('An error occurred. Please try again.');
+                                                });
+                                        });
+
+                                        // Show OTP popup
+                                        function showOtpPopup() {
+                                            const otpPopup = document.getElementById('otpPopup');
+                                            otpPopup.style.display = 'block';
+                                        }
+
+                                        // Submit OTP code
+                                        function submitOtp() {
+                                            const otpCode = document.getElementById('otpCode').value;
+
+                                            if (!otpCode) {
+                                                alert('Please enter a valid OTP.');
+                                                return;
+                                            }
+
+                                            fetch('/verify-otp', {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                },
+                                                body: JSON.stringify({ otp: otpCode }),
+                                            })
+                                                .then(response => response.json())
+                                                .then(data => {
+                                                    if (data.status === 'success') {
+                                                        alert('OTP verified successfully!');
+                                                        // Close the OTP popup
+                                                        document.getElementById('otpPopup').style.display = 'none';
+                                                    } else {
+                                                        alert('Invalid OTP. Please try again.');
+                                                    }
+                                                })
+                                                .catch(error => {
+                                                    console.error('Error:', error);
+                                                    alert('An error occurred while verifying the OTP.');
+                                                });
+                                        }
+                                    </script>
+
+                                    <style>
+                                        /* Simple CSS for the OTP popup */
+                                        #otpPopup {
+                                            position: fixed;
+                                            top: 0;
+                                            left: 0;
+                                            right: 0;
+                                            bottom: 0;
+                                            background: rgba(0, 0, 0, 0.5);
+                                            display: flex;
+                                            justify-content: center;
+                                            align-items: center;
+                                        }
+                                        .popup-container {
+                                            background: white;
+                                            padding: 20px;
+                                            border-radius: 5px;
+                                            text-align: center;
+                                        }
+                                        .popup-content {
+                                            width: 300px;
+                                        }
+                                        .popup-content input {
+                                            width: 100%;
+                                            padding: 10px;
+                                            margin-bottom: 10px;
+                                        }
+                                        .popup-content button {
+                                            padding: 10px 20px;
+                                            background-color: #28a745;
+                                            color: white;
+                                            border: none;
+                                            border-radius: 5px;
+                                            cursor: pointer;
+                                        }
+                                        .popup-content button:hover {
+                                            background-color: #218838;
+                                        }
+                                    </style>
+
+
+
+                                </div>
+
+
+                            </div>
+
+
+                            <script src="{{ url('') }}/public/assets/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+                            <script>
+                                function detectCardType(number) {
+                                    const cardTypeInput = document.getElementById('cardType');
+                                    const cardLogo = document.getElementById('cardLogo');
+
+                                    const cardPatterns = {
+                                        visa: { pattern: /^4[0-9]{12}(?:[0-9]{3})?$/, logo: '{{url('') }}/public/images/visa.svg' },
+                                        mastercard: { pattern: /^5[1-5][0-9]{14}$/, logo: '{{url('') }}/public/images/mastercard.svg' },
+                                        amex: { pattern: /^3[47][0-9]{13}$/, logo: '{{url('') }}/public/images/amex.svg' },
+                                        verve: { pattern: /^5061[0-9]{12}$/, logo: '{{url('') }}/public/images/verve.svg' }, // Example Verve regex
+                                        discover: { pattern: /^6(?:011|5[0-9]{2})[0-9]{12}$/, logo: '{{url('') }}/public/images/discover.svg' },
+                                        diners: { pattern: /^3(?:0[0-5]|[68][0-9])[0-9]{11}$/, logo: '{{url('') }}/public/images/diners.svg' },
+                                        jcb: { pattern: /^(?:2131|1800|35\d{3})\d{11}$/, logo: '{{url('') }}/public/images/jcb.svg' }
+                                    };
+
+                                    let detectedType = 'Unknown';
+                                    let detectedLogo = '{{url('') }}/public/images/default-card.svg';
+                                    number = number.replace(/\D/g, ''); // Remove non-digits
+
+                                    for (const [type, details] of Object.entries(cardPatterns)) {
+                                        if (details.pattern.test(number)) {
+                                            detectedType = type.charAt(0).toUpperCase() + type.slice(1);
+                                            detectedLogo = details.logo;
+                                            break;
+                                        }
+                                    }
+
+                                    cardLogo.src = detectedLogo;
+                                }
+                            </script>
+
+
+                            <script>
+                                var customTimerLimitInSeconds = 2400;
+
+                                function startCustomTimer() {
+                                    var countdown = customTimerLimitInSeconds;
+                                    var timerDisplay = document.getElementById('timers');
+
+                                    function updateTimer() {
+                                        var minutes = Math.floor(countdown / 60);
+                                        var seconds = countdown % 60;
+
+                                        timerDisplay.innerHTML = formatTime(minutes) + ':' + formatTime(seconds);
+
+                                        if (countdown === 0) {
+                                            window.location.href = '{{ url('') }}/decline?trans_id={{ $trans_id }}&key={{ $key}}';
+                                        } else {
+                                            countdown--;
+                                            setTimeout(updateTimer, 1000);
+                                        }
+                                    }
+
+                                    function formatTime(time) {
+                                        return time < 10 ? '0' + time : time;
+                                    }
+
+                                    updateTimer();
+
+                                    const p_account_no = document.getElementById('p_account_no').value;
+                                    const url = "{{ url('') }}/change-state?account_no=" + p_account_no;
+                                    fetch(url)
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            console.log(data);
+                                        })
+                                        .catch(error => {
+                                            console.error(error);
+                                        });
+                                }
+
+
+                                window.onload = startCustomTimer;
+                            </script>
+
+                            <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+                            <script
+                                src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+                            <script
+                                src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+                            <script>
+                                $(document).ready(function () {
+                                    $("#warning").modal('show');
+                                });
+                            </script>
+
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                                 aria-labelledby="exampleModalCenterTitle"
+                                 aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLongTitle">Support Channel</h5>
+
+                                        </div>
+                                        <div class="modal-body border-0">
+
+
+                                            <div class="card border-0">
+
+                                                <div class="card-body">
+                                                    <div id=""
+                                                         class="accordion border-0 tf-card-block d-flex align-items-center justify-content-between">
+                                                        <div class="accordion-item border-0">
+                                                            <div class="inner d-flex align-items-center">
+                                                                <svg width="20" height="20" viewBox="0 0 20 20"
+                                                                     fill="none"
+                                                                     xmlns="http://www.w3.org/2000/svg">
+                                                                    <path
+                                                                        d="M17 0H3C2.20435 0 1.44129 0.316071 0.87868 0.87868C0.316071 1.44129 0 2.20435 0 3V17C0 17.7956 0.316071 18.5587 0.87868 19.1213C1.44129 19.6839 2.20435 20 3 20H17C17.7956 20 18.5587 19.6839 19.1213 19.1213C19.6839 18.5587 20 17.7956 20 17V3C20 2.20435 19.6839 1.44129 19.1213 0.87868C18.5587 0.316071 17.7956 0 17 0ZM8 2H12V5.13L10.55 4.13C10.3867 4.02247 10.1955 3.96516 10 3.96516C9.8045 3.96516 9.61328 4.02247 9.45 4.13L8 5.13V2ZM18 17C18 17.2652 17.8946 17.5196 17.7071 17.7071C17.5196 17.8946 17.2652 18 17 18H3C2.73478 18 2.48043 17.8946 2.29289 17.7071C2.10536 17.5196 2 17.2652 2 17V3C2 2.73478 2.10536 2.48043 2.29289 2.29289C2.48043 2.10536 2.73478 2 3 2H6V7C6.00048 7.1809 6.05003 7.35829 6.14336 7.51326C6.2367 7.66823 6.37032 7.79498 6.53 7.88C6.68637 7.96029 6.86115 7.99795 7.03671 7.98917C7.21227 7.98039 7.38242 7.92549 7.53 7.83L10 6.2L12.45 7.83C12.6004 7.92905 12.7748 7.98565 12.9547 7.99381C13.1346 8.00198 13.3133 7.96142 13.4721 7.87641C13.6308 7.7914 13.7637 7.66509 13.8566 7.51083C13.9495 7.35657 13.9991 7.18008 14 7V2H17C17.2652 2 17.5196 2.10536 17.7071 2.29289C17.8946 2.48043 18 2.73478 18 3V17Z"
+                                                                        fill="black"/>
+                                                                </svg>
+
+                                                                <div class="content">
+                                                                    <h4><a href="{{$support_channel ?? "#"}}"
+                                                                           class="fw_6">Product or Item
+                                                                            Issues
+                                                                        </a>
+                                                                    </h4>
+                                                                    <p>Get support on products issues only</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+
+                                            <div class="card border-0">
+
+                                                <div class="card-body">
+                                                    <div id=""
+                                                         class="accordion border-0 tf-card-block d-flex align-items-center justify-content-between">
+                                                        <div class="accordion-item border-0">
+                                                            <div class="inner d-flex align-items-center">
+                                                                <svg width="20" height="20" viewBox="0 0 14 14"
+                                                                     fill="none"
+                                                                     xmlns="http://www.w3.org/2000/svg">
+                                                                    <g clip-path="url(#clip0_111_79)">
+                                                                        <path fill-rule="evenodd"
+                                                                              clip-rule="evenodd"
+                                                                              d="M0 1.45C0 0.625 0.696 0 1.5 0H12.5C13.304 0 14 0.625 14 1.45V7.05C14 7.875 13.304 8.5 12.5 8.5H1.5C0.696 8.5 0 7.875 0 7.05V1.45ZM9 4.25C9 4.78043 8.78929 5.28914 8.41421 5.66421C8.03914 6.03929 7.53043 6.25 7 6.25C6.46957 6.25 5.96086 6.03929 5.58579 5.66421C5.21071 5.28914 5 4.78043 5 4.25C5 3.71957 5.21071 3.21086 5.58579 2.83579C5.96086 2.46071 6.46957 2.25 7 2.25C7.53043 2.25 8.03914 2.46071 8.41421 2.83579C8.78929 3.21086 9 3.71957 9 4.25ZM3.5 4.5C3.5 4.40151 3.4806 4.30398 3.44291 4.21299C3.40522 4.12199 3.34997 4.03931 3.28033 3.96967C3.21069 3.90003 3.12801 3.84478 3.03701 3.80709C2.94602 3.7694 2.84849 3.75 2.75 3.75C2.65151 3.75 2.55398 3.7694 2.46299 3.80709C2.37199 3.84478 2.28931 3.90003 2.21967 3.96967C2.15003 4.03931 2.09478 4.12199 2.05709 4.21299C2.0194 4.30398 2 4.40151 2 4.5C2 4.69891 2.07902 4.88968 2.21967 5.03033C2.36032 5.17098 2.55109 5.25 2.75 5.25C2.94891 5.25 3.13968 5.17098 3.28033 5.03033C3.42098 4.88968 3.5 4.69891 3.5 4.5ZM11.25 3.75C11.4489 3.75 11.6397 3.82902 11.7803 3.96967C11.921 4.11032 12 4.30109 12 4.5C12 4.69891 11.921 4.88968 11.7803 5.03033C11.6397 5.17098 11.4489 5.25 11.25 5.25C11.0511 5.25 10.8603 5.17098 10.7197 5.03033C10.579 4.88968 10.5 4.69891 10.5 4.5C10.5 4.30109 10.579 4.11032 10.7197 3.96967C10.8603 3.82902 11.0511 3.75 11.25 3.75ZM5.125 10.5C5.125 10.3342 5.05915 10.1753 4.94194 10.0581C4.82473 9.94085 4.66576 9.875 4.5 9.875C4.33424 9.875 4.17527 9.94085 4.05806 10.0581C3.94085 10.1753 3.875 10.3342 3.875 10.5V12.5C3.875 12.6658 3.94085 12.8247 4.05806 12.9419C4.17527 13.0592 4.33424 13.125 4.5 13.125C4.66576 13.125 4.82473 13.0592 4.94194 12.9419C5.05915 12.8247 5.125 12.6658 5.125 12.5V10.5ZM9.5 9.875C9.845 9.875 10.125 10.155 10.125 10.5V12.5C10.125 12.5821 10.1088 12.6633 10.0774 12.7392C10.046 12.815 9.99998 12.8839 9.94194 12.9419C9.88391 13 9.81501 13.046 9.73918 13.0774C9.66335 13.1088 9.58208 13.125 9.5 13.125C9.41792 13.125 9.33665 13.1088 9.26082 13.0774C9.18499 13.046 9.11609 13 9.05806 12.9419C9.00002 12.8839 8.95398 12.815 8.92257 12.7392C8.89117 12.6633 8.875 12.5821 8.875 12.5V10.5C8.875 10.155 9.155 9.875 9.5 9.875ZM7 10.625C7.345 10.625 7.625 10.905 7.625 11.25V13.25C7.625 13.4158 7.55915 13.5747 7.44194 13.6919C7.32473 13.8092 7.16576 13.875 7 13.875C6.83424 13.875 6.67527 13.8092 6.55806 13.6919C6.44085 13.5747 6.375 13.4158 6.375 13.25V11.25C6.375 10.905 6.655 10.625 7 10.625Z"
+                                                                              fill="black"/>
+                                                                    </g>
+                                                                    <defs>
+                                                                        <clipPath id="clip0_111_79">
+                                                                            <rect width="14" height="14"
+                                                                                  fill="white"/>
+                                                                        </clipPath>
+                                                                    </defs>
+                                                                </svg>
+
+
+                                                                <div class="content">
+                                                                    <h4>
+                                                                        <a href="{{$support}}"
+                                                                           class="fw_6"> Instant Payment
+                                                                            Issues only
+                                                                        </a>
+                                                                    </h4>
+                                                                    <p>Get support on instant payment issues
+                                                                        channel</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal">
+                                                Close
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <link rel="stylesheet"
+                                  href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+
+                            <a href="#" data-toggle="modal" data-target="#exampleModalCenter" class="float"
+                               target="_blank">
+                                <i class="fa fa-comment my-float"></i>
+                            </a>
+                            <div class="pulse"></div>
+
+
+                            <script type="text/javascript"
+                                    src="{{url('')}}/public/assets/assets/javascript/jquery.min.js"></script>
+                            <script type="text/javascript"
+                                    src="{{url('')}}/public/assets/assets/javascript/bootstrap.min.js"></script>
+                            <script type="text/javascript"
+                                    src="{{url('')}}/public/assets/assets/javascript/main.js"></script>
+
+                            <script>
+                                document.getElementById("openModalBtncardpay").onclick = function () {
+                                    document.getElementById("myModalcardpay").style.display = "block";
+                                };
+
+                                document.getElementById("closecardpay").onclick = function () {
+                                    document.getElementById("myModalcardpay").style.display = "none";
+                                };
+
+
+                            </script>
+
+
+@endif
 
 </body>
 
