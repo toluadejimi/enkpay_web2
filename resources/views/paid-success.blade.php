@@ -74,10 +74,6 @@
             <div class="content">
                 <div class="top">
                     <h2>Payment Successful!</h2>
-                    <p class="fw_4">Wallet Funded</p>
-                    <h2 class="my-3"><strong >NGN{{number_format($amount, 2)}}</strong></h2>
-
-
                 </div>
                 <div class="tf-spacing-16"></div>
                 <div class="inner">

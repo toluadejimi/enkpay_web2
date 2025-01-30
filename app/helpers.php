@@ -2901,8 +2901,8 @@ if (!function_exists('verifypelpay')) {
 
             $var = curl_exec($curl);
             curl_close($curl);
-            $var = json_decode($var);
-            $status = $var->status ?? null;
+            $result = json_decode($var);
+            $status = $result->status ?? null;
 
 
             if ($status == true) {
