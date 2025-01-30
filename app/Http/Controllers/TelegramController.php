@@ -19,9 +19,8 @@ class TelegramController extends Controller
     public function webhook(Request $request)
     {
         // Get the incoming update
-          $update = $request->all();
-        $message = json_encode($request->all());
-//
+        $update = $request->all();
+        $message = "Telegrambot========>".  json_encode($request->all());
         send_notification($message);
 
         // Check if the update contains a message
