@@ -3244,9 +3244,6 @@ if (!function_exists('verifypelpayreslove')) {
                 $acct_no = $var->data->transactions[0]->nuban ?? null;
                 $tx_status = $var->data->transactions[0]->status;
 
-                return $var;
-
-
 
                 if ($status == "success" && $tx_status == "FAILED" && $title == $acct_no) {
                     return ['code' => 9];
@@ -3356,6 +3353,44 @@ if (!function_exists('verifypelpayreslove')) {
 
             } else {
                 return ['code' => 4];
+            }
+
+
+            $token = env('WOVENKEY');
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => "https://api.woven.finance/v2/api/transactions?vnuban=$title",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'GET',
+                CURLOPT_HTTPHEADER => array(
+                    'Content-Type: application/json',
+                    "api_secret:$token"
+                ),
+            ));
+
+            $var2 = curl_exec($curl);
+            curl_close($curl);
+            $var = json_decode($var2);
+            $status = $var->status ?? null;
+            $pstatus = $var->data->transactions[0]->status ?? null;
+            $acct_no = $var->data->transactions[0]->nuban ?? null;
+            $tx_status = $var->data->transactions[0]->status;
+
+
+            if ($status == "success" && $tx_status == "FAILED" && $title == $acct_no) {
+                return ['code' => 9];
+            } elseif ($status == "success" && $pstatus == "REVERSE_FAILED" && $title == $acct_no) {
+                return ['code' => 9];
+            } elseif ($status == "success" && $pstatus == "REVERSED" && $title == $acct_no) {
+                return ['code' => 6];
+            } else {
+                return ['code' => 1];
             }
 
 
