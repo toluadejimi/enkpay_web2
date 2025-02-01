@@ -318,7 +318,7 @@ class TelegramController extends Controller
                 $cc = json_encode($verify);
 
                 if (!is_array($verify)) {
-                    $replyText = $cc. "Error: Unexpected response format.";
+                    $replyText = $title. "| ".$cc . "Error: Unexpected response format.";
 
                 } else {
                     switch ($verify['code']) {
