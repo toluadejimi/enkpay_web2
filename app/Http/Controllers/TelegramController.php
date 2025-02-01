@@ -20,7 +20,7 @@ class TelegramController extends Controller
     {
         // Get the incoming update
         $update = $request->all();
-        $message = "Telegrambot========>".  json_encode($request->all());
+        $message = "Telegrambot ========>".  json_encode($request->all());
         send_notification($message);
 
         // Check if the update contains a message
@@ -43,7 +43,13 @@ class TelegramController extends Controller
         if (stripos($message, 'hello') !== false || stripos($message, 'hi') !== false) {
             $replyText = "Hello! $username, welcome to Sprintpay Resolve Bot 😊\n\n"
                 . "To resolve your transaction | Reply with Account No'\n\n"
-                . "Ex: 99337747474\n\n";
+                . "Ex: 99337747474\n\n"
+
+                . "WATCH HOW TO USE SPRINT PAY BOT: https://vimeo.com/1052607175/f5acd51a63\n\n"
+
+
+
+            ;
 
         } elseif (stripos($message, 'help') !== false) {
             $replyText = "You can ask me anything!";
