@@ -389,6 +389,31 @@ class TelegramController extends Controller
                 }
             }
             else {
+
+                $verify = verify_telegram_payment_woven($title);
+                $cc = json_encode($verify);
+
+                if (!is_array($verify)) {
+                    $replyText = $title. "| ".$cc . "Error: Unexpected response format.";
+
+                } else {
+                    switch ($verify['code']) {
+                        case 9:
+                            $replyText = "Account No: $title | Failed ❌\n\n"
+                                ."If you have been debited, Please contact your bank for reversal";
+                            break;
+                        case 6:
+                            $replyText = "Account No: $title | Transaction reversed 🔄\n\n"
+                                ."Transaction has been successfully reversed back to your account";
+                            break;
+
+                        default:
+                            $replyText = "Account No: $title | Failed ❌\n\n"
+                                ."If you have been debited, Please contact your bank for reversal";
+                            break;
+                    }
+                }
+
                 $replyText = "Account no: $title | not found ❌\n"
                     . "Please verify the Account No and try again.";
             }
