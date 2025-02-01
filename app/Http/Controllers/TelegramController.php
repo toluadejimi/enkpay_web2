@@ -299,7 +299,6 @@ class TelegramController extends Controller
                 }
             }
             else {
-
                 $verify = verify_telegram_payment_woven($title);
                 $cc = json_encode($verify);
 
@@ -323,9 +322,6 @@ class TelegramController extends Controller
                             break;
                     }
                 }
-
-                $replyText = "Account no: $title | not found ❌\n"
-                    . "Please verify the Account No and try again.";
             }
 
         }
