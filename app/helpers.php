@@ -3257,7 +3257,7 @@ if (!function_exists('verifypelpayreslove')) {
 
                     if ($pstatus == 4) {
 
-                        return "hello";
+                        return ['code' => 4];
                     }
 
 
@@ -3351,7 +3351,7 @@ if (!function_exists('verifypelpayreslove')) {
                 }
 
             } else {
-                return 4;
+                return ['code' => 4];
             }
 
 
