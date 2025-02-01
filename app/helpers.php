@@ -3244,8 +3244,10 @@ if (!function_exists('verifypelpayreslove')) {
                 $acct_no = $var->data->transactions[0]->nuban ?? null;
                 $tx_status = $var->data->transactions[0]->status;
 
+
+
                 if ($status == "success" && $tx_status == "FAILED" && $title == $acct_no) {
-                    return 9;
+                    return ['code' => 9];
                 } elseif ($status == "success" && $pstatus == "ACTIVE" && $title == $acct_no) {
 
                     $acc_no = $title;
