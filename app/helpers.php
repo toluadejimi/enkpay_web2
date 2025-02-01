@@ -3268,7 +3268,7 @@ if (!function_exists('verifypelpayreslove')) {
 
                     $trx = Transfertransaction::where('account_no', $acc_no)->first() ?? null;
                     if ($trx == null) {
-                        return 3;
+                        return ['code' => 3];
 
                     }
 
@@ -3336,18 +3336,18 @@ if (!function_exists('verifypelpayreslove')) {
                             $type = "epayment";
                             $fund = credit_user_wallet($url, $user_email, $amount, $order_id, $type, $session_id);
 
-                            return 2;
+                            return ['code' => 2];
 
                         }
                     }
 
 
                 } elseif ($status == "success" && $pstatus == "REVERSE_FAILED" && $title == $acct_no) {
-                    return 9;
+                    return ['code' => 9];
                 } elseif ($status == "success" && $pstatus == "REVERSED" && $title == $acct_no) {
-                    return 6;
+                    return ['code' => 6];
                 } else {
-                    return 9;
+                    return ['code' => 1];
                 }
 
             } else {
