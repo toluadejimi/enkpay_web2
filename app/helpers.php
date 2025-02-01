@@ -1927,55 +1927,54 @@ function verifypelpaytelegram($pref)
     try {
 
 
-    $token = tokenkey();
-    $url = env('PELPAYURL');
-    $url2 = "$url/api/Transaction/bypaymentreference/$pref";
+        $token = tokenkey();
+        $url = env('PELPAYURL');
+        $url2 = "$url/api/Transaction/bypaymentreference/$pref";
 
-    // Initialize CURL
-    $curl = curl_init();
-    curl_setopt_array($curl, [
-        CURLOPT_URL => $url2,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => '',
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => 'GET',
-        CURLOPT_HTTPHEADER => [
-            'Content-Type: application/json',
-            "Authorization: Bearer $token"
-        ],
-    ]);
+        // Initialize CURL
+        $curl = curl_init();
+        curl_setopt_array($curl, [
+            CURLOPT_URL => $url2,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+                "Authorization: Bearer $token"
+            ],
+        ]);
 
-    $response = curl_exec($curl);
-    curl_close($curl);
-    $var = json_decode($response);
+        $response = curl_exec($curl);
+        curl_close($curl);
+        $var = json_decode($response);
 
 
+        if (!isset($var->requestSuccessful)) {
 
-    if (!isset($var->requestSuccessful)) {
+            return ['code' => -1, 'message' => "API response error."];
+        }
 
-        return ['code' => -1, 'message' => "API response error."];
-    }
+        if ($var->requestSuccessful !== true) {
+            $message = json_encode($var);
+            send_notification($message);
+            return ['code' => -1, 'message' => $var->message ?? "Unknown API error."];
+        }
 
-    if ($var->requestSuccessful !== true) {
-        $message = json_encode($var);
-        send_notification($message);
-        return ['code' => -1, 'message' => $var->message ?? "Unknown API error."];
-    }
+        $transactionStatus = $var->responseData->transactionStatus ?? null;
 
-    $transactionStatus = $var->responseData->transactionStatus ?? null;
+        if ($transactionStatus === "Processing") {
+            return ['code' => 0, 'message' => "Transaction is still processing."];
+        }
 
-    if ($transactionStatus === "Processing") {
-        return ['code' => 0, 'message' => "Transaction is still processing."];
-    }
+        if ($transactionStatus === "Failed") {
+            return ['code' => 9, 'message' => "Transaction failed."];
+        }
 
-    if ($transactionStatus === "Failed") {
-        return ['code' => 9, 'message' => "Transaction failed."];
-    }
-
-    if ($transactionStatus === "Successful" && ($var->responseData->message ?? "") === "Successful") {
+        if ($transactionStatus === "Successful" && ($var->responseData->message ?? "") === "Successful") {
 
 
             $acc_no = Transfertransaction::where('ref', $pref)->first()->account_no ?? null;
@@ -2098,18 +2097,12 @@ function verifypelpaytelegram($pref)
         }
 
 
-    }catch (\Exception $e) {
+    } catch (\Exception $e) {
         return ['code' => -1, 'message' => $e->getMessage()];
     }
 
 
 }
-
-
-
-
-
-
 
 
 function verifypsbtelegram($pref)
@@ -2118,7 +2111,7 @@ function verifypsbtelegram($pref)
     try {
 
         $ckstatus = Transfertransaction::where('account_no', $pref)->first()->status ?? null;
-        if($ckstatus == null){
+        if ($ckstatus == null) {
             return [
                 'code' => 9
             ];
@@ -2129,7 +2122,7 @@ function verifypsbtelegram($pref)
             return [
                 'code' => 4
             ];
-        }else {
+        } else {
 
             $status = Transfertransaction::where('account_no', $pref)->first()->status ?? null;
             $email = Transfertransaction::where('account_no', $pref)->first()->email ?? null;
@@ -2188,7 +2181,6 @@ function verifypsbtelegram($pref)
 
             $user_email = $trxs->email ?? null;
             $site_name = Webkey::where('key', $trxs->key)->first()->site_name ?? null;
-
 
 
             $set = Setting::where('id', 1)->first();
@@ -2278,8 +2270,7 @@ function verifypsbtelegram($pref)
         }
 
 
-
-    }catch (\Exception $e) {
+    } catch (\Exception $e) {
         return ['code' => -1, 'message' => $e->getMessage()];
     }
 
@@ -2964,11 +2955,11 @@ if (!function_exists('verifypelpay')) {
     {
 
 
-        if($code == "090110"){
+        if ($code == "090110") {
             $bank_name = "VFD";
-        }elseif ($code == "000017"){
+        } elseif ($code == "000017") {
             $bank_name = "WEMA";
-        }else{
+        } else {
             $bank_name = "CORONATION MERVHANT BANK";
         }
 
@@ -3004,7 +2995,6 @@ if (!function_exists('verifypelpay')) {
         curl_close($curl);
         $var = json_decode($var);
         $status = $var->message ?? null;
-
 
 
         if ($status == "The process was completed successfully") {
@@ -3212,6 +3202,172 @@ if (!function_exists('verifypelpayreslove')) {
 
             $request = $ref;
             $message = "Wema Resolve error =======>" . json_encode($var2);
+            send_notification($message);
+            return 0;
+
+        }
+    }
+
+
+    if (!function_exists('verify_telegram_payment_woven')) {
+
+        function verify_telegram_payment_woven($title)
+        {
+
+
+            $st = Transfertransaction::where('account_no', $title)->first()->status ?? null;
+            if ($st != 4) {
+
+                $token = env('WOVENKEY');
+                $curl = curl_init();
+
+                curl_setopt_array($curl, array(
+                    CURLOPT_URL => "https://api.woven.finance/v2/api/transactions?vnuban=$title",
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'GET',
+                    CURLOPT_HTTPHEADER => array(
+                        'Content-Type: application/json',
+                        "api_secret:$token"
+                    ),
+                ));
+
+                $var2 = curl_exec($curl);
+                curl_close($curl);
+                $var = json_decode($var2);
+                $status = $var->status ?? null;
+                $pstatus = $var->data->transactions[0]->status ?? null;
+                $acct_no = $var->data->transactions[0]->nuban ?? null;
+                $tx_status = $var->data->transactions[0]->status;
+
+                if ($status == "success" && $tx_status == "FAILED" && $title == $acct_no) {
+                    return 9;
+                } elseif ($status == "success" && $pstatus == "ACTIVE" && $title == $acct_no) {
+
+                    $acc_no = $title;
+                    $status = Transfertransaction::where('account_no', $acc_no)->first()->status ?? null;
+                    $trx = Transfertransaction::where('account_no', $acc_no)->first() ?? null;
+                    $amount = Transfertransaction::where('account_no', $acc_no)->first()->amount ?? null;
+                    $pstatus = Transfertransaction::where('account_no', $acc_no)->first()->status ?? null;
+
+
+                    if ($pstatus == 4) {
+                        return [
+                            'code' => 4
+                        ];
+
+                    }
+
+
+                    if ($status == 4) {
+
+                        $ref = $trx->ref_trans_id;
+                        $url = url('') . "/success?trans_id=$ref&amount=$amount";
+                        return [
+                            'url' => $url,
+                            'code' => 4
+                        ];
+
+                    }
+
+
+                    $trx = Transfertransaction::where('account_no', $acc_no)->first() ?? null;
+                    if ($trx == null) {
+                        return [
+                            'code' => 3,
+                            'message' => "Account not found"
+                        ];
+
+                    }
+
+                    $trx = Transfertransaction::where('account_no', $acc_no)->first() ?? null;
+                    $main_amount = $var->data->transactions[0]->amount;
+                    if ($trx != null) {
+
+                        $set = Setting::where('id', 1)->first();
+                        if ($amount > 11000) {
+                            $p_amount = $main_amount - 300;
+                        } else {
+                            $p_amount = $main_amount - 100;
+                        }
+
+                        if ($trx->status == 0 || $trx->status == 3 || $trx->status == 2 || $trx->status == 1) {
+                            //fund Vendor
+                            $trx = Transfertransaction::where('account_no', $acc_no)->first();
+                            $ramount = $p_amount - 100;
+                            User::where('id', $trx->user_id)->increment('main_wallet', $ramount);
+                            $balance = User::where('id', $trx->user_id)->first()->main_wallet;
+                            $user = User::where('id', $trx->user_id)->first();
+                            Transfertransaction::where('account_no', $acc_no)->update(['session_id' => $var->data->transactions[0]->nip_session_id]);
+
+                            $session_id = $var->data->transactions[0]->nip_session_id;
+
+                            $url = Webkey::where('key', $trx->key)->first()->url_fund ?? null;
+                            $user_email = $trx->email ?? null;
+                            $order_id = $trx->ref_trans_id ?? null;
+                            $site_name = Webkey::where('key', $trx->key)->first()->site_name ?? null;
+
+                            $trasnaction = new Transaction();
+                            $trasnaction->user_id = $trx->user_id;
+                            $trasnaction->e_ref = $request->sessionid ?? $acc_no;
+                            $trasnaction->ref_trans_id = $order_id;
+                            $trasnaction->type = "webpay";
+                            $trasnaction->transaction_type = "VirtualFundWallet";
+                            $trasnaction->title = "Wallet Funding";
+                            $trasnaction->main_type = "WOVEN";
+                            $trasnaction->credit = $p_amount;
+                            $trasnaction->note = "Transaction Successful | Web Pay | for $user_email";
+                            $trasnaction->fee = $fee ?? 0;
+                            $trasnaction->amount = $trx->amount;
+                            $trasnaction->e_charges = 0;
+                            $trasnaction->charge = $payable ?? 0;
+                            $trasnaction->enkPay_Cashout_profit = 0;
+                            $trasnaction->balance = $balance;
+                            $trasnaction->status = 1;
+                            $trasnaction->save();
+
+                            $message = "Business funded | Resolve BOT | $acc_no | WOVEN | $ramount | $user->first_name " . " " . $user->last_name;
+                            send_notification($message);
+
+                            Webtransfer::where('trans_id', $trx->trans_id)->update(['status' => 4]);
+                            Transfertransaction::where('account_no', $acc_no)->update(['status' => 4, 'resolve' => 1]);
+                                Webhook::where('account_no', $acc_no)->delete() ?? null;
+
+                            $trck = new Transactioncheck();
+                            $trck->session_id = $session_id;
+                            $trck->amount = $trx->amount;
+                            $trck->status = 2;
+                            $trck->email = $user_email;
+                            $trck->save();
+
+
+                            $type = "epayment";
+                            $fund = credit_user_wallet($url, $user_email, $amount, $order_id, $type, $session_id);
+
+                            return ['code' => 2, 'message' => "Transaction completed"];
+
+                        }
+                    }
+
+
+                } elseif ($status == "success" && $pstatus == "REVERSE_FAILED" && $title == $acct_no) {
+                    return 9;
+                } elseif ($status == "success" && $pstatus == "REVERSED" && $title == $acct_no) {
+                    return 6;
+                } else {
+                    return 9;
+                }
+
+            } else {
+                return 4;
+            }
+
+
+            $message = "WOVEN TELEGRAM Resolve error =======>" . json_encode($var2);
             send_notification($message);
             return 0;
 
