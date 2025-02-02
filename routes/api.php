@@ -29,7 +29,7 @@ use App\Http\Controllers\VirtualAccount\VirtualController;
 Route::get('check-vendor', [TransactionController::class, 'check_vendor']);
 
 Route::any('telegram-webhook', [TelegramController::class, 'webhook']);
-Route::any('telegram-test', [TelegramController::class, 'verify_telegram_payment_woven']);
+Route::any('telegram-test', [TelegramController::class, 'verify_telegram_test']);
 
 Route::post('fund-merchant', [TransactionController::class, 'fund_merchant']);
 
