@@ -3240,9 +3240,9 @@ if (!function_exists('verifypelpayreslove')) {
                 curl_close($curl);
                 $var = json_decode($var2);
                 $status = $var->status ?? null;
-                $pstatus = $var->data->transactions[0]->status ?? null;
-                $acct_no = $var->data->transactions[0]->nuban ?? null;
-                $tx_status = $var->data->transactions[0]->status;
+                $pstatus = $var->data->transactions->status ?? null;
+                $acct_no = $var->data->transactions->nuban ?? null;
+                $tx_status = $var->data->transactions->status;
 
 
                 if ($status == "success" && $tx_status == "FAILED" && $title == $acct_no) {
