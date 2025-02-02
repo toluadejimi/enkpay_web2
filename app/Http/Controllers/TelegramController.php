@@ -11,6 +11,13 @@ class TelegramController extends Controller
 {
     protected $telegram;
 
+    public function verify_telegram_test(request $request)
+    {
+        $title = $request->account;
+        $test = verify_telegram_payment_woven($title);
+    }
+
+
     public function __construct(TelegramService $telegram)
     {
         $this->telegram = $telegram;
