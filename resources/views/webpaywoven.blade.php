@@ -132,7 +132,7 @@
                             <hr>
                             <p class="justify-between">
                                 <strong>Account Number:</strong>
-                                <span class="" onclick="copyAccountNumber()"  id="accountNumber">{{$account_no}}📋</span>
+                                <span class="" onclick="copyAccountNumber()"  id="accountNumber">{{$account_no}}</span>
 
                             </p>                            <hr>
                             <p class="justify-between"><strong>Account Name:</strong> {{$account_name}}</p>
