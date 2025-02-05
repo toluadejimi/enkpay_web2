@@ -1214,7 +1214,7 @@ class TransactionController extends Controller
                     $data['back_url'] =$burl."?status=failed&ref=".$request->ref;
 
 
-                    $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount;
+                    $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount . "| ".$request->email;
                     send_notification($message);
 
 
