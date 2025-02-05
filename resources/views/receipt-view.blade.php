@@ -472,7 +472,7 @@
                                                                 style="margin: 0; color: #9b9b9b; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 14px; font-weight: 400; line-height: 1.3; padding: 0; text-align: left;">
                                                                 <p
                                                                     style="margin: 0; margin-bottom: 10px; color: rgba(74,82,106,.99); font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 12px!important; font-weight: 400; letter-spacing: 0; line-height: normal; padding: 0; text-align: center;">
-                                                                    ENKWAVE LTD</p>
+                                                                    SPRINT PAY</p>
                                                             </th>
                                                             <th
                                                                 style="margin: 0; color: #9b9b9b; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Helvetica Neue',sans-serif; font-size: 14px; font-weight: 400; line-height: 1.3; padding: 0!important; text-align: left; width: 0;">

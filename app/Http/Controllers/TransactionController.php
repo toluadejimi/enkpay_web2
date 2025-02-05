@@ -12,7 +12,6 @@ use App\Models\Setting;
 use App\Models\Support;
 use App\Models\TidConfig;
 use App\Models\Transaction;
-use App\Models\Transactioncheck;
 use App\Models\Transfer;
 use App\Models\Transfertransaction;
 use App\Models\Ttmfb;
@@ -27,9 +26,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 
@@ -174,20 +173,18 @@ class TransactionController extends Controller
         }
 
 
-
         $data['acc_no'] = $request->receiver_account_number;
         $data['amount'] = $request->amount;
 
 
         $webh = Webhook::where('account_no', $data['acc_no'])->first() ?? null;
-        if ($webh == null){
+        if ($webh == null) {
             $webhook = new Webhook();
             $webhook->account_no = $data['acc_no'];
             $webhook->amount = $data['amount'];
             $webhook->sessionId = $request->sessionid;
             $webhook->save();
         }
-
 
 
         $set = Setting::where('id', 1)->first();
@@ -209,7 +206,6 @@ class TransactionController extends Controller
         }
 
 
-
         $trx = Transfertransaction::where('account_no', $request->receiver_account_number)
             ->first() ?? null;
 
@@ -223,9 +219,6 @@ class TransactionController extends Controller
             ]);
 
         }
-
-
-
 
 
         if ($trx != null) {
@@ -284,8 +277,7 @@ class TransactionController extends Controller
                 $message = "Business funded | $acct | $f_amount | $user->first_name " . " " . $user->last_name;
                 send_notification($message);
 
-                Webhook::where('account_no', $acct)->delete() ?? null;
-
+                    Webhook::where('account_no', $acct)->delete() ?? null;
 
 
                 Webtransfer::where('trans_id', $trx->trans_id)->update(['status' => 4]);
@@ -325,15 +317,15 @@ class TransactionController extends Controller
                 }
 
 
-                $type ="epayment";
+                $type = "epayment";
                 $session_id = $request->sessionid;
-                $fund = credit_user_wallet($url, $user_email, $amount, $order_id, $type,$session_id);
+                $fund = credit_user_wallet($url, $user_email, $amount, $order_id, $type, $session_id);
 
                 Webtransfer::where('trans_id', $trx->trans_id)->update(['status' => 1]);
 
 
             }
-        }else{
+        } else {
 
             return response()->json([
                 'status' => false,
@@ -678,7 +670,7 @@ class TransactionController extends Controller
     function webpay_view(Request $request)
     {
 
-        if($request->key == null){
+        if ($request->key == null) {
             abort(Response::HTTP_LOCKED, 'Yo take it easy');
         }
 
@@ -697,12 +689,6 @@ class TransactionController extends Controller
         }
 
 
-
-
-
-
-
-
         $data['key'] = $request->key;
         $data['amount'] = $request->amount;
         $data['email'] = $request->email ?? "example@gmail.com";;
@@ -717,7 +703,6 @@ class TransactionController extends Controller
         $text = ["KEM GLOBAL", "VIVID ENT", "ROYAL LTD", "LOGI ENT", "KABS LTD", "KENS ENT"];
         $random_index = array_rand($text);
         $data['account_name'] = $text[$random_index];
-
 
 
         if ($business_id != null) {
@@ -755,8 +740,7 @@ class TransactionController extends Controller
         $data['p_bank_name'] = $acc->v_bank_name ?? null;
 
 
-
-        if($request->platform == 'boomzy'){
+        if ($request->platform == 'boomzy') {
 
 
             $key = $request->key;
@@ -774,8 +758,6 @@ class TransactionController extends Controller
             $text = ["BOOMZY"];
             $random_index = array_rand($text);
             $account_name = $text[$random_index];
-
-
 
 
             if ($business_id != null) {
@@ -863,17 +845,17 @@ class TransactionController extends Controller
 
             if ($set->charm == 1) {
                 $faker = Factory::create();
-                if($request->amount < 200){
+                if ($request->amount < 200) {
                     $pamount = $request->amount;
-                }elseif ($request->amount == 300) {
+                } elseif ($request->amount == 300) {
                     $pamount = $request->amount + 100;
-                }elseif ($request->amount > 300 && $request->amount < 19999){
+                } elseif ($request->amount > 300 && $request->amount < 19999) {
                     $pamount = $request->amount + 100;
-                }elseif($request->amount >= 20000) {
+                } elseif ($request->amount >= 20000) {
                     $pamount = $request->amount + 300;
-                    $amount = $pamount-100;
+                    $amount = $pamount - 100;
 
-                }else{
+                } else {
                     $pamount = $request->amount;
                 }
 
@@ -894,7 +876,6 @@ class TransactionController extends Controller
                 $payment_ref = null;
                 $pamount = $request->amount;
             }
-
 
 
             $opay_acct = ManualAccount::where('status', 1)->where('type', "opay")->first() ?? null;
@@ -938,7 +919,7 @@ class TransactionController extends Controller
                 $trans->data = $data;
                 $trans->adviceReference = $adviceReference ?? null;
                 $trans->ref = $ref ?? null;
-                $trans->adviceReference =  $payment_ref ?? null;
+                $trans->adviceReference = $payment_ref ?? null;
                 $trans->both_commmission = $both_commmission;
                 $trans->save();
             }
@@ -947,7 +928,7 @@ class TransactionController extends Controller
             $set = Setting::where('id', 1)->first();
             $boomzy = $set->boomzy;
 
-            if($boomzy == 1){
+            if ($boomzy == 1) {
                 $wema = 0;
                 $transfer = 1;
                 $ninepsb = 1;
@@ -965,7 +946,6 @@ class TransactionController extends Controller
             $woven_card = $set->woven_card;
 
 
-
             $support_channel = Webkey::where('key', $request->key)->first()->support ?? null;
             $support_number = Webkey::where('key', $request->key)->first()->support_number ?? null;
 
@@ -977,11 +957,10 @@ class TransactionController extends Controller
             }
 
 
-            return view('boomzypay', compact('support','pamount', 'woven_card', 'wema', 'payment_ref', 'psb_cap', 'psb_charge', 'account_name', 'boomzy', 'ninepsb', 'ninepsb_acct', 'support_number', 'opay_transfer', 'support_channel', 'kuda_transfer', 'palmpay_transfer', 'transref', 'opay_acct', 'kuda_acct', 'palmpay_acct', 'opay_acct', 'ref', 'iref', 'crypto', 'card', 'transfer', 'bank', 'pre_link', 'payable_amount', 'email', 'user_id', 'data', 'webhook', 'key', 'amount', 'p_account_no', 'trans_id', 'both_commmission', 'p_account_name', 'p_bank_name', 'total_received'));
+            return view('boomzypay', compact('support', 'pamount', 'woven_card', 'wema', 'payment_ref', 'psb_cap', 'psb_charge', 'account_name', 'boomzy', 'ninepsb', 'ninepsb_acct', 'support_number', 'opay_transfer', 'support_channel', 'kuda_transfer', 'palmpay_transfer', 'transref', 'opay_acct', 'kuda_acct', 'palmpay_acct', 'opay_acct', 'ref', 'iref', 'crypto', 'card', 'transfer', 'bank', 'pre_link', 'payable_amount', 'email', 'user_id', 'data', 'webhook', 'key', 'amount', 'p_account_no', 'trans_id', 'both_commmission', 'p_account_name', 'p_bank_name', 'total_received'));
 
 
         }
-
 
 
         $web_commission = Charge::where('title', 'bwebpay')->first()->amount;
@@ -1007,10 +986,6 @@ class TransactionController extends Controller
         }
 
 
-
-
-
-
         $data['total_received'] = 0.00;
         $data['webhook'] = $marchant_url;
 
@@ -1023,12 +998,9 @@ class TransactionController extends Controller
         $eemail = $data['email'];
 
 
-
-
         $url = "https://web.enkpay.com/continue-pay?amount=$amttt&key=$keyrr&ref=$txid&email=$eemail";
         $qrdata = $details->user_id . " " . $data['payable_amount'] . " " . $txid;
         $data1 = Crypt::encryptString($qrdata);
-
 
 
         $set = Setting::where('id', 1)->first();
@@ -1044,7 +1016,7 @@ class TransactionController extends Controller
             $data['trans_id'] = $data['iref'];
             $data['ref'] = trx();
             $pkey = $data['key'];
-            $pre = pre_pay($amtt, $first_name, $last_name, $tremail, $ref, $userId, $txid,$keyrr );
+            $pre = pre_pay($amtt, $first_name, $last_name, $tremail, $ref, $userId, $txid, $keyrr);
             $adviceReference = $pre['adviceReference'] ?? null;
             $data['pre_link'] = $pre['paymentUrl'] ?? null;
 
@@ -1054,14 +1026,12 @@ class TransactionController extends Controller
         }
 
 
-
-
         if ($set->charm == 1) {
 
             $faker = Factory::create();
-            if($request->amount > 15000){
+            if ($request->amount > 15000) {
                 $data['pamount'] = $request->amount + 300;
-            }else{
+            } else {
                 $data['pamount'] = $request->amount + 100;
             }
 
@@ -1071,10 +1041,10 @@ class TransactionController extends Controller
             $userId = Str::random(4); //$request->user_id;
             $data['trans_id'] = $data['iref'];
             $data['ref'] = $data['iref'];
-            $ref = $data['iref'].date('his');
+            $ref = $data['iref'] . date('his');
             $pkey = $data['key'];
             $amtt = $data['pamount'];
-            $pre = pre_pay($amtt, $first_name, $last_name, $tremail, $ref, $userId, $txid,$keyrr);
+            $pre = pre_pay($amtt, $first_name, $last_name, $tremail, $ref, $userId, $txid, $keyrr);
             $data['payment_ref'] = $pre['adviceReference'] ?? null;
         } else {
             $data['pre_link'] = "#";
@@ -1092,7 +1062,7 @@ class TransactionController extends Controller
         $dataref = $data['iref'];
 
 
-        $get_trans_id = Webtransfer::where('trans_id',$dataref )->first() ?? null;
+        $get_trans_id = Webtransfer::where('trans_id', $dataref)->first() ?? null;
         $data['transref'] = $get_trans_id->manual_acc_ref ?? null;
 
         if ($get_trans_id == null) {
@@ -1122,8 +1092,8 @@ class TransactionController extends Controller
             $trans->key = $data['key'];
             $trans->data = $data1;
             $trans->adviceReference = $adviceReference ?? null;
-            $trans->ref =  $data['iref']?? null;
-            $trans->adviceReference =  $payment_ref ?? null;
+            $trans->ref = $data['iref'] ?? null;
+            $trans->adviceReference = $payment_ref ?? null;
             $trans->both_commmission = $data['both_commmission'];
             $trans->save();
         }
@@ -1148,7 +1118,6 @@ class TransactionController extends Controller
         $data['ads'] = Advert::inRandomOrder()->first() ?? null;
         $data['marchant_url'] = Webkey::where('key', $request->key)->first()->user_url;
         $data['woven_card'] = $set->woven_card;
-
 
 
         if ($data['support_number'] == null) {
@@ -1182,50 +1151,130 @@ class TransactionController extends Controller
 //        }
 
 
+        if ($set->woven == 1) {
 
 
-        if($data['woven'] == 1 && $data['charm'] == 1 && $data['palmpay_transfer'] == 1  &&  $data['woven'] == 0  &&  $data['opay_transfer'] == 1 && $data['ninepsb'] == 0 ){
-            $views = ['webpayopay', 'webpaywoven', 'webpaypalmpay', 'webpaycharm'];
-        }elseif($data['charm'] == 0 && $data['palmpay_transfer'] == 1  &&  $data['woven'] == 0  &&  $data['opay_transfer'] == 1 && $data['ninepsb'] == 0 ){
-            $views = ['webpayopay', 'webpaypalmpay'];
-        }elseif($data['charm'] == 0 && $data['palmpay_transfer'] == 1  &&  $data['woven'] == 0 &&  $data['opay_transfer'] == 0 && $data['ninepsb'] == 0 ){
-            $views = ['webpaypalmpay'];
-        }elseif($data['charm'] == 0 && $data['opay_transfer'] == 1  &&  $data['woven'] == 0  &&  $data['palmpay_transfer'] == 0 && $data['ninepsb'] == 0  ){
-            $views = ['webpayopay'];
-        }elseif($data['charm'] == 0 && $data['ninepsb'] == 1  &&  $data['woven'] == 0 && $data['palmpay_transfer'] == 1 &&  $data['opay_transfer'] == 1){
-            $views = ['webpay', 'webpayopay', 'webpaypalmpay'];
-
-        }elseif($data['charm'] == 0 && $data['ninepsb'] == 1   &&  $data['woven'] == 0 && $data['opay_transfer'] == 0  &&  $data['palmpay_transfer'] == 0 ){
-            $views = ['webpay'];
-
-        }elseif($data['charm'] == 0 && $data['ninepsb'] == 1  &&  $data['woven'] == 0 && $data['opay_transfer'] == 0  &&  $data['palmpay_transfer'] == 1 ) {
-            $views = ['webpay', 'webpaypalmpay'];
-        }elseif($data['charm'] == 0 && $data['ninepsb'] == 1   &&  $data['woven'] == 0 && $data['opay_transfer'] == 1  &&  $data['palmpay_transfer'] == 0 ) {
-
-            $views = ['webpay', 'webpayopay'];
-        }elseif($data['charm'] == 1 && $data['ninepsb'] == 0  &&  $data['woven'] == 0 && $data['opay_transfer'] == 0  &&  $data['palmpay_transfer'] == 0 ) {
-
-            $views = ['webpaycharm'];
-        }elseif($data['charm'] == 1 && $data['ninepsb'] == 0 && $data['opay_transfer'] == 0  &&  $data['woven'] == 0 &&  $data['palmpay_transfer'] == 1 ) {
+            $set = Setting::where('id', 1)->first();
+            if ($set->woven == 1) {
+                $faker = Factory::create();
+                $data['pamount'] = $request->amount;
+                $first_name = User::inRandomOrder()->first()->first_name;
+                $last_name = User::inRandomOrder()->first()->last_name;
+                $tremail = $faker->email;
+                $phone = User::inRandomOrder()->first()->phone;
+                $amtt = $data['pamount'];
+                $code = Setting::where('id', 1)->first()->woven_collective_code;
+                $woven_details = woven_create($amtt, $code, $last_name, $tremail, $phone) ?? null;
 
 
-            $views = ['webpaypalmpay', 'webpaycharm'];
-        }elseif($data['woven'] == 1 && $data['charm'] == 0 && $data['palmpay_transfer'] == 0  &&  $data['opay_transfer'] == 0 && $data['ninepsb'] == 0 ) {
+                if ($woven_details != null) {
+
+                    Transfertransaction::where('account_no', $request->accountNo)->delete() ?? null;
+                    $user_id = Webkey::where('key', $request->key)->first()->user_id;
+                    $trx = Transfertransaction::where('account_no', $request->accountNo)->first() ?? null;
+
+                    $usr = User::where('id', $user_id)->first();
+
+                    $trasnaction = new Transfertransaction();
+                    $trasnaction->user_id = $user_id;
+                    $trasnaction->type = "webpay";
+                    $trasnaction->key = $request->key;
+                    $trasnaction->email = $request->email;
+                    $trasnaction->ref_trans_id = $request->ref;
+                    $trasnaction->amount = $request->amount;
+                    $trasnaction->transaction_type = "WEBTRANSFER";
+                    $trasnaction->bank = $woven_details['bank_name'];
+                    $trasnaction->ref = $request->ref;
+                    $trasnaction->account_no = $woven_details['account_no'];
+                    $trasnaction->v_account_name = $woven_details['account_name'];
+                    $trasnaction->amount_to_pay = $request->amount;
+                    $trasnaction->title = "WEBTRANSFER";
+                    $trasnaction->main_type = "WOVEN";
+                    $trasnaction->note = "WEBTRANSFER";
+                    $trasnaction->e_charges = 0;
+                    $trasnaction->enkPay_Cashout_profit = 0;
+                    $trasnaction->status = 0;
+                    $trasnaction->save();
 
 
-            $views = ['webpaywoven'];
-        }elseif($data['woven'] == 0 && $data['charm'] == 1 && $data['palmpay_transfer'] == 0  &&  $data['opay_transfer'] == 0 && $data['ninepsb'] == 1 ) {
-            $views = ['webpay', 'webpaycharm'];
+                    $data['account_no'] = $woven_details['account_no'];
+                    $data['account_name'] = $woven_details['account_name'];
+                    $data['bank_name'] = $woven_details['bank_name'];
+
+                    $acc_no = $woven_details['account_no'];
+                    $acc_name = $woven_details['account_name'];
+                    $bank = $woven_details['bank_name'];
+                    $burl = Webkey::where('key', $request->key)->first()->user_url;
+                    $data['back_url'] =$burl."?status=failed&ref=".$request->ref;
 
 
-        }elseif($data['woven'] == 1 && $data['charm'] == 0 && $data['palmpay_transfer'] == 0  &&  $data['opay_transfer'] == 0 && $data['ninepsb'] == 1 ){
+                    $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount;
+                    send_notification($message);
 
-        $views = ['webpay', 'webpaywoven'];
-        }else{
-            $views = ['webpay', 'webpayopay', 'webpaypalmpay'];
+
+                    return view('webpaywoven', $data);
+
+
+
+
+                }
+
+
+                $data['account_no'] = "Try again later";
+                $data['account_name'] = "Try again later";
+                $data['bank_name'] = "Try again later";
+
+
+                return view('webpaywoven', $data);
+
+
+
+            }
+
+
         }
 
 
+        if ($data['woven'] == 1 && $data['charm'] == 1 && $data['palmpay_transfer'] == 1 && $data['woven'] == 0 && $data['opay_transfer'] == 1 && $data['ninepsb'] == 0) {
+            $views = ['webpayopay', 'webpaywoven', 'webpaypalmpay', 'webpaycharm'];
+        } elseif ($data['charm'] == 0 && $data['palmpay_transfer'] == 1 && $data['woven'] == 0 && $data['opay_transfer'] == 1 && $data['ninepsb'] == 0) {
+            $views = ['webpayopay', 'webpaypalmpay'];
+        } elseif ($data['charm'] == 0 && $data['palmpay_transfer'] == 1 && $data['woven'] == 0 && $data['opay_transfer'] == 0 && $data['ninepsb'] == 0) {
+            $views = ['webpaypalmpay'];
+        } elseif ($data['charm'] == 0 && $data['opay_transfer'] == 1 && $data['woven'] == 0 && $data['palmpay_transfer'] == 0 && $data['ninepsb'] == 0) {
+            $views = ['webpayopay'];
+        } elseif ($data['charm'] == 0 && $data['ninepsb'] == 1 && $data['woven'] == 0 && $data['palmpay_transfer'] == 1 && $data['opay_transfer'] == 1) {
+            $views = ['webpay', 'webpayopay', 'webpaypalmpay'];
+
+        } elseif ($data['charm'] == 0 && $data['ninepsb'] == 1 && $data['woven'] == 0 && $data['opay_transfer'] == 0 && $data['palmpay_transfer'] == 0) {
+            $views = ['webpay'];
+
+        } elseif ($data['charm'] == 0 && $data['ninepsb'] == 1 && $data['woven'] == 0 && $data['opay_transfer'] == 0 && $data['palmpay_transfer'] == 1) {
+            $views = ['webpay', 'webpaypalmpay'];
+        } elseif ($data['charm'] == 0 && $data['ninepsb'] == 1 && $data['woven'] == 0 && $data['opay_transfer'] == 1 && $data['palmpay_transfer'] == 0) {
+
+            $views = ['webpay', 'webpayopay'];
+        } elseif ($data['charm'] == 1 && $data['ninepsb'] == 0 && $data['woven'] == 0 && $data['opay_transfer'] == 0 && $data['palmpay_transfer'] == 0) {
+
+            $views = ['webpaycharm'];
+        } elseif ($data['charm'] == 1 && $data['ninepsb'] == 0 && $data['opay_transfer'] == 0 && $data['woven'] == 0 && $data['palmpay_transfer'] == 1) {
+
+
+            $views = ['webpaypalmpay', 'webpaycharm'];
+        } elseif ($data['woven'] == 1 && $data['charm'] == 0 && $data['palmpay_transfer'] == 0 && $data['opay_transfer'] == 0 && $data['ninepsb'] == 0) {
+
+
+            $views = ['webpaywoven'];
+        } elseif ($data['woven'] == 0 && $data['charm'] == 1 && $data['palmpay_transfer'] == 0 && $data['opay_transfer'] == 0 && $data['ninepsb'] == 1) {
+            $views = ['webpay', 'webpaycharm'];
+
+
+        } elseif ($data['woven'] == 1 && $data['charm'] == 0 && $data['palmpay_transfer'] == 0 && $data['opay_transfer'] == 0 && $data['ninepsb'] == 1) {
+
+            $views = ['webpay', 'webpaywoven'];
+        } else {
+            $views = ['webpay', 'webpayopay', 'webpaypalmpay'];
+        }
 
 
         $randomView = $views[array_rand($views)];
@@ -1233,8 +1282,6 @@ class TransactionController extends Controller
 
 
     }
-
-
 
 
     public
@@ -1712,11 +1759,6 @@ class TransactionController extends Controller
     }
 
 
-
-
-
-
-
     public
     function success(Request $request)
     {
@@ -1741,9 +1783,9 @@ class TransactionController extends Controller
         $get_amount = Webtransfer::where('trans_id', $trans_id)
             ->first()->amount ?? 0;
 
-        if($get_amount == 0){
-           $amount =  $request->amount;
-        }else{
+        if ($get_amount == 0) {
+            $amount = $request->amount;
+        } else {
             $amount = $get_amount;
         }
 
@@ -1802,7 +1844,7 @@ class TransactionController extends Controller
             ->first()->status ?? null;
 
 
-        $amount = $request->amount;
+        $amount = Transfertransaction::where('ref', $request->trans_id)->first()->amount;
 
         $wc_order = Webtransfer::where('trans_id', $trans_id)
             ->first()->wc_order ?? null;
@@ -1818,19 +1860,17 @@ class TransactionController extends Controller
         $marchant_url = Webkey::where('key', $key)->first()->url ?? null;
 
 
-
         $get_url = Webkey::where('key', $key)->first()->user_url ?? null;
-        $url_page = $get_url."?ref=$trans_id";
+        $url_page = $get_url . "?ref=$trans_id";
 
 
         $webhook = $marchant_url . "?" . "amount=$amount" . "&trans_id=$trans_id" . "&status=success" . "&wc_order=$wc_order" . "&client_id=$client_id" ?? null;
-        $recepit = "https://web.enkpay.com/receipt?trans_id=$trans_id&amount=$amount";
+        $recepit = url('')."/receipt?trans_id=$trans_id&amount=$amount";
 
         //
 
         return view('paid-success', compact('webhook', 'url_page', 'marchant_url', 'amount', 'trans_id', 'wc_order', 'client_id', 'wc', 'recepit'));
     }
-
 
 
     public
@@ -2085,7 +2125,7 @@ class TransactionController extends Controller
         $ref = $request->trans_id;
 
 
-        if($ref == null){
+        if ($ref == null) {
             return response()->json([
                 'status' => false,
                 'message' => 'Ref ID can not be null'
@@ -2814,7 +2854,7 @@ class TransactionController extends Controller
         $trasnaction->save();
 
         $message = "Transfer Payment Initiated |" . $request->ref . "| ON OPAY " . "For " . $usr->last_name . " | " . number_format($ref->payable_amount, 2);
-         Log::info('Transfer Initiated', ['message' => $message]);
+        Log::info('Transfer Initiated', ['message' => $message]);
 
 //        send_notification($message);
 //        send_notification_opay($message);
@@ -2907,7 +2947,7 @@ class TransactionController extends Controller
         $trx = Webtransfer::where('manual_acc_ref', $request->ref)->first() ?? null;
         $cck = Transfertransaction::where('account_no', $request->accountNo)->where('status', 0)->first() ?? null;
 
-        if($cck != null){
+        if ($cck != null) {
             return response()->json(['status' => false,
             ]);
         }
@@ -2916,9 +2956,6 @@ class TransactionController extends Controller
         Transfertransaction::where('account_no', $request->accountNo)->where('status', 4)->delete();
         Transfertransaction::where('account_no', $request->accountNo)->where('status', 3)->delete();
         Transfertransaction::where('account_no', $request->accountNo)->where('status', 5)->delete();
-
-
-
 
 
         $usr = User::where('id', $trx->user_id)->first();
@@ -2943,7 +2980,7 @@ class TransactionController extends Controller
             $trasnaction->status = 0;
             $trasnaction->save();
 
-            $message = "Transfer Payment Initiated | ".$request->accountNo." | ".$request->ref . "| ON 9PSB " . "For " . $usr->last_name . " | " . number_format($trx->payable_amount, 2);
+            $message = "Transfer Payment Initiated | " . $request->accountNo . " | " . $request->ref . "| ON 9PSB " . "For " . $usr->last_name . " | " . number_format($trx->payable_amount, 2);
             //Log::info('Transfer Initiated', ['message' => $message]);
             send_notification($message);
 
@@ -2994,7 +3031,7 @@ class TransactionController extends Controller
             $trasnaction->status = 0;
             $trasnaction->save();
 
-            $message = "Transfer Payment Initiated |" . $request->ref . "| ON WOVEN " . "For " . $usr->last_name . " | " . number_format($trx->payable_amount, 2)."|".$trx->email;
+            $message = "Transfer Payment Initiated |" . $request->ref . "| ON WOVEN " . "For " . $usr->last_name . " | " . number_format($trx->payable_amount, 2) . "|" . $trx->email;
             Log::info('Transfer Initiated', ['message' => $message]);
 
             //send_notification($message);
@@ -3131,14 +3168,13 @@ class TransactionController extends Controller
         $data['ref'] = $ref->manual_acc_ref;
         $data['account_no'] = $request->account_no;
         $data['amount'] = $ref->amount;
-        $data['pref'] = $tref->pay_ref  ?? null;
+        $data['pref'] = $tref->pay_ref ?? null;
         $data['title'] = "Payment Confirmation";
 
         return view('waitingwema', $data);
 
 
     }
-
 
 
     public function verifywemaboomzy(Request $request)
@@ -3153,20 +3189,18 @@ class TransactionController extends Controller
         Log::info('Transfer Initiated', ['message' => $message]);
 
 
-       // send_notification($message);
+        // send_notification($message);
 
         $data['ref'] = $ref->manual_acc_ref;
         $data['account_no'] = $request->account_no;
         $data['amount'] = $ref->amount;
-        $data['pref'] = $tref->pay_ref  ?? null;
+        $data['pref'] = $tref->pay_ref ?? null;
         $data['title'] = "Payment Confirmation";
 
         return view('waitingwemaboomzy', $data);
 
 
     }
-
-
 
 
     public function payment_view(request $request)
@@ -3191,8 +3225,6 @@ class TransactionController extends Controller
         return view('payments', compact('data', 'title'));
 
 
-
-
     }
 
 
@@ -3206,12 +3238,9 @@ class TransactionController extends Controller
         $data['ref'] = $request->ref;
 
 
-
-
         return view('part-payment', $data);
 
     }
-
 
 
     public function payment_search(request $request)
@@ -3243,28 +3272,27 @@ class TransactionController extends Controller
     public function register_pos(request $request)
     {
 
-       $ck_tid =  TidConfig::where('serial_no', $request->serial_no)->first() ?? null;
-       if($ck_tid == null){
+        $ck_tid = TidConfig::where('serial_no', $request->serial_no)->first() ?? null;
+        if ($ck_tid == null) {
 
-           $tid = new TidConfig();
-           $tid->serial_no = $request->serial_no;
-           $tid->terminal_id = $request->sertidial_no;
-           $tid->user_id = 1;
-           $tid->save();
+            $tid = new TidConfig();
+            $tid->serial_no = $request->serial_no;
+            $tid->terminal_id = $request->sertidial_no;
+            $tid->user_id = 1;
+            $tid->save();
 
-           return response()->json([
-               'status' => true,
-               'message' => "Pos added successfully"
-           ], 200);
+            return response()->json([
+                'status' => true,
+                'message' => "Pos added successfully"
+            ], 200);
 
-       }else{
-           return response()->json([
-               'status' => false,
-               'message' => "pos already exist"
-           ], 200);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => "pos already exist"
+            ], 200);
 
-       }
-
+        }
 
 
     }
@@ -3274,7 +3302,7 @@ class TransactionController extends Controller
     {
 
         $get_d = TidConfig::where('serial_no', $request->serial_no)->first() ?? null;
-        if($get_d == null){
+        if ($get_d == null) {
 
             return response()->json([
                 'status' => false,
@@ -3290,7 +3318,6 @@ class TransactionController extends Controller
         ], 200);
 
 
-
     }
 
 
@@ -3298,7 +3325,6 @@ class TransactionController extends Controller
     {
         return view('documetation');
     }
-
 
 
 }

@@ -3251,9 +3251,6 @@ if (!function_exists('verifypelpayreslove')) {
 
 
 
-
-
-
                 if ($status == "success" && $tx_status == "FAILED" && $title == $acct_no) {
                     return ['code' => 9];
                 } elseif ($status == "success" && $pstatus == "ACTIVE" && $title == $acct_no) {
