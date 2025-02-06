@@ -1211,7 +1211,7 @@ class TransactionController extends Controller
                     $acc_name = $woven_details['account_name'];
                     $bank = $woven_details['bank_name'];
                     $burl = Webkey::where('key', $request->key)->first()->user_url;
-                    $data['back_url'] =$burl."?status=failed&ref=".$request->ref;
+                    $data['back_url'] =$burl."?status=failed&ref=".$request->ref ?? null;
 
 
                     $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount . "| ".$request->email;
