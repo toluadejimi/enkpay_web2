@@ -2994,21 +2994,74 @@ if (!function_exists('verifypelpay')) {
         $var = curl_exec($curl);
         curl_close($curl);
         $var = json_decode($var);
+        $message = $var->message ?? null;
         $status = $var->message ?? null;
 
 
-
-        if ($status == "The process was completed successfully") {
+        if ($message == "The process was completed successfully") {
             $data['account_no'] = $var->data->vnuban;
             $data['bank_name'] = $bank_name;
             $data['account_name'] = "WOV CHECKOUT";
             return $data;
+        } else {
+
+
+
+            $bank_name = "WEMA";
+            $key = env('WOVENKEY');
+            $databody = array(
+                "amount" => $amtt,
+                "collection_bank" => "000017",
+                "callback_url" => url('') . "/api/woven/callback",
+
+            );
+
+            $post_data = json_encode($databody);
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => 'https://api.woven.finance/v2/api/nuban/dynamic',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 20,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => $post_data,
+                CURLOPT_HTTPHEADER => array(
+                    'Content-Type: application/json',
+                    "api_secret: $key"
+                ),
+            ));
+
+            $var = curl_exec($curl);
+
+            curl_close($curl);
+            $var = json_decode($var);
+            $message = $var->message ?? null;
+            $status = $var->message ?? null;
+
+
+            if ($message == "The process was completed successfully") {
+                $data['account_no'] = $var->data->vnuban;
+                $data['bank_name'] = $bank_name;
+                $data['account_name'] = "WOV CHECKOUT";
+                return $data;
+            }
+
+            $message = json_encode($var);
+            send_notification($message);
+
+
         }
+
+        $message = json_encode($var);
+        send_notification($message);
 
 
     }
 }
-
 
 
 function ninepsb_create($amtt, $account_name)
@@ -3291,10 +3344,9 @@ if (!function_exists('verifypelpayreslove')) {
                 $acct_no = $var->data->transactions[0]->nuban ?? null;
 
                 $ck_status = $var->data->transactions ?? null;
-                if($ck_status > 0){
+                if ($ck_status > 0) {
                     $tx_status = $var->data->transactions[0]->status ?? null;
                 }
-
 
 
                 if ($status == "success" && $tx_status == "FAILED" && $title == $acct_no) {
