@@ -64,7 +64,7 @@
         <div style="background: rgb(247,248,255)" class="modal-content shadow">
             <div class="modal-header">
                 <h5 class="modal-title"><span class="text-danger">Instant</span> Payment</h5>
-                <button type="button" class="btn-close" aria-label="Close" onclick="redirectToWithDelay({{$back_url}}, 1000)"></button>
+                <button type="button" class="btn-close" aria-label="Close"></button>
                 <script>function redirectToWithDelay(url, delay) {
                         setTimeout(function() {
                             window.location.href = url;
