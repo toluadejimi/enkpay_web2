@@ -110,7 +110,7 @@ class TeleController extends Controller
     {
         $statusMessages = [
             0 => "still pending 🥺\n\nWe are sorry for any inconveniences!",
-            9 => "Failed ❌\n\nIf you have been debited, please raise a dispute on your bank app.",
+            90 => "Failed ❌\n\nIf you have been debited, please raise a dispute on your bank app.",
             91 => "Account no not found please contact support for more information",
             4 => "already been funded ✅",
             5 => "part payment received. 🔄",
@@ -120,9 +120,9 @@ class TeleController extends Controller
 
         $status = $statusMessages[$verify['code']] ?? "processing resolve 🔄";
 
+        $vv = json_encode($verify);
 
-
-        return $this->sendMessage($chatId, "Account No: $accountNo | $status\n\n"
+        return $this->sendMessage($chatId, "Account No: $accountNo | $vv | $status\n\n"
             . "Transaction Details:\n"
             . "Email: $email\n"
             . "Date/Time: $date\n"

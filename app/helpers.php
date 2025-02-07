@@ -2109,7 +2109,6 @@ function verifypsbtelegram($accountNo)
 {
 
     try {
-
         $ckstatus = Transfertransaction::where('account_no', $accountNo)->first()->status ?? null;
         if ($ckstatus == null) {
             return [
@@ -2122,6 +2121,8 @@ function verifypsbtelegram($accountNo)
             return [
                 'code' => 4
             ];
+
+
         } else {
 
             $status = Transfertransaction::where('account_no', $accountNo)->first()->status ?? null;
@@ -3401,7 +3402,7 @@ if (!function_exists('verifypelpayreslove')) {
 
 
                 if ($status == "success" && $tx_status == "FAILED" && $title == $acct_no) {
-                    return ['code' => 9];
+                    return ['code' => 90];
                 } elseif ($status == "success" && $pstatus == "ACTIVE" && $title == $acct_no) {
 
                     $acc_no = $title;
