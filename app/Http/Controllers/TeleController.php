@@ -122,7 +122,7 @@ class TeleController extends Controller
 
         $vv = json_encode($verify);
 
-        return $this->sendMessage($chatId, "Account No: $accountNo | $vv | $status\n\n"
+        return $this->sendMessage($chatId, "Account No: $accountNo  | $status\n\n"
             . "Transaction Details:\n"
             . "Email: $email\n"
             . "Date/Time: $date\n"
