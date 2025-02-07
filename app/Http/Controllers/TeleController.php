@@ -111,6 +111,7 @@ class TeleController extends Controller
         $statusMessages = [
             0 => "still pending 🥺\n\nWe are sorry for any inconveniences!",
             9 => "Failed ❌\n\nIf you have been debited, please raise a dispute on your bank app.",
+            91 => "Account no not found please contact support for more information",
             4 => "already been funded ✅",
             5 => "part payment received. 🔄",
             2 => "Transaction Completed ✅",
