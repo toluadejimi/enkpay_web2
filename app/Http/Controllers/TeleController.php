@@ -120,12 +120,7 @@ class TeleController extends Controller
 
         $status = $statusMessages[$verify['code']] ?? "processing resolve 🔄";
 
-        return $this->sendMessage($chatId, "Account No: $accountNo | $status\n\n"
-            . "Transaction Details:\n"
-            . "Email: $email\n"
-            . "Date/Time: $date\n"
-            . "Website: $sitename\n"
-            . "Amount: $amount");
+        return $this->sendMessage($chatId, "Account No: $accountNo | $status\n\n");
     }
 
     protected function handleUnknownTransaction($chatId, $accountNo)
