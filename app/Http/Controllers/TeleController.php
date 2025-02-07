@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Transfertransaction;
 use App\Models\Webkey;
-use App\Services\TelegramService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 
 class TeleController extends Controller
 {
@@ -34,39 +34,29 @@ class TeleController extends Controller
         }
     }
 
-
     protected function autoReply($chatId, $text)
     {
         $text = strtolower(trim($text));
         Log::info("Received message: $text from Chat ID: $chatId");
 
         // Handle commands
-        if ($text === '/start') {
-            return $this->sendMenu($chatId);
+        switch ($text) {
+            case '/start':
+            case 'hi':
+                return $this->sendMenu($chatId);
+            case (strpos($text, 'resolve') !== false):
+                return $this->sendMessage($chatId, "Enter your Account No to resolve a transaction.");
+            case (strpos($text, 'status') !== false):
+                return $this->sendMessage($chatId, "Enter your transaction reference to check status.");
+            case (strpos($text, 'help') !== false):
+                return $this->sendMessage($chatId, "How can I assist you?");
+            default:
+                // Handle Account Number cases
+                if (preg_match('/^(961|603|500|558)\d{7}$/', $text)) {
+                    return $this->handleTransaction($chatId, $text);
+                }
+                return $this->sendMessage($chatId, "Invalid command or account number. Please try again.");
         }
-
-        if ($text === 'hi') {
-            return $this->sendMenu($chatId);
-        }
-
-        if (strpos($text, 'resolve') !== false) {
-            return $this->sendMessage($chatId, "Enter your Account No to resolve a transaction.");
-        }
-
-        if (strpos($text, 'status') !== false) {
-            return $this->sendMessage($chatId, "Enter your transaction reference to check status.");
-        }
-
-        if (strpos($text, 'help') !== false) {
-            return $this->sendMessage($chatId, "How can I assist you?");
-        }
-
-        // Handle Account Number cases
-        if (preg_match('/^(961|603|500|558)\d{7}$/', $text)) {
-            return $this->handleTransaction($chatId, $text);
-        }
-
-        return $this->sendMessage($chatId, "Invalid command or account number. Please try again.");
     }
 
     protected function handleTransaction($chatId, $accountNo)
@@ -137,403 +127,6 @@ class TeleController extends Controller
         return $this->sendTransactionStatus($chatId, $accountNo, $verify, 'N/A', 'N/A', 'N/A', 'N/A');
     }
 
-//    protected function autoReply($chatId, $text)
-//    {
-//        $text = strtolower(trim($text));
-//
-//        if ($text === '/start') {
-//            $this->sendMenu($chatId);
-//        } elseif (strpos($text, 'resolve') !== false) {
-//            $this->sendMessage($chatId, "Enter your Account No to resolve a transaction.");
-//        } elseif (strpos($text, 'status') !== false) {
-//            $this->sendMessage($chatId, "Enter your transaction reference to check status.");
-//        } elseif (strpos($text, 'help') !== false) {
-//            $this->sendMessage($chatId, "How can I assist you?");
-//        } elseif (strlen($text) >= 10 && stripos($text, '961') === 0) {
-//            $title = $text;
-//            $trx = Transfertransaction::where('account_no', $title)->first() ?? null;
-//            if ($trx) {
-//                $pref = $trx->ref;
-//                $amount = number_format($trx->amount);
-//                $email = $trx->email;
-//                $date = $trx->created_at;
-//                $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
-//
-//
-//                $verify = verifypelpaytelegram($pref);
-//
-//                $cc = json_encode($verify);
-////               send_notification($cc);
-//
-//                if (!is_array($verify)) {
-//                    $replyText = "Error: Unexpected response format.";
-//
-//                } else {
-//                    switch ($verify['code']) {
-//                        case 0:
-//                            $this->sendMessage($chatId, "Account No: $title | still pending 🥺\n\n" .
-//                                "We are sorry for any inconveniences!,\n\n"
-//                                . "Transaction Details:\n"
-//                                . "Email: $email\n"
-//                                . "Date/Time: $date\n"
-//                                . "Website: $sitename\n"
-//                                . "Amount: $amount\n\n" .
-//
-//                                "I will keep notifying the bank about the transaction but if you can wait, you can file a dispute from your bank app");
-//                            break;
-//                        case 9:
-//                            $this->sendMessage($chatId, "Account No: $title | Failed ❌\n\n"
-//                                . "Transaction Details:\n"
-//                                . "Email: $email\n"
-//                                . "Date/Time: $date\n"
-//                                . "Website: $sitename\n"
-//                                . "Amount: $amount\n\n"
-//                                . "If you have been debited, Please raise a dispute for reversal on your bank app");
-//                            break;
-//                        case 4:
-//                            $this->sendMessage($chatId,"Account No: $title | already been funded ✅\n\n"
-//                                . "Transaction Details:\n"
-//                                . "Email: $email\n"
-//                                . "Date/Time: $date\n"
-//                                . "Website: $sitename\n"
-//                                . "Amount: $amount");
-//                            break;
-//
-//                        case 5:
-//                            $this->sendMessage($chatId, "Account No: $title | part payment received. 🔄\n");
-//                            break;
-//
-//                        case 2:
-//                            $this->sendMessage($chatId, "Account No: $title | Transaction Completed ✅\n\n"
-//                                . "Transaction Details:\n"
-//                                . "Email: $email\n"
-//                                . "Date/Time: $date\n"
-//                                . "Website: $sitename\n"
-//                                . "Amount: $amount");
-//                            break;
-//
-//                        default:
-//                            $this->sendMessage($chatId, "Account No: $title | processing resolve 🔄\n\n"
-//                                . "Transaction Details:\n"
-//                                . "Email: $email\n"
-//                                . "Date/Time: $date\n"
-//                                . "Website: $sitename\n"
-//                                . "code:$cc");
-//                            break;
-//                    }
-//                }
-//            } else {
-//                $this->sendMessage($chatId, "Account no: $title | not found ❌\n"
-//                    . "Please verify the Account No and try again.");
-//            }
-//
-//        } elseif (strlen($text) >= 10 && stripos($text, '603') === 0) {
-//            $title = $text;
-//            $trx = Transfertransaction::where('account_no', $title)->first() ?? null;
-//            if ($trx) {
-//                $pref = $trx->ref;
-//                $amount = number_format($trx->amount);
-//                $email = $trx->email;
-//                $date = $trx->created_at;
-//                $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
-//
-//                $verify = verify_telegram_payment_woven($title);
-//                $cc = json_encode($verify);
-//
-//                if (!is_array($verify)) {
-//                    $this->sendMessage($chatId, "Error: Unexpected response format.");
-//
-//                } else {
-//                    switch ($verify['code']) {
-//                        case 0:
-//                            $this->sendMessage($chatId, "Account No: $title | still pending 🥺\n\n" .
-//                                "We are sorry for any inconveniences!,\n\n"
-//                                . "Transaction Details:\n"
-//                                . "Email: $email\n"
-//                                . "Date/Time: $date\n"
-//                                . "Website: $sitename\n"
-//                                . "Amount: $amount\n\n" .
-//
-//                                "I will keep notifying the bank about the transaction but if you can wait, you can file a dispute from your bank app");
-//                            break;
-//                        case 9:
-//                            $this->sendMessage($chatId, "Account No: $title | Failed ❌\n\n"
-//                                . "Transaction Details:\n"
-//                                . "Email: $email\n"
-//                                . "Date/Time: $date\n"
-//                                . "Website: $sitename\n"
-//                                . "Amount: $amount\n\n"
-//                                . "If you have been debited, Please contact your bank for reversal");
-//                            break;
-//
-//                        case 6:
-//                            $this->sendMessage($chatId, "Account No: $title | Transaction reversed 🔄\n\n"
-//                                . "Transaction Details:\n"
-//                                . "Email: $email\n"
-//                                . "Date/Time: $date\n"
-//                                . "Website: $sitename\n"
-//                                . "Amount: $amount\n\n"
-//                                . "Transaction has been successfully reversed back to your account");
-//                            break;
-//
-//
-//                        case 4:
-//                            $this->sendMessage($chatId,"Account No: $title | already been funded ✅\n\n"
-//                                . "Transaction Details:\n"
-//                                . "Email: $email\n"
-//                                . "Date/Time: $date\n"
-//                                . "Website: $sitename\n"
-//                                . "Amount: $amount");
-//                            break;
-//
-//
-//                        case 5:
-//                            $this->sendMessage($chatId, "Account No: $title | part payment received. 🔄\n");
-//                            break;
-//
-//                        case 2:
-//                            $this->sendMessage($chatId, "Account No: $title | Transaction Completed ✅\n\n"
-//                                . "Transaction Details:\n"
-//                                . "Email: $email\n"
-//                                . "Date/Time: $date\n"
-//                                . "Website: $sitename\n"
-//                                . "Amount: $amount");
-//                            break;
-//
-//                        default:
-//                            $this->sendMessage($chatId,"Account No: $title | processing resolve 🔄\n\n"
-//                                . "Transaction Details:\n"
-//                                . "Email: $email\n"
-//                                . "Date/Time: $date\n"
-//                                . "Website: $sitename\n"
-//                                . "code:$cc");
-//                            break;
-//                    }
-//                }
-//            } else {
-//                $verify = verify_telegram_payment_woven($title);
-//                $cc = json_encode($verify);
-//
-//                if (!is_array($verify)) {
-//                    $replyText = $title . "| " . $cc . "Error: Unexpected response format.";
-//                } else {
-//                    switch ($verify['code']) {
-//
-//                        case 9:
-//                            $this->sendMessage($chatId,"Account No: $title | Failed ❌\n\n"
-//                                . "If you have been debited, Please contact your bank for reversal");
-//                            break;
-//                        case 6:
-//                            $this->sendMessage($chatId, "Account No: $title | Transaction reversed 🔄\n\n"
-//                                . "Transaction has been successfully reversed back to your account");
-//                            break;
-//
-//                        default:
-//                            $this->sendMessage($chatId,"Account No: $title | Failed ❌\n\n"
-//                                . "If you have been debited, Please contact your bank for reversal");
-//                            break;
-//                    }
-//                }
-//            }
-//
-//        }
-//
-//
-//
-//
-//        elseif (strlen($text) >= 10 && stripos($text, '500') === 0) {
-//            $title = $text;
-//            $trx = Transfertransaction::where('account_no', $title)->first() ?? null;
-//            if ($trx) {
-//                $pref = $trx->ref;
-//                $amount = number_format($trx->amount);
-//                $email = $trx->email;
-//                $date = $trx->created_at;
-//                $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
-//
-//                $verify = verify_telegram_payment_woven($title);
-//                $cc = json_encode($verify);
-//
-//                if (!is_array($verify)) {
-//                    $replyText = $title . "| " . $cc . "Error: Unexpected response format.";
-//
-//                } else {
-//                    switch ($verify['code']) {
-//                        case 0:
-//                            $replyText = "Account No: $title | still pending 🥺\n\n" .
-//                                "We are sorry for any inconveniences!,\n\n"
-//                                . "Transaction Details:\n"
-//                                . "Email: $email\n"
-//                                . "Date/Time: $date\n"
-//                                . "Website: $sitename\n"
-//                                . "Amount: $amount\n\n" .
-//
-//                                "I will keep notifying the bank about the transaction but if you can wait, you can file a dispute from your bank app";
-//                            break;
-//                        case 9:
-//                            $replyText = "Account No: $title | Failed ❌\n\n"
-//                                . "Transaction Details:\n"
-//                                . "Email: $email\n"
-//                                . "Date/Time: $date\n"
-//                                . "Website: $sitename\n"
-//                                . "Amount: $amount\n\n"
-//                                . "If you have been debited, Please contact your bank for reversal";
-//                            break;
-//
-//                        case 6:
-//                            $replyText = "Account No: $title | Transaction reversed 🔄\n\n"
-//                                . "Transaction Details:\n"
-//                                . "Email: $email\n"
-//                                . "Date/Time: $date\n"
-//                                . "Website: $sitename\n"
-//                                . "Amount: $amount\n\n"
-//                                . "Transaction has been successfully reversed back to your account";
-//                            break;
-//
-//
-//                        case 4:
-//                            $replyText = "Account No: $title | already been funded ✅\n\n"
-//                                . "Transaction Details:\n"
-//                                . "Email: $email\n"
-//                                . "Date/Time: $date\n"
-//                                . "Website: $sitename\n"
-//                                . "Amount: $amount";
-//                            break;
-//
-//
-//                        case 5:
-//                            $replyText = "Account No: $title | part payment received. 🔄\n";
-//                            break;
-//
-//                        case 2:
-//                            $replyText = "Account No: $title | Transaction Completed ✅\n\n"
-//                                . "Transaction Details:\n"
-//                                . "Email: $email\n"
-//                                . "Date/Time: $date\n"
-//                                . "Website: $sitename\n"
-//                                . "Amount: $amount";
-//                            break;
-//
-//                        default:
-//                            $replyText = "Account No: $title | processing resolve 🔄\n\n"
-//                                . "Transaction Details:\n"
-//                                . "Email: $email\n"
-//                                . "Date/Time: $date\n"
-//                                . "Website: $sitename\n"
-//                                . "code:$cc";
-//                            break;
-//                    }
-//                }
-//            } else {
-//
-//                $verify = verify_telegram_payment_woven($title);
-//                $cc = json_encode($verify);
-//
-//                if (!is_array($verify)) {
-//                    $replyText = $title . "| " . $cc . "Error: Unexpected response format.";
-//
-//                } else {
-//                    switch ($verify['code']) {
-//                        case 9:
-//                            $replyText = "Account No: $title | Failed ❌\n\n"
-//                                . "If you have been debited, Please contact your bank for reversal";
-//                            break;
-//                        case 6:
-//                            $replyText = "Account No: $title | Transaction reversed 🔄\n\n"
-//                                . "Transaction has been successfully reversed back to your account";
-//                            break;
-//
-//                        default:
-//                            $replyText = "Account No: $title | Failed ❌\n\n"
-//                                . "If you have been debited, Please contact your bank for reversal";
-//                            break;
-//                    }
-//                }
-//
-//                $replyText = "Account no: $title | not found ❌\n"
-//                    . "Please verify the Account No and try again.";
-//            }
-//
-//        } elseif (strlen($text) >= 10 && stripos($text, '558') === 0) {
-//            $title = $text;
-//            $trx = Transfertransaction::where('account_no', $title)->first() ?? null;
-//            if ($trx) {
-//                $pref = $trx->account_no;
-//                $amount = number_format($trx->amount);
-//                $email = $trx->email;
-//                $date = $trx->created_at;
-//                $sitename = Webkey::where('key', $trx->key)->first()->site_name ?? null;
-//
-//
-//                $verify = verifypsbtelegram($pref);
-//
-//                $cc = json_encode($verify);
-////               send_notification($cc);
-//
-//                if (!is_array($verify)) {
-//                    $replyText = "Error: Unexpected response format.";
-//
-//                } else {
-//                    switch ($verify['code']) {
-//                        case 0:
-//                            $this->sendMessage($chatId, "Account No: $title | still pending 🥺\n\n" .
-//                                "We are sorry for any inconveniences!,\n\n"
-//                                . "Transaction Details:\n"
-//                                . "Email: $email\n"
-//                                . "Date/Time: $date\n"
-//                                . "Website: $sitename\n"
-//                                . "Amount: $amount\n\n" .
-//
-//                                "I will keep notifying the bank about the transaction but if you can wait, you can file a dispute from your bank app");
-//                            break;
-//                        case 9:
-//                            $this->sendMessage($chatId, "Account No: $title | Failed ❌\n\n"
-//                                . "Transaction Details:\n"
-//                                . "Email: $email\n"
-//                                . "Date/Time: $date\n"
-//                                . "Website: $sitename\n"
-//                                . "Amount: $amount\n\n"
-//                                . "If you have been debited, Please raise a dispute for reversal on your bank app");
-//                            break;
-//                        case 4:
-//                            $this->sendMessage($chatId,"Account No: $title | already been funded ✅\n\n"
-//                                . "Transaction Details:\n"
-//                                . "Email: $email\n"
-//                                . "Date/Time: $date\n"
-//                                . "Website: $sitename\n"
-//                                . "Amount: $amount");
-//                            break;
-//
-//                        case 5:
-//                            $this->sendMessage($chatId, "Account No: $title | part payment received. 🔄\n");
-//                            break;
-//
-//                        case 2:
-//                            $this->sendMessage($chatId, "Account No: $title | Transaction Completed ✅\n\n"
-//                                . "Transaction Details:\n"
-//                                . "Email: $email\n"
-//                                . "Date/Time: $date\n"
-//                                . "Website: $sitename\n"
-//                                . "Amount: $amount");
-//                            break;
-//
-//                        default:
-//                            $this->sendMessage($chatId, "Account No: $title | processing resolve 🔄\n\n"
-//                                . "Transaction Details:\n"
-//                                . "Email: $email\n"
-//                                . "Date/Time: $date\n"
-//                                . "Website: $sitename\n"
-//                                . "code:$cc");
-//                            break;
-//                    }
-//                }
-//
-//            } else {
-//                $this->sendMenu($chatId);
-//            }
-//        }
-//    }
-
     protected function sendMenu($chatId)
     {
         $keyboard = [
@@ -544,7 +137,7 @@ class TeleController extends Controller
             ]
         ];
 
-        $this->sendMessage($chatId, "Choose an option:", $keyboard);
+        return $this->sendMessage($chatId, "Choose an option:", $keyboard);
     }
 
     protected function handleCallbackQuery($callbackQuery)
@@ -565,7 +158,7 @@ class TeleController extends Controller
         }
     }
 
-    protected function sendMessage($chatId, $text, $buttons = [])
+    protected function sendMessage($chatId, $text, $keyboard = null)
     {
         $data = [
             'chat_id' => $chatId,
@@ -573,14 +166,14 @@ class TeleController extends Controller
             'parse_mode' => 'HTML',
         ];
 
-        // If buttons exist, add inline keyboard markup
-        if (!empty($buttons)) {
-            $keyboard = [
-                'inline_keyboard' => $buttons
-            ];
+        if ($keyboard) {
             $data['reply_markup'] = json_encode($keyboard);
         }
 
-        file_get_contents("https://api.telegram.org/bot" . $this->telegramToken . "/sendMessage?" . http_build_query($data));
+        try {
+            Http::get("https://api.telegram.org/bot" . $this->telegramToken . "/sendMessage?" . http_build_query($data));
+        } catch (\Exception $e) {
+            Log::error('Telegram message send failed: ' . $e->getMessage());
+        }
     }
 }
