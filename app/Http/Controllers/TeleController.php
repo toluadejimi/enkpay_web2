@@ -66,7 +66,7 @@ class TeleController extends Controller
                 } else {
                     switch ($verify['code']) {
                         case 0:
-                            $replyText = "Account No: $title | still pending 🥺\n\n" .
+                            $this->sendMessage($chatId, "Account No: $title | still pending 🥺\n\n" .
                                 "We are sorry for any inconveniences!,\n\n"
                                 . "Transaction Details:\n"
                                 . "Email: $email\n"
@@ -74,52 +74,52 @@ class TeleController extends Controller
                                 . "Website: $sitename\n"
                                 . "Amount: $amount\n\n" .
 
-                                "I will keep notifying the bank about the transaction but if you can wait, you can file a dispute from your bank app";
+                                "I will keep notifying the bank about the transaction but if you can wait, you can file a dispute from your bank app");
                             break;
                         case 9:
-                            $replyText = "Account No: $title | Failed ❌\n\n"
+                            $this->sendMessage($chatId, "Account No: $title | Failed ❌\n\n"
                                 . "Transaction Details:\n"
                                 . "Email: $email\n"
                                 . "Date/Time: $date\n"
                                 . "Website: $sitename\n"
                                 . "Amount: $amount\n\n"
-                                . "If you have been debited, Please raise a dispute for reversal on your bank app";
+                                . "If you have been debited, Please raise a dispute for reversal on your bank app");
                             break;
                         case 4:
-                            $replyText = "Account No: $title | already been funded ✅\n\n"
+                            $this->sendMessage($chatId,"Account No: $title | already been funded ✅\n\n"
                                 . "Transaction Details:\n"
                                 . "Email: $email\n"
                                 . "Date/Time: $date\n"
                                 . "Website: $sitename\n"
-                                . "Amount: $amount";
+                                . "Amount: $amount");
                             break;
 
                         case 5:
-                            $replyText = "Account No: $title | part payment received. 🔄\n";
+                            $this->sendMessage($chatId, "Account No: $title | part payment received. 🔄\n");
                             break;
 
                         case 2:
-                            $replyText = "Account No: $title | Transaction Completed ✅\n\n"
+                            $this->sendMessage($chatId, "Account No: $title | Transaction Completed ✅\n\n"
                                 . "Transaction Details:\n"
                                 . "Email: $email\n"
                                 . "Date/Time: $date\n"
                                 . "Website: $sitename\n"
-                                . "Amount: $amount";
+                                . "Amount: $amount");
                             break;
 
                         default:
-                            $replyText = "Account No: $title | processing resolve 🔄\n\n"
+                            $this->sendMessage($chatId, "Account No: $title | processing resolve 🔄\n\n"
                                 . "Transaction Details:\n"
                                 . "Email: $email\n"
                                 . "Date/Time: $date\n"
                                 . "Website: $sitename\n"
-                                . "code:$cc";
+                                . "code:$cc");
                             break;
                     }
                 }
             } else {
-                $replyText = "Account no: $title | not found ❌\n"
-                    . "Please verify the Account No and try again.";
+                $this->sendMessage($chatId, "Account no: $title | not found ❌\n"
+                    . "Please verify the Account No and try again.");
             }
 
         } elseif (strlen($text) >= 10 && stripos($text, '603') === 0) {
@@ -136,12 +136,12 @@ class TeleController extends Controller
                 $cc = json_encode($verify);
 
                 if (!is_array($verify)) {
-                    $replyText = "Error: Unexpected response format.";
+                    $this->sendMessage($chatId, "Error: Unexpected response format.");
 
                 } else {
                     switch ($verify['code']) {
                         case 0:
-                            $replyText = "Account No: $title | still pending 🥺\n\n" .
+                            $this->sendMessage($chatId, "Account No: $title | still pending 🥺\n\n" .
                                 "We are sorry for any inconveniences!,\n\n"
                                 . "Transaction Details:\n"
                                 . "Email: $email\n"
@@ -149,59 +149,59 @@ class TeleController extends Controller
                                 . "Website: $sitename\n"
                                 . "Amount: $amount\n\n" .
 
-                                "I will keep notifying the bank about the transaction but if you can wait, you can file a dispute from your bank app";
+                                "I will keep notifying the bank about the transaction but if you can wait, you can file a dispute from your bank app");
                             break;
                         case 9:
-                            $replyText = "Account No: $title | Failed ❌\n\n"
+                            $this->sendMessage($chatId, "Account No: $title | Failed ❌\n\n"
                                 . "Transaction Details:\n"
                                 . "Email: $email\n"
                                 . "Date/Time: $date\n"
                                 . "Website: $sitename\n"
                                 . "Amount: $amount\n\n"
-                                . "If you have been debited, Please contact your bank for reversal";
+                                . "If you have been debited, Please contact your bank for reversal");
                             break;
 
                         case 6:
-                            $replyText = "Account No: $title | Transaction reversed 🔄\n\n"
+                            $this->sendMessage($chatId, "Account No: $title | Transaction reversed 🔄\n\n"
                                 . "Transaction Details:\n"
                                 . "Email: $email\n"
                                 . "Date/Time: $date\n"
                                 . "Website: $sitename\n"
                                 . "Amount: $amount\n\n"
-                                . "Transaction has been successfully reversed back to your account";
+                                . "Transaction has been successfully reversed back to your account");
                             break;
 
 
                         case 4:
-                            $replyText = "Account No: $title | already been funded ✅\n\n"
+                            $this->sendMessage($chatId,"Account No: $title | already been funded ✅\n\n"
                                 . "Transaction Details:\n"
                                 . "Email: $email\n"
                                 . "Date/Time: $date\n"
                                 . "Website: $sitename\n"
-                                . "Amount: $amount";
+                                . "Amount: $amount");
                             break;
 
 
                         case 5:
-                            $replyText = "Account No: $title | part payment received. 🔄\n";
+                            $this->sendMessage($chatId, "Account No: $title | part payment received. 🔄\n");
                             break;
 
                         case 2:
-                            $replyText = "Account No: $title | Transaction Completed ✅\n\n"
+                            $this->sendMessage($chatId, "Account No: $title | Transaction Completed ✅\n\n"
                                 . "Transaction Details:\n"
                                 . "Email: $email\n"
                                 . "Date/Time: $date\n"
                                 . "Website: $sitename\n"
-                                . "Amount: $amount";
+                                . "Amount: $amount");
                             break;
 
                         default:
-                            $replyText = "Account No: $title | processing resolve 🔄\n\n"
+                            $this->sendMessage($chatId,"Account No: $title | processing resolve 🔄\n\n"
                                 . "Transaction Details:\n"
                                 . "Email: $email\n"
                                 . "Date/Time: $date\n"
                                 . "Website: $sitename\n"
-                                . "code:$cc";
+                                . "code:$cc");
                             break;
                     }
                 }
@@ -215,23 +215,28 @@ class TeleController extends Controller
                     switch ($verify['code']) {
 
                         case 9:
-                            $replyText = "Account No: $title | Failed ❌\n\n"
-                                . "If you have been debited, Please contact your bank for reversal";
+                            $this->sendMessage($chatId,"Account No: $title | Failed ❌\n\n"
+                                . "If you have been debited, Please contact your bank for reversal");
                             break;
                         case 6:
-                            $replyText = "Account No: $title | Transaction reversed 🔄\n\n"
-                                . "Transaction has been successfully reversed back to your account";
+                            $this->sendMessage($chatId, "Account No: $title | Transaction reversed 🔄\n\n"
+                                . "Transaction has been successfully reversed back to your account");
                             break;
 
                         default:
-                            $replyText = "Account No: $title | Failed ❌\n\n"
-                                . "If you have been debited, Please contact your bank for reversal";
+                            $this->sendMessage($chatId,"Account No: $title | Failed ❌\n\n"
+                                . "If you have been debited, Please contact your bank for reversal");
                             break;
                     }
                 }
             }
 
-        } elseif (strlen($text) >= 10 && stripos($text, '500') === 0) {
+        }
+
+
+
+
+        elseif (strlen($text) >= 10 && stripos($text, '500') === 0) {
             $title = $text;
             $trx = Transfertransaction::where('account_no', $title)->first() ?? null;
             if ($trx) {
@@ -366,7 +371,7 @@ class TeleController extends Controller
                 } else {
                     switch ($verify['code']) {
                         case 0:
-                            $replyText = "Account No: $title | still pending 🥺\n\n" .
+                            $this->sendMessage($chatId, "Account No: $title | still pending 🥺\n\n" .
                                 "We are sorry for any inconveniences!,\n\n"
                                 . "Transaction Details:\n"
                                 . "Email: $email\n"
@@ -374,46 +379,46 @@ class TeleController extends Controller
                                 . "Website: $sitename\n"
                                 . "Amount: $amount\n\n" .
 
-                                "I will keep notifying the bank about the transaction but if you can wait, you can file a dispute from your bank app";
+                                "I will keep notifying the bank about the transaction but if you can wait, you can file a dispute from your bank app");
                             break;
                         case 9:
-                            $replyText = "Account No: $title | Failed ❌\n\n"
+                            $this->sendMessage($chatId, "Account No: $title | Failed ❌\n\n"
                                 . "Transaction Details:\n"
                                 . "Email: $email\n"
                                 . "Date/Time: $date\n"
                                 . "Website: $sitename\n"
                                 . "Amount: $amount\n\n"
-                                . "If you have been debited, Please raise a dispute for reversal on your bank app";
+                                . "If you have been debited, Please raise a dispute for reversal on your bank app");
                             break;
                         case 4:
-                            $replyText = "Account No: $title | already been funded ✅\n\n"
+                            $this->sendMessage($chatId,"Account No: $title | already been funded ✅\n\n"
                                 . "Transaction Details:\n"
                                 . "Email: $email\n"
                                 . "Date/Time: $date\n"
                                 . "Website: $sitename\n"
-                                . "Amount: $amount";
+                                . "Amount: $amount");
                             break;
 
                         case 5:
-                            $replyText = "Account No: $title | part payment received. 🔄\n";
+                            $this->sendMessage($chatId, "Account No: $title | part payment received. 🔄\n");
                             break;
 
                         case 2:
-                            $replyText = "Account No: $title | Transaction Completed ✅\n\n"
+                            $this->sendMessage($chatId, "Account No: $title | Transaction Completed ✅\n\n"
                                 . "Transaction Details:\n"
                                 . "Email: $email\n"
                                 . "Date/Time: $date\n"
                                 . "Website: $sitename\n"
-                                . "Amount: $amount";
+                                . "Amount: $amount");
                             break;
 
                         default:
-                            $replyText = "Account No: $title | processing resolve 🔄\n\n"
+                            $this->sendMessage($chatId, "Account No: $title | processing resolve 🔄\n\n"
                                 . "Transaction Details:\n"
                                 . "Email: $email\n"
                                 . "Date/Time: $date\n"
                                 . "Website: $sitename\n"
-                                . "code:$cc";
+                                . "code:$cc");
                             break;
                     }
                 }
