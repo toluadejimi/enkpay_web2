@@ -2105,12 +2105,12 @@ function verifypelpaytelegram($pref)
 }
 
 
-function verifypsbtelegram($pref)
+function verifypsbtelegram($accountNo)
 {
 
     try {
 
-        $ckstatus = Transfertransaction::where('account_no', $pref)->first()->status ?? null;
+        $ckstatus = Transfertransaction::where('account_no', $accountNo)->first()->status ?? null;
         if ($ckstatus == null) {
             return [
                 'code' => 91
@@ -2124,14 +2124,14 @@ function verifypsbtelegram($pref)
             ];
         } else {
 
-            $status = Transfertransaction::where('account_no', $pref)->first()->status ?? null;
-            $email = Transfertransaction::where('account_no', $pref)->first()->email ?? null;
-            $order_idd = Transfertransaction::where('account_no', $pref)->first()->ref_trans_id ?? null;
+            $status = Transfertransaction::where('account_no', $accountNo)->first()->status ?? null;
+            $email = Transfertransaction::where('account_no', $accountNo)->first()->email ?? null;
+            $order_idd = Transfertransaction::where('account_no', $accountNo)->first()->ref_trans_id ?? null;
 
 
             $curl = curl_init();
             $data = array(
-                'account_no' => $pref,
+                'account_no' => $accountNo,
             );
             $post_data = json_encode($data);
 
@@ -2171,7 +2171,7 @@ function verifypsbtelegram($pref)
             }
 
 
-            $trxs = Transfertransaction::where('account_no', $pref)->first() ?? null;
+            $trxs = Transfertransaction::where('account_no', $accountNo)->first() ?? null;
             $urlkey = Webkey::where('key', $trxs->key)->first()->user_id ?? null;
             $balance = User::where('id', $trxs->user_id)->first()->main_wallet;
             $user = User::where('id', $trxs->user_id)->first();
@@ -2233,7 +2233,7 @@ function verifypsbtelegram($pref)
                 $trxa = Transfertransaction::where('account_no', $account_no)->first() ?? null;
                 if ($trxa == null) {
                     $trx = new Transfertransaction();
-                    $trx->account_no = $pref;
+                    $trx->account_no = $accountNo;
                     $trx->amount = $p_amount;
                     $trx->ref = $order_id;
                     $trx->ref_trans_id = $order_id;
@@ -2241,7 +2241,7 @@ function verifypsbtelegram($pref)
                     $trx->session_id = $session_id;
                     $trx->bank = "9PSBRESLOVE";
                     $trx->note = "Resolve Transaction Successful | Web Pay | form  $trxs->email";
-                    $trx->receiver_account_no = $pref;
+                    $trx->receiver_account_no = $accountNo;
                     $trx->resolve = 1;
                     $trx->transaction_type = "WEBTRASNSFER";
                     $trx->status = 4;
@@ -2249,7 +2249,7 @@ function verifypsbtelegram($pref)
                     $trx->save();
 
                 } else {
-                    Transfertransaction::where('account_no', $pref)->update(['status' => 4, 'note' => '9PSBRESOLVE', 'resolve' => 1]);
+                    Transfertransaction::where('account_no', $accountNo)->update(['status' => 4, 'note' => '9PSBRESOLVE', 'resolve' => 1]);
                 }
                 Webtransfer::where('trans_id', $trxs->trans_id)->update(['status' => 4]);
                     Webhook::where('account_no', $pref)->delete() ?? null;

@@ -101,7 +101,7 @@ class TeleController extends Controller
         } elseif (stripos($accountNo, '603') === 0 || stripos($accountNo, '500') === 0) {
             return verify_telegram_payment_woven($accountNo);
         } elseif (stripos($accountNo, '558') === 0) {
-            return verifypsbtelegram($pref);
+            return verifypsbtelegram($accountNo);
         }
         return null;
     }
@@ -120,7 +120,14 @@ class TeleController extends Controller
 
         $status = $statusMessages[$verify['code']] ?? "processing resolve 🔄";
 
-        return $this->sendMessage($chatId, "Account No: $accountNo | $status\n\n");
+
+
+        return $this->sendMessage($chatId, "Account No: $accountNo | $status\n\n"
+            . "Transaction Details:\n"
+            . "Email: $email\n"
+            . "Date/Time: $date\n"
+            . "Website: $sitename\n"
+            . "Amount: $amount");
     }
 
     protected function handleUnknownTransaction($chatId, $accountNo)
