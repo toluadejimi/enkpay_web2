@@ -565,7 +565,7 @@ class TeleController extends Controller
         }
     }
 
-    protected function sendMessage($chatId, $text, $keyboard = null)
+    protected function sendMessage($chatId, $text, $buttons = [])
     {
         $data = [
             'chat_id' => $chatId,
@@ -573,7 +573,11 @@ class TeleController extends Controller
             'parse_mode' => 'HTML',
         ];
 
-        if ($keyboard) {
+        // If buttons exist, add inline keyboard markup
+        if (!empty($buttons)) {
+            $keyboard = [
+                'inline_keyboard' => $buttons
+            ];
             $data['reply_markup'] = json_encode($keyboard);
         }
 
