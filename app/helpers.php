@@ -2110,14 +2110,17 @@ function verifypsbtelegram($accountNo)
 
     try {
         $ckstatus = Transfertransaction::where('account_no', $accountNo)->first()->status ?? null;
-        if ($ckstatus == null) {
-            return [
-                'code' => 91,
-                'account' => $accountNo,
-                'st' => $ckstatus,
-            ];
 
-        }
+//        if ($ckstatus == null) {
+//            return [
+//                'code' => 91,
+//                'account' => $accountNo,
+//                'st' => $ckstatus,
+//            ];
+//
+//        }
+
+
 
         if ($ckstatus == "4" || $ckstatus == 4) {
             return [
@@ -2270,151 +2273,8 @@ function verifypsbtelegram($accountNo)
 
             }
 
+            return ['code' => 91, 'message' => "Account not found"];
 
-        } else {
-
-            $status = Transfertransaction::where('account_no', $accountNo)->first()->status ?? null;
-            $email = Transfertransaction::where('account_no', $accountNo)->first()->email ?? null;
-            $order_idd = Transfertransaction::where('account_no', $accountNo)->first()->ref_trans_id ?? null;
-
-
-            $curl = curl_init();
-            $data = array(
-                'account_no' => $accountNo,
-            );
-            $post_data = json_encode($data);
-
-            curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://etopagency.com/api/account-check',
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => $post_data,
-                CURLOPT_HTTPHEADER => array(
-                    'Content-Type: application/json'
-                ),
-            ));
-
-            $var = curl_exec($curl);
-            curl_close($curl);
-            $var = json_decode($var);
-
-            $session_id = $var->session_id ?? null;
-            $account_no = $var->account_no ?? null;
-            $amt = $var->amount ?? null;
-            $name = $var->sender_name ?? null;
-            $statusbb = $var->status ?? null;
-            $resolve = $var->resolve ?? null;
-
-
-            if ($statusbb == false) {
-                return ['code' => -1, 'message' => "Transaction not found."];
-            }
-
-            if ($resolve == 1) {
-                return ['code' => 4];
-            }
-
-
-            $trxs = Transfertransaction::where('account_no', $accountNo)->first() ?? null;
-            $urlkey = Webkey::where('key', $trxs->key)->first()->user_id ?? null;
-            $balance = User::where('id', $trxs->user_id)->first()->main_wallet;
-            $user = User::where('id', $trxs->user_id)->first();
-            $url = Webkey::where('key', $trxs->key)->first()->url_fund ?? null;
-            $urluser = Webkey::where('key', $trxs->key)->first()->user_url ?? null;
-
-
-            $user_email = $trxs->email ?? null;
-            $site_name = Webkey::where('key', $trxs->key)->first()->site_name ?? null;
-
-
-            $set = Setting::where('id', 1)->first();
-            if ($amt > 15000) {
-                $p_amount = $amt - $set->psb_cap;
-            } else {
-                $p_amount = $amt - $set->psb_charge;
-            }
-
-
-            //fund Vendor
-            $charge = Setting::where('id', 1)->first()->webpay_transfer_charge;
-            if ($amt <= 100) {
-                $f_amount = $amt;
-            } elseif ($amt > 15000) {
-                $f_amount = $amt - 300;
-            }
-
-
-            $amount = $p_amount;
-            $type = "presolve";
-            $order_id = "Resolve" . random_int(00000, 99999);
-            $fund = credit_user_wallet($url, $user_email, $amount, $order_id, $type, $session_id);
-            $ramount = $p_amount - 100;
-
-
-            if ($fund == 2) {
-                //update Transactions
-                $trasnaction = new Transaction();
-                $trasnaction->user_id = $urlkey;
-                $trasnaction->e_ref = $order_id;
-                $trasnaction->ref_trans_id = $order_id;
-                $trasnaction->type = "webpay";
-                $trasnaction->transaction_type = "VirtualFundWallet";
-                $trasnaction->title = "Wallet Funding";
-                $trasnaction->main_type = "Transfer";
-                $trasnaction->credit = $p_amount;
-                $trasnaction->note = "Resolve Transaction Successful | Web Pay | form  $";
-                $trasnaction->receiver_account_no = $account_no;
-                $trasnaction->fee = $charge ?? 0;
-                $trasnaction->amount = $amt;
-                $trasnaction->e_charges = 0;
-                $trasnaction->enkPay_Cashout_profit = 0;
-                $trasnaction->balance = $balance;
-                $trasnaction->status = 1;
-                $trasnaction->save();
-
-                User::where('id', $urlkey)->increment('main_wallet', $ramount);
-
-                $trxa = Transfertransaction::where('account_no', $account_no)->first() ?? null;
-                if ($trxa == null) {
-                    $trx = new Transfertransaction();
-                    $trx->account_no = $accountNo;
-                    $trx->amount = $p_amount;
-                    $trx->ref = $order_id;
-                    $trx->ref_trans_id = $order_id;
-                    $trx->email = $trxs->email;
-                    $trx->session_id = $session_id;
-                    $trx->bank = "9PSBRESLOVE";
-                    $trx->note = "Resolve Transaction Successful | Web Pay | form  $trxs->email";
-                    $trx->receiver_account_no = $accountNo;
-                    $trx->resolve = 1;
-                    $trx->transaction_type = "WEBTRASNSFER";
-                    $trx->status = 4;
-                    $trx->user_id = $urlkey;
-                    $trx->save();
-
-                } else {
-                    Transfertransaction::where('account_no', $accountNo)->update(['status' => 4, 'note' => '9PSBRESOLVE', 'resolve' => 1]);
-                }
-                Webtransfer::where('trans_id', $trxs->trans_id)->update(['status' => 4]);
-                    Webhook::where('account_no', $pref)->delete() ?? null;
-
-
-                $date = date('d M Y H:i:s');
-                $message = $account_no . " | RESOLVE BOT | NGN  $amt | $trxs->email  | $site_name | $date | has been funded";
-                send_notification($message);
-
-
-                $message = "Business funded | Resolve BOT | $account_no | 9psb | $ramount | $user->first_name " . " " . $user->last_name;
-                send_notification($message);
-
-                return ['code' => 2, 'message' => "Transaction completed"];
-
-            }
 
         }
 
