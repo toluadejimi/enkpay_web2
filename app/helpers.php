@@ -2258,7 +2258,7 @@ function verifypsbtelegram($accountNo)
                     Transfertransaction::where('account_no', $accountNo)->update(['status' => 4, 'note' => '9PSBRESOLVE', 'resolve' => 1]);
                 }
                 Webtransfer::where('trans_id', $trxs->trans_id)->update(['status' => 4]);
-                    Webhook::where('account_no', $pref)->delete() ?? null;
+                    Webhook::where('account_no', $accountNo)->delete() ?? null;
 
 
                 $date = date('d M Y H:i:s');
