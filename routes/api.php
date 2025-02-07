@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CableController;
 use App\Http\Controllers\CharmController;
+use App\Http\Controllers\TeleController;
 use App\Http\Controllers\TelegramController;
 use App\Http\Controllers\WovenController;
 use Illuminate\Http\Request;
@@ -28,7 +29,8 @@ use App\Http\Controllers\VirtualAccount\VirtualController;
 
 Route::get('check-vendor', [TransactionController::class, 'check_vendor']);
 
-Route::any('telegram-webhook', [TelegramController::class, 'webhook']);
+//Route::any('telegram-webhook', [TelegramController::class, 'webhook']);
+Route::any('telegram-webhook', [TeleController::class, 'handleWebhook']);
 Route::any('telegram-test', [TelegramController::class, 'verify_telegram_test']);
 
 Route::post('fund-merchant', [TransactionController::class, 'fund_merchant']);
