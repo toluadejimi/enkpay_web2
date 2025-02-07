@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Transfertransaction;
 use App\Models\Webkey;
+use App\Services\TelegramService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Http;
 
 class TeleController extends Controller
 {
@@ -34,29 +34,39 @@ class TeleController extends Controller
         }
     }
 
+
     protected function autoReply($chatId, $text)
     {
         $text = strtolower(trim($text));
         Log::info("Received message: $text from Chat ID: $chatId");
 
         // Handle commands
-        switch ($text) {
-            case '/start':
-            case 'hi':
-                return $this->sendMenu($chatId);
-            case (strpos($text, 'resolve') !== false):
-                return $this->sendMessage($chatId, "Enter your Account No to resolve a transaction.");
-            case (strpos($text, 'status') !== false):
-                return $this->sendMessage($chatId, "Enter your transaction reference to check status.");
-            case (strpos($text, 'help') !== false):
-                return $this->sendMessage($chatId, "How can I assist you?");
-            default:
-                // Handle Account Number cases
-                if (preg_match('/^(961|603|500|558)\d{7}$/', $text)) {
-                    return $this->handleTransaction($chatId, $text);
-                }
-                return $this->sendMessage($chatId, "Invalid command or account number. Please try again.");
+        if ($text === '/start') {
+            return $this->sendMenu($chatId);
         }
+
+        if ($text === 'hi') {
+            return $this->sendMenu($chatId);
+        }
+
+        if (strpos($text, 'resolve') !== false) {
+            return $this->sendMessage($chatId, "Enter your Account No to resolve a transaction.");
+        }
+
+        if (strpos($text, 'status') !== false) {
+            return $this->sendMessage($chatId, "Enter your transaction reference to check status.");
+        }
+
+        if (strpos($text, 'help') !== false) {
+            return $this->sendMessage($chatId, "How can I assist you?");
+        }
+
+        // Handle Account Number cases
+        if (preg_match('/^(961|603|500|558)\d{7}$/', $text)) {
+            return $this->handleTransaction($chatId, $text);
+        }
+
+        return $this->sendMessage($chatId, "Invalid command or account number. Please try again.");
     }
 
     protected function handleTransaction($chatId, $accountNo)
@@ -137,7 +147,7 @@ class TeleController extends Controller
             ]
         ];
 
-        return $this->sendMessage($chatId, "Choose an option:", $keyboard);
+        $this->sendMessage($chatId, "Choose an option:", $keyboard);
     }
 
     protected function handleCallbackQuery($callbackQuery)
@@ -170,10 +180,6 @@ class TeleController extends Controller
             $data['reply_markup'] = json_encode($keyboard);
         }
 
-        try {
-            Http::get("https://api.telegram.org/bot" . $this->telegramToken . "/sendMessage?" . http_build_query($data));
-        } catch (\Exception $e) {
-            Log::error('Telegram message send failed: ' . $e->getMessage());
-        }
+        file_get_contents("https://api.telegram.org/bot" . $this->telegramToken . "/sendMessage?" . http_build_query($data));
     }
 }
