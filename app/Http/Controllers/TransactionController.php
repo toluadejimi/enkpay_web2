@@ -1235,6 +1235,7 @@ class TransactionController extends Controller
                             'account_no' => $woven_details['account_no'],
                             'account_name' =>  $woven_details['account_name'],
                             'bank' => $woven_details['bank_name'],
+                            'amount' => $amtt,
                         ]);
 
 
@@ -1332,6 +1333,7 @@ class TransactionController extends Controller
                             'account_no' => $psb_details['account_no'],
                             'account_name' =>  $psb_details['account_name'],
                             'bank' => $psb_details['bank_name'],
+                            'amount' => $amtt,
                         ]);
 
 
