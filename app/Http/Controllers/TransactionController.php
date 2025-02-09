@@ -1160,12 +1160,203 @@ class TransactionController extends Controller
 
 
 
+        if($request->platform == "Telegram"){
+
+            if ($set->woven == 1) {
+
+
+                $set = Setting::where('id', 1)->first();
+                if ($set->woven == 1) {
+                    $faker = Factory::create();
+                    $data['pamount'] = $request->amount;
+                    $first_name = User::inRandomOrder()->first()->first_name;
+                    $last_name = User::inRandomOrder()->first()->last_name;
+                    $tremail = $faker->email;
+                    $phone = User::inRandomOrder()->first()->phone;
+
+                    if($request->amount > 11000){
+                        $amtt  = $request->amount + 300;
+                    }else{
+                        $amtt = $request->amount + 100;
+                    }
+
+                    $code = Setting::where('id', 1)->first()->woven_collective_code;
+                    $woven_details = woven_create($amtt, $code, $last_name, $tremail, $phone) ?? null;
+
+
+                    if ($woven_details != null) {
+
+                            Transfertransaction::where('account_no', $request->accountNo)->delete() ?? null;
+                        $user_id = Webkey::where('key', $request->key)->first()->user_id;
+                        $trx = Transfertransaction::where('account_no', $request->accountNo)->first() ?? null;
+
+                        $usr = User::where('id', $user_id)->first();
+
+                        $trasnaction = new Transfertransaction();
+                        $trasnaction->user_id = $user_id;
+                        $trasnaction->type = "webpay";
+                        $trasnaction->key = $request->key;
+                        $trasnaction->email = $request->email;
+                        $trasnaction->ref_trans_id = $request->ref;
+                        $trasnaction->amount = $request->amount;
+                        $trasnaction->transaction_type = "WEBTRANSFER";
+                        $trasnaction->bank = $woven_details['bank_name'];
+                        $trasnaction->ref = $request->ref;
+                        $trasnaction->account_no = $woven_details['account_no'];
+                        $trasnaction->v_account_name = $woven_details['account_name'];
+                        $trasnaction->amount_to_pay = $request->amount;
+                        $trasnaction->title = "WEBTRANSFER";
+                        $trasnaction->main_type = "WOVEN";
+                        $trasnaction->note = "WEBTRANSFER";
+                        $trasnaction->e_charges = 0;
+                        $trasnaction->enkPay_Cashout_profit = 0;
+                        $trasnaction->status = 0;
+                        $trasnaction->save();
+
+
+                        $data['account_no'] = $woven_details['account_no'];
+                        $data['account_name'] = $woven_details['account_name'];
+                        $data['bank_name'] = $woven_details['bank_name'];
+
+
+
+
+                        $acc_no = $woven_details['account_no'];
+                        $acc_name = $woven_details['account_name'];
+                        $bank = $woven_details['bank_name'];
+                        $burl = Webkey::where('key', $request->key)->first()->user_url;
+                        $data['back_url'] =$burl."?status=failed&ref=".$request->ref ?? null;
+
+
+                        $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount . "| ".$request->email;
+                        send_notification($message);
+
+                        return response()->json([
+                            'account_no' => $woven_details['account_no'],
+                            'account_name' =>  $woven_details['account_name'],
+                            'bank' => $woven_details['bank_name'],
+                        ]);
+
+
+                    }
+
+                    return response()->json([
+                        'account_no' => "Try again later",
+                        'account_name' =>   "Try again later",
+                        'bank' =>  "Try again later",
+                    ]);
+
+
+
+
+
+
+                }
+
+
+            }
+
+
+
+            if ($set->ninepsb == 1) {
+
+
+                $set = Setting::where('id', 1)->first();
+                if ($set->ninepsb == 1) {
+                    $faker = Factory::create();
+                    $data['pamount'] = $request->amount;
+                    $first_name = User::inRandomOrder()->first()->first_name;
+                    $last_name = User::inRandomOrder()->first()->last_name;
+                    $tremail = $faker->email;
+                    $phone = User::inRandomOrder()->first()->phone;
+
+                    if($request->amount > 11000){
+                        $amtt  = $request->amount + 300;
+                    }else{
+                        $amtt = $request->amount + 100;
+                    }
+
+                    $code = Setting::where('id', 1)->first()->woven_collective_code;
+
+                    $text = ["KEM GLOBAL", "VIVID ENT", "ROYAL LTD", "LOGI ENT", "KABS LTD", "KENS ENT"];
+                    $random_index = array_rand($text);
+                    $account_name = $text[$random_index];
+                    $psb_details = ninepsb_create($amtt, $account_name) ?? null;
+
+
+                    if ($psb_details != null) {
+
+                            Transfertransaction::where('account_no', $request->accountNo)->delete() ?? null;
+                        $user_id = Webkey::where('key', $request->key)->first()->user_id;
+                        $trx = Transfertransaction::where('account_no', $request->accountNo)->first() ?? null;
+
+                        $usr = User::where('id', $user_id)->first();
+
+                        $trasnaction = new Transfertransaction();
+                        $trasnaction->user_id = $user_id;
+                        $trasnaction->type = "webpay";
+                        $trasnaction->key = $request->key;
+                        $trasnaction->email = $request->email;
+                        $trasnaction->ref_trans_id = $request->ref;
+                        $trasnaction->amount = $request->amount;
+                        $trasnaction->transaction_type = "WEBTRANSFER";
+                        $trasnaction->bank = "9PSB";
+                        $trasnaction->ref = $request->ref;
+                        $trasnaction->account_no = $psb_details['account_no'];
+                        $trasnaction->v_account_name = $account_name;
+                        $trasnaction->amount_to_pay = $request->amount;
+                        $trasnaction->title = "WEBTRANSFER";
+                        $trasnaction->main_type = "9PSB";
+                        $trasnaction->note = "WEBTRANSFER";
+                        $trasnaction->e_charges = 0;
+                        $trasnaction->enkPay_Cashout_profit = 0;
+                        $trasnaction->status = 0;
+                        $trasnaction->save();
+
+
+                        $data['account_no'] = $psb_details['account_no'];
+                        $data['account_name'] = $psb_details['account_name'];
+                        $data['bank_name'] = $psb_details['bank_name'];
+
+                        $acc_no = $psb_details['account_no'];
+                        $acc_name = $account_name;
+                        $bank = "9PSB";
+                        $burl = Webkey::where('key', $request->key)->first()->user_url;
+                        $data['back_url'] =$burl."?status=failed&ref=".$request->ref ?? null;
+
+
+                        $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount . "| ".$request->email;
+                        send_notification($message);
+
+                        return response()->json([
+                            'account_no' => $psb_details['account_no'],
+                            'account_name' =>  $psb_details['account_name'],
+                            'bank' => $psb_details['bank_name'],
+                        ]);
+
+
+                    }
+
+                    return response()->json([
+                        'account_no' => "Try again later",
+                        'account_name' =>   "Try again later",
+                        'bank' =>  "Try again later",
+                    ]);
+
+
+
+
+                }
+
+
+            }
+
+        }
+
+
         if ($request->platform == "webly") {
 
-
-
             $set = Setting::where('id', 1)->first();
-
             $faker = Factory::create();
             $data['pamount'] = $request->amount;
             $first_name = User::inRandomOrder()->first()->first_name;
