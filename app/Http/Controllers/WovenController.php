@@ -235,6 +235,125 @@ class WovenController extends Controller
 
 
     }
+    public function repush_woven(Request $request){
+
+
+        $acc_no = $request->nuban;
+        $user_amount = $request->amount;
+        $session_id = $request->unique_reference;
+        $payable = $request->amount_payable;
+        $fee = $request->fee;
+
+
+        $status = Transfertransaction::where('account_no', $acc_no)->first()->status ?? null;
+        if ($status == 4) {
+
+            return response()->json([
+                'status' => false,
+                'message' => "Transaction has already been funded",
+            ]);
+
+        }
+
+
+
+        $trx = Transfertransaction::where([
+            'account_no' => $acc_no,
+            'amount_to_pay' => $user_amount,
+            'status' => 0
+        ])->first() ?? null;
+
+
+
+        if ($trx == null) {
+            $message = "Woven funding error =>>>>> $acc_no | $user_amount  not found on transation";
+            send_notification($message);
+            return response()->json([
+                'status' => false,
+                'message' => "Account Not found in our database",
+            ]);
+        }
+
+
+        if ($trx != null) {
+            $set = Setting::where('id', 1)->first();
+            if ($user_amount > 11000) {
+                $p_amount = $user_amount - 300;
+            } else {
+                $p_amount = $user_amount - 100;
+            }
+
+
+            if ($trx->status == 0) {
+
+                Transfertransaction::where([
+                    'account_no' => $acc_no,
+                    'amount_to_pay' => $user_amount,
+                    'status' => 0
+                ])->first()->update(['session_id' => $session_id, 'status' => 4, 'resolve' => 1]) ?? null;
+
+
+                User::where('id', $trx->user_id)->increment('main_wallet', $p_amount);
+                $balance = User::where('id', $trx->user_id)->first()->main_wallet;
+                $user = User::where('id', $trx->user_id)->first();
+
+
+                $url = Webkey::where('key', $trx->key)->first()->url_fund ?? null;
+                $user_email = $trx->email ?? null;
+                $order_id = $trx->ref_trans_id ?? null;
+                $site_name = Webkey::where('key', $trx->key)->first()->site_name ?? null;
+
+                $trasnaction = new Transaction();
+                $trasnaction->user_id = $trx->user_id;
+                $trasnaction->e_ref = $request->sessionid ?? $acc_no;
+                $trasnaction->ref_trans_id = $order_id;
+                $trasnaction->type = "webpay";
+                $trasnaction->transaction_type = "VirtualFundWallet";
+                $trasnaction->title = "Wallet Funding";
+                $trasnaction->main_type = "WOVEN";
+                $trasnaction->credit = $p_amount;
+                $trasnaction->note = "Transaction Successful | Web Pay | for $user_email";
+                $trasnaction->fee = $fee ?? 0;
+                $trasnaction->amount = $trx->amount;
+                $trasnaction->e_charges = 0;
+                $trasnaction->charge = $payable ?? 0;
+                $trasnaction->enkPay_Cashout_profit = 0;
+                $trasnaction->balance = $balance;
+                $trasnaction->status = 1;
+                $trasnaction->save();
+
+                $message = "Business funded  | $request->nuban | $p_amount | $user->first_name " . " " . $user->last_name ." | for $user_email" ;
+                send_notification($message);
+
+                Webtransfer::where('trans_id', $trx->trans_id)->update(['status' => 4]);
+                Transfertransaction::where('account_no', $acc_no)->update(['status' => 4, 'resolve' => 1]);
+
+                $trxck = new Transactioncheck();
+                $trxck->session_id = $session_id;
+                $trxck->amount = $trx->amount;
+                $trxck->email = $user_email;
+                $trxck->account_no = $request->nuban;
+                $trxck->save();
+
+
+                $type ="epayment";
+                $fund = credit_user_wallet($url, $user_email, $trx->amount, $order_id, $type, $session_id);
+
+                return response()->json([
+                    'status' => true,
+                    'message' => "Transaction Successful"
+                ]);
+
+            }
+        }else{
+            return response()->json([
+                'status' => false,
+                'message' => "No transaction made"
+            ]);
+        }
+
+
+    }
 
 
 

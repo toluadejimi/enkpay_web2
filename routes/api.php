@@ -44,6 +44,7 @@ Route::get('cable-plan',[CableController::class, 'get_cable_plan']);
 
 Route::post('get-account/wvn',[WovenController::class, 'get_account']);
 Route::post('woven/callback',[WovenController::class, 'woven_webhook']);
+Route::post('repush-woven',[WovenController::class, 'repush_woven']);
 Route::any('charm/callback',[CharmController::class, 'charm_webhook']);
 
 
