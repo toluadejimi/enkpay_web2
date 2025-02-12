@@ -56,13 +56,6 @@ class WovenController extends Controller
         Transfertransaction::where('account_no', $request->accountNo)->delete() ?? null;
 
 
-        if($request->amount > 11000){
-            $pamount = $request->amount + 300;
-        }else{
-            $pamount = $request->amount + 100;
-        }
-
-
         $usr = User::where('id', $trx->user_id)->first();
         if ($trx != null) {
             $trasnaction = new Transfertransaction();
@@ -77,7 +70,7 @@ class WovenController extends Controller
             $trasnaction->ref = $request->ref;
             $trasnaction->account_no = $request->accountNo;
             $trasnaction->v_account_name = $request->accountName;
-            $trasnaction->amount_to_pay = $pamount;
+            $trasnaction->amount_to_pay = $request->amount;
             $trasnaction->title = "WEBTRANSFER";
             $trasnaction->main_type = "WOVEN";
             $trasnaction->note = "WEBTRANSFER";
