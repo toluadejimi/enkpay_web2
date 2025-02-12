@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Transactioncheck extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'session_id',
+        'amount',
+        'email',
+        'account_no'
+    ];
 }
