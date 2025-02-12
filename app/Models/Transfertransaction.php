@@ -8,4 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Transfertransaction extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+
+        'session_id',
+        'amount',
+        'email',
+        'account_no'
+
+    ];
 }
