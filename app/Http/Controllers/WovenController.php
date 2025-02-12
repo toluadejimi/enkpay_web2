@@ -52,7 +52,16 @@ class WovenController extends Controller
     {
 
         $trx = Webtransfer::where('manual_acc_ref', $request->ref)->first() ?? null;
+
         Transfertransaction::where('account_no', $request->accountNo)->delete() ?? null;
+
+
+        if($request->amount > 11000){
+            $pamount = $request->amount + 300;
+        }else{
+            $pamount = $request->amount + 100;
+        }
+
 
         $usr = User::where('id', $trx->user_id)->first();
         if ($trx != null) {
@@ -68,7 +77,7 @@ class WovenController extends Controller
             $trasnaction->ref = $request->ref;
             $trasnaction->account_no = $request->accountNo;
             $trasnaction->v_account_name = $request->accountName;
-            $trasnaction->amount_to_pay = $request->amount;
+            $trasnaction->amount_to_pay = $pamount;
             $trasnaction->title = "WEBTRANSFER";
             $trasnaction->main_type = "WOVEN";
             $trasnaction->note = "WEBTRANSFER";
@@ -109,14 +118,14 @@ class WovenController extends Controller
         send_notification($message);
 
 
-//        if($request->ip() != "35.162.80.204"){
-//            $message = "Wrong IP request | ===>>>".$request->ip();
-//            send_notification($message);
-//            return response()->json([
-//                'status' => false,
-//                'message' => "Wrong IP request"
-//            ]);
-//        }
+        if($request->ip() != "35.162.80.204"){
+            $message = "Wrong IP request | ===>>>".$request->ip();
+            send_notification($message);
+            return response()->json([
+                'status' => false,
+                'message' => "Wrong IP request"
+            ]);
+        }
 
         $acc_no = $request->nuban;
         $user_amount = $request->amount;
@@ -127,6 +136,7 @@ class WovenController extends Controller
 
         $status = Transfertransaction::where('account_no', $acc_no)->first()->status ?? null;
         if ($status == 4) {
+
             return response()->json([
                 'status' => false,
                 'message' => "Transaction has already been funded",
@@ -136,12 +146,10 @@ class WovenController extends Controller
 
 
 
-
-
-        $trx = Transfertransaction::where('account_no', $acc_no)
-            ->where([
-                'status' => 0
-            ])->first() ?? null;
+        $trx = Transfertransaction::where([
+            'account_no' => $acc_no,
+            'amount_with_charge' => $user_amount,
+        ])->where(['status' => 0])->first() ?? null;
 
 
         if ($trx == null) {
@@ -153,33 +161,16 @@ class WovenController extends Controller
 
         }
 
-        $paid_amt =  Transfertransaction::where('account_no', $acc_no)->first()->amount_paid ?? null;
-        $amt_to_pay =  Transfertransaction::where('account_no', $acc_no)->first()->amount_to_pay ?? null;
 
-
-        if($paid_amt == $amt_to_pay){
-            $amount = $user_amount;
-        }else{
-            $amount = $user_amount - 100;
-        }
-
-
-
-        Transfertransaction::where('account_no', $acc_no)->increment('amount_paid', $amount);
         $trx = Transfertransaction::where('account_no', $acc_no)->first() ?? null;
 
         if ($trx != null) {
-
-
             $set = Setting::where('id', 1)->first();
-            if ($amount > 15000) {
-                $p_amount = $amount - $set->psb_cap;
+            if ($trx->amount > 11000) {
+                $p_amount = $trx->amount - 300;
             } else {
-                $p_amount = $amount - $set->psb_charge;
+                $p_amount = $trx->amount - 100;
             }
-
-
-
 
 
             if ($trx->ststus == 0) {
@@ -188,8 +179,6 @@ class WovenController extends Controller
                             'status' => 0
                         ])->update(['status' => 5, 'session_id' => $session_id]) ?? null;
 
-
-                //fund Vendor
 
                 $trx = Transfertransaction::where('account_no', $acc_no)->first();
 
@@ -203,7 +192,6 @@ class WovenController extends Controller
 
                 $url = Webkey::where('key', $trx->key)->first()->url_fund ?? null;
                 $user_email = $trx->email ?? null;
-                //$amount = $trx->amount ?? null;
                 $order_id = $trx->ref_trans_id ?? null;
                 $site_name = Webkey::where('key', $trx->key)->first()->site_name ?? null;
 
@@ -226,7 +214,7 @@ class WovenController extends Controller
                 $trasnaction->status = 1;
                 $trasnaction->save();
 
-                $message = "Business funded | $request->nuban | $p_amount | $user->first_name " . " " . $user->last_name;
+                $message = "Business funded  | $request->nuban | $p_amount | $user->first_name " . " " . $user->last_name ." | for $user_email" ;
                 send_notification($message);
 
                 Webtransfer::where('trans_id', $trx->trans_id)->update(['status' => 4]);
@@ -237,8 +225,6 @@ class WovenController extends Controller
                 $trxck->amount = $trx->amount;
                 $trxck->email = $user_email;
                 $trxck->save();
-
-
 
 
                 $type ="epayment";
