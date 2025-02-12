@@ -1102,6 +1102,100 @@ class TransactionController extends Controller
             $trans->save();
         }
 
+
+        if ($request->type == "testwoven") {
+
+
+            $set = Setting::where('id', 1)->first();
+
+                $faker = Factory::create();
+                $data['pamount'] = $request->amount;
+                $first_name = User::inRandomOrder()->first()->first_name;
+                $last_name = User::inRandomOrder()->first()->last_name;
+                $tremail = $faker->email;
+                $phone = User::inRandomOrder()->first()->phone;
+
+                if($request->amount > 11000){
+                    $amtt  = $request->amount + 300;
+                }else{
+                    $amtt = $request->amount + 100;
+                }
+
+                $code = Setting::where('id', 1)->first()->woven_collective_code;
+                $woven_details = woven_create($amtt, $code, $last_name, $tremail, $phone) ?? null;
+
+                $amount_to_pay = $amtt;
+
+
+                if ($woven_details != null) {
+
+                        Transfertransaction::where('account_no', $request->accountNo)->delete() ?? null;
+                    $user_id = Webkey::where('key', $request->key)->first()->user_id;
+                    $trx = Transfertransaction::where('account_no', $request->accountNo)->first() ?? null;
+
+                    $usr = User::where('id', $user_id)->first();
+
+
+
+                    $trasnaction = new Transfertransaction();
+                    $trasnaction->user_id = $user_id;
+                    $trasnaction->type = "webpay";
+                    $trasnaction->key = $request->key;
+                    $trasnaction->email = $request->email;
+                    $trasnaction->ref_trans_id = $request->ref;
+                    $trasnaction->amount = $request->amount;
+                    $trasnaction->transaction_type = "WEBTRANSFER";
+                    $trasnaction->bank = $woven_details['bank_name'];
+                    $trasnaction->ref = $request->ref;
+                    $trasnaction->account_no = $woven_details['account_no'];
+                    $trasnaction->v_account_name = $woven_details['account_name'];
+                    $trasnaction->amount_to_pay = $amount_to_pay;
+                    $trasnaction->title = "WEBTRANSFER";
+                    $trasnaction->main_type = "WOVEN";
+                    $trasnaction->note = "WEBTRANSFER";
+                    $trasnaction->e_charges = 0;
+                    $trasnaction->enkPay_Cashout_profit = 0;
+                    $trasnaction->status = 0;
+                    $trasnaction->save();
+
+
+
+                    $data['account_no'] = $woven_details['account_no'];
+                    $data['account_name'] = $woven_details['account_name'];
+                    $data['bank_name'] = $woven_details['bank_name'];
+
+                    $acc_no = $woven_details['account_no'];
+                    $acc_name = $woven_details['account_name'];
+                    $bank = $woven_details['bank_name'];
+                    $burl = Webkey::where('key', $request->key)->first()->user_url;
+                    $data['back_url'] =$burl."?status=failed&ref=".$request->ref ?? null;
+
+
+                    $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount . "| ".$request->email;
+                    send_notification($message);
+
+
+                    return view('webpaywoven', $data);
+
+
+
+
+                }
+
+
+                $data['account_no'] = "Try again later";
+                $data['account_name'] = "Try again later";
+                $data['bank_name'] = "Try again later";
+
+
+                return view('webpaywoven', $data);
+
+
+
+
+        }
+
+
         $set = Setting::where('id', 1)->first();
         $data['card'] = $set->pay_by_card;
         $data['opay_transfer'] = $set->opay_trx;
@@ -1543,99 +1637,6 @@ class TransactionController extends Controller
         }
 
 
-        if ($request->type == "test") {
-
-
-            $set = Setting::where('id', 1)->first();
-            if ($set->woven == 1) {
-                $faker = Factory::create();
-                $data['pamount'] = $request->amount;
-                $first_name = User::inRandomOrder()->first()->first_name;
-                $last_name = User::inRandomOrder()->first()->last_name;
-                $tremail = $faker->email;
-                $phone = User::inRandomOrder()->first()->phone;
-
-                if($request->amount > 11000){
-                    $amtt  = $request->amount + 300;
-                }else{
-                    $amtt = $request->amount + 100;
-                }
-
-                $code = Setting::where('id', 1)->first()->woven_collective_code;
-                $woven_details = woven_create($amtt, $code, $last_name, $tremail, $phone) ?? null;
-
-                $amount_to_pay = $amtt;
-
-
-                if ($woven_details != null) {
-
-                        Transfertransaction::where('account_no', $request->accountNo)->delete() ?? null;
-                    $user_id = Webkey::where('key', $request->key)->first()->user_id;
-                    $trx = Transfertransaction::where('account_no', $request->accountNo)->first() ?? null;
-
-                    $usr = User::where('id', $user_id)->first();
-
-
-
-                    $trasnaction = new Transfertransaction();
-                    $trasnaction->user_id = $user_id;
-                    $trasnaction->type = "webpay";
-                    $trasnaction->key = $request->key;
-                    $trasnaction->email = $request->email;
-                    $trasnaction->ref_trans_id = $request->ref;
-                    $trasnaction->amount = $request->amount;
-                    $trasnaction->transaction_type = "WEBTRANSFER";
-                    $trasnaction->bank = $woven_details['bank_name'];
-                    $trasnaction->ref = $request->ref;
-                    $trasnaction->account_no = $woven_details['account_no'];
-                    $trasnaction->v_account_name = $woven_details['account_name'];
-                    $trasnaction->amount_to_pay = $amount_to_pay;
-                    $trasnaction->title = "WEBTRANSFER";
-                    $trasnaction->main_type = "WOVEN";
-                    $trasnaction->note = "WEBTRANSFER";
-                    $trasnaction->e_charges = 0;
-                    $trasnaction->enkPay_Cashout_profit = 0;
-                    $trasnaction->status = 0;
-                    $trasnaction->save();
-
-
-
-                    $data['account_no'] = $woven_details['account_no'];
-                    $data['account_name'] = $woven_details['account_name'];
-                    $data['bank_name'] = $woven_details['bank_name'];
-
-                    $acc_no = $woven_details['account_no'];
-                    $acc_name = $woven_details['account_name'];
-                    $bank = $woven_details['bank_name'];
-                    $burl = Webkey::where('key', $request->key)->first()->user_url;
-                    $data['back_url'] =$burl."?status=failed&ref=".$request->ref ?? null;
-
-
-                    $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount . "| ".$request->email;
-                    send_notification($message);
-
-
-                    return view('webpaywoven', $data);
-
-
-
-
-                }
-
-
-                $data['account_no'] = "Try again later";
-                $data['account_name'] = "Try again later";
-                $data['bank_name'] = "Try again later";
-
-
-                return view('webpaywoven', $data);
-
-
-
-            }
-
-
-        }
 
 
         if ($set->ninepsb == 1) {
