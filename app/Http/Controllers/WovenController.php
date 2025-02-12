@@ -55,7 +55,6 @@ class WovenController extends Controller
 
         Transfertransaction::where('account_no', $request->accountNo)->delete() ?? null;
 
-
         $usr = User::where('id', $trx->user_id)->first();
         if ($trx != null) {
             $trasnaction = new Transfertransaction();
@@ -141,40 +140,38 @@ class WovenController extends Controller
 
         $trx = Transfertransaction::where([
             'account_no' => $acc_no,
-        ])->where(['status' => 0])->first() ?? null;
+            'amount_to_pay' => $user_amount,
+            'status' => 0
+        ])->first() ?? null;
+
 
 
         if ($trx == null) {
-
+            $message = "Woven funding error =>>>>> $acc_no | $user_amount  not found on transation";
+            send_notification($message);
             return response()->json([
                 'status' => false,
                 'message' => "Account Not found in our database",
             ]);
-
         }
 
 
-        $trx = Transfertransaction::where('account_no', $acc_no)->first() ?? null;
-
         if ($trx != null) {
             $set = Setting::where('id', 1)->first();
-            if ($trx->amount > 11000) {
-                $p_amount = $trx->amount - 300;
+            if ($user_amount > 11000) {
+                $p_amount = $user_amount - 300;
             } else {
-                $p_amount = $trx->amount - 100;
+                $p_amount = $user_amount - 100;
             }
 
 
-            if ($trx->ststus == 0) {
-                    Transfertransaction::where('account_no', $acc_no)
-                        ->where([
-                            'status' => 0
-                        ])->update(['status' => 5, 'session_id' => $session_id]) ?? null;
+            if ($trx->status == 0) {
 
-
-                $trx = Transfertransaction::where('account_no', $acc_no)->first();
-
-                Transfertransaction::where('account_no', $acc_no)->update(['status' => 4, 'resolve' => 1]);
+                Transfertransaction::where([
+                    'account_no' => $acc_no,
+                    'amount_to_pay' => $user_amount,
+                    'status' => 0
+                ])->first()->update(['session_id' => $session_id, 'status' => 4, 'resolve' => 1]) ?? null;
 
 
                 User::where('id', $trx->user_id)->increment('main_wallet', $p_amount);
@@ -216,11 +213,12 @@ class WovenController extends Controller
                 $trxck->session_id = $session_id;
                 $trxck->amount = $trx->amount;
                 $trxck->email = $user_email;
+                $trxck->account_no = $request->nuban;
                 $trxck->save();
 
 
                 $type ="epayment";
-                $fund = credit_user_wallet($url, $user_email, $amount, $order_id, $type, $session_id);
+                $fund = credit_user_wallet($url, $user_email, $trx->amount, $order_id, $type, $session_id);
 
                 return response()->json([
                     'status' => true,
