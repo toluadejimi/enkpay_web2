@@ -1485,6 +1485,7 @@ class TransactionController extends Controller
                     $trasnaction->email = $request->email;
                     $trasnaction->ref_trans_id = $request->ref;
                     $trasnaction->amount = $request->amount;
+                    $trasnaction->amount_to_pay = $amtt;
                     $trasnaction->transaction_type = "WEBTRANSFER";
                     $trasnaction->bank = $woven_details['bank_name'];
                     $trasnaction->ref = $request->ref;
