@@ -148,7 +148,7 @@ class WovenController extends Controller
 
         $trx = Transfertransaction::where([
             'account_no' => $acc_no,
-            'amount_with_charge' => $user_amount,
+            'amount_to_pay' => $user_amount,
         ])->where(['status' => 0])->first() ?? null;
 
 
