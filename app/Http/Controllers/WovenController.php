@@ -293,7 +293,13 @@ class WovenController extends Controller
                 ])->first()->update(['session_id' => $session_id, 'status' => 4, 'resolve' => 1]) ?? null;
 
 
-                User::where('id', $trx->user_id)->increment('main_wallet', $p_amount);
+                if ($trx->amount  > 11000) {
+                    $u_amt = $trx->amount - 300;
+                } else {
+                    $u_amt = $trx->amount - 100;
+                }
+
+                User::where('id', $trx->user_id)->increment('main_wallet', $u_amt);
                 $balance = User::where('id', $trx->user_id)->first()->main_wallet;
                 $user = User::where('id', $trx->user_id)->first();
 
