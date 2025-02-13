@@ -300,6 +300,7 @@ class WovenController extends Controller
                 }
 
 
+
                 User::where('id', $trx->user_id)->increment('main_wallet', $u_amt);
                 $balance = User::where('id', $trx->user_id)->first()->main_wallet;
                 $user = User::where('id', $trx->user_id)->first();
@@ -329,18 +330,21 @@ class WovenController extends Controller
                 $trasnaction->status = 1;
                 $trasnaction->save();
 
-                $message = "Business funded  | $request->nuban | $u_amt | $user->first_name " . " " . $user->last_name ." | for $user_email" ;
+
+
+
+                $message = "Business funded  | $request->nuban  |" .number_format($u_amt, 2). "| $user->first_name " . " " . $user->last_name ." | for $user_email" ;
                 send_notification($message);
 
                 Webtransfer::where('trans_id', $trx->trans_id)->update(['status' => 4]);
                 Transfertransaction::where('account_no', $acc_no)->update(['status' => 4, 'resolve' => 1]);
 
-                $trxck = new Transactioncheck();
-                $trxck->session_id = $session_id;
-                $trxck->amount = $trx->amount;
-                $trxck->email = $user_email;
-                $trxck->account_no = $request->nuban;
-                $trxck->save();
+//                $trxck = new Transactioncheck();
+//                $trxck->session_id = $session_id;
+//                $trxck->amount = $trx->amount;
+//                $trxck->email = $user_email;
+//                $trxck->account_no = $request->nuban;
+//                $trxck->save();
 
 
                 $type ="epayment";
@@ -348,7 +352,7 @@ class WovenController extends Controller
 
                 return response()->json([
                     'status' => true,
-                    'message' => "Transaction Successful"
+                    'message' => "Transaction Successful | $u_amt"
                 ]);
 
             }
