@@ -146,6 +146,7 @@ class TransactionController extends Controller
             $trasnaction->title = "Sprint funding";
             $trasnaction->main_type = "Transfer";
             $trasnaction->credit = $f_amount;
+            $trasnaction->email = $user_email;
             $trasnaction->note = "Transaction Successful | Web Pay  | from $user_email";
             $trasnaction->fee = $charge ?? 0;
             $trasnaction->amount = $request->amount;
@@ -265,6 +266,7 @@ class TransactionController extends Controller
                 $trasnaction->credit = $f_amount;
                 $trasnaction->note = "Transaction Successful | Web Pay  | from $user_email";
                 $trasnaction->receiver_account_no = $data['acc_no'];
+                $trasnaction->email = $user_email;
                 $trasnaction->fee = $charge ?? 0;
                 $trasnaction->amount = $trx->amount;
                 $trasnaction->e_charges = 0;
