@@ -174,7 +174,13 @@ class WovenController extends Controller
                 ])->first()->update(['session_id' => $session_id, 'status' => 4, 'resolve' => 1]) ?? null;
 
 
-                User::where('id', $trx->user_id)->increment('main_wallet', $p_amount);
+                if ($user_amount > 11000) {
+                    $l_amount = $p_amount - 300;
+                } else {
+                    $l_amount = $p_amount - 100;
+                }
+
+                User::where('id', $trx->user_id)->increment('main_wallet', $l_amount);
                 $balance = User::where('id', $trx->user_id)->first()->main_wallet;
                 $user = User::where('id', $trx->user_id)->first();
 
@@ -192,7 +198,8 @@ class WovenController extends Controller
                 $trasnaction->transaction_type = "VirtualFundWallet";
                 $trasnaction->title = "Wallet Funding";
                 $trasnaction->main_type = "WOVEN";
-                $trasnaction->credit = $p_amount;
+                $trasnaction->credit = $l_amount;
+                $trasnaction->email = $user_email;
                 $trasnaction->note = "Transaction Successful | Web Pay | for $user_email";
                 $trasnaction->fee = $fee ?? 0;
                 $trasnaction->amount = $trx->amount;
@@ -203,7 +210,7 @@ class WovenController extends Controller
                 $trasnaction->status = 1;
                 $trasnaction->save();
 
-                $message = "Business funded  | $request->nuban | $p_amount | $user->first_name " . " " . $user->last_name ." | for $user_email" ;
+                $message = "Business funded  | $request->nuban | $l_amount | $user->first_name " . " " . $user->last_name ." | for $user_email" ;
                 send_notification($message);
 
                 Webtransfer::where('trans_id', $trx->trans_id)->update(['status' => 4]);
