@@ -3053,6 +3053,8 @@ if (!function_exists('verifypelpay')) {
 
 
             if ($message == "The process was completed successfully") {
+
+                Transfertransaction::where('account_no', $var->data->vnuban)->delete() ?? null;
                 $data['account_no'] = $var->data->vnuban;
                 $data['bank_name'] = $bank_name;
                 $data['account_name'] = "WOV CHECKOUT";
