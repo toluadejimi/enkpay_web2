@@ -1132,8 +1132,7 @@ class TransactionController extends Controller
                 if ($woven_details != null) {
 
                    $delete =  Transfertransaction::where('account_no', $woven_details['account_no'])->delete() ?? null;
-                   $message = $delete." ".$woven_details['account_no'];
-                    send_notification($message);
+
 
 
                     $user_id = Webkey::where('key', $request->key)->first()->user_id;
@@ -1284,15 +1283,12 @@ class TransactionController extends Controller
 
                     if ($woven_details != null) {
 
-                        $delete =  Transfertransaction::where('account_no', $woven_details['account_no'])->delete() ?? null;
-                        $message = $delete." ".$woven_details['account_no'];
-                        send_notification($message);
+                       Transfertransaction::where('account_no', $woven_details['account_no'])->delete() ?? null;
 
                         $user_id = Webkey::where('key', $request->key)->first()->user_id;
                         $trx = Transfertransaction::where('account_no', $request->accountNo)->first() ?? null;
 
                         $usr = User::where('id', $user_id)->first();
-
                         $trasnaction = new Transfertransaction();
                         $trasnaction->user_id = $user_id;
                         $trasnaction->type = "webpay";
@@ -1575,9 +1571,7 @@ class TransactionController extends Controller
 
                 if ($woven_details != null) {
 
-                    $delete =  Transfertransaction::where('account_no', $woven_details['account_no'])->delete() ?? null;
-                    $message = $delete." ".$woven_details['account_no'];
-                    send_notification($message);
+                    Transfertransaction::where('account_no', $woven_details['account_no'])->delete() ?? null;
 
                     $user_id = Webkey::where('key', $request->key)->first()->user_id;
                     $trx = Transfertransaction::where('account_no', $request->accountNo)->first() ?? null;
