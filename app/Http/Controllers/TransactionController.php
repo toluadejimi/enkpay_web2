@@ -280,11 +280,12 @@ class TransactionController extends Controller
                 $trasnaction->save();
 
 
+
                 $trxck = new Transactioncheck();
-                $trxck->session_id = $session_id;
-                $trxck->amount = $trx->amount;
+                $trxck->session_id = $request->sessionid;
+                $trxck->amount = $data['amount'];
                 $trxck->email = $user_email;
-                $trxck->account_no = $request->nuban;
+                $trxck->account_no = $data['acc_no'];
                 $trxck->bank = "PSB";
                 $trxck->save();
 
