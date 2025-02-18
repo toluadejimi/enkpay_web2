@@ -121,7 +121,7 @@ class WovenController extends Controller
 
         $acc_no = $request->nuban;
         $user_amount = $request->amount;
-        $session_id = $request->unique_reference;
+        $session_id = $request->nip_session_id;
         $payable = $request->amount_payable;
         $fee = $request->fee;
 
