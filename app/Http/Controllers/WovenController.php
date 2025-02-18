@@ -221,6 +221,7 @@ class WovenController extends Controller
                 $trxck->amount = $trx->amount;
                 $trxck->email = $user_email;
                 $trxck->account_no = $request->nuban;
+                $trxck->bank = "WOVEN";
                 $trxck->save();
 
 

@@ -12,6 +12,7 @@ use App\Models\Setting;
 use App\Models\Support;
 use App\Models\TidConfig;
 use App\Models\Transaction;
+use App\Models\Transactioncheck;
 use App\Models\Transfer;
 use App\Models\Transfertransaction;
 use App\Models\Ttmfb;
@@ -188,6 +189,9 @@ class TransactionController extends Controller
         }
 
 
+
+
+
         $set = Setting::where('id', 1)->first();
 
         if ($request->amount > 15000) {
@@ -274,6 +278,15 @@ class TransactionController extends Controller
                 $trasnaction->balance = $balance;
                 $trasnaction->status = 1;
                 $trasnaction->save();
+
+
+                $trxck = new Transactioncheck();
+                $trxck->session_id = $session_id;
+                $trxck->amount = $trx->amount;
+                $trxck->email = $user_email;
+                $trxck->account_no = $request->nuban;
+                $trxck->bank = "PSB";
+                $trxck->save();
 
                 $acct = $data['acc_no'];
                 $message = "Business funded | $acct | $f_amount | $user->first_name " . " " . $user->last_name;
