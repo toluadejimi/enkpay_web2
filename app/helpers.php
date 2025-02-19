@@ -1927,7 +1927,7 @@ function verifypelpaytelegram($pref)
     try {
 
 
-        $ckt = Transactioncheck::where('account_no', $pref)->first()->status ?? null;
+        $ckt = Transactioncheck::where('account_no', $pref)->first() ?? null;
         if($ckt != null){
             return ['code' => 4];
         }
@@ -2117,7 +2117,7 @@ function verifypsbtelegram($accountNo)
     try {
 
 
-        $ckt = Transactioncheck::where('account_no', $title)->first()->status ?? null;
+        $ckt = Transactioncheck::where('account_no', $accountNo)->first() ?? null;
         if($ckt != null){
             return ['code' => 4];
         }
@@ -3393,11 +3393,10 @@ if (!function_exists('verifypelpayreslove')) {
 
 
 
-            $ckt = Transactioncheck::where('account_no', $title)->first()->status ?? null;
+            $ckt = Transactioncheck::where('account_no', $title)->first() ?? null;
             if($ckt != null){
                 return ['code' => 4];
             }
-
 
 
 
