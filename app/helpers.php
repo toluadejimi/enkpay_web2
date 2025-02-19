@@ -1927,6 +1927,12 @@ function verifypelpaytelegram($pref)
     try {
 
 
+        $ckt = Transactioncheck::where('account_no', $pref)->first()->status ?? null;
+        if($ckt != null){
+            return ['code' => 4];
+        }
+
+
         $token = tokenkey();
         $url = env('PELPAYURL');
         $url2 = "$url/api/Transaction/bypaymentreference/$pref";
@@ -2109,6 +2115,17 @@ function verifypsbtelegram($accountNo)
 {
 
     try {
+
+
+        $ckt = Transactioncheck::where('account_no', $title)->first()->status ?? null;
+        if($ckt != null){
+            return ['code' => 4];
+        }
+
+
+
+
+
         $ckstatus = Transfertransaction::where('account_no', $accountNo)->first()->status ?? null;
 
 //        if ($ckstatus == null) {
@@ -3373,6 +3390,16 @@ if (!function_exists('verifypelpayreslove')) {
 
         function verify_telegram_payment_woven($title)
         {
+
+
+
+            $ckt = Transactioncheck::where('account_no', $title)->first()->status ?? null;
+            if($ckt != null){
+                return ['code' => 4];
+            }
+
+
+
 
 
             $st = Transfertransaction::where('account_no', $title)->first()->status ?? null;
