@@ -3400,7 +3400,6 @@ if (!function_exists('verifypelpayreslove')) {
 
 
 
-
             $st = Transfertransaction::where('account_no', $title)->first()->status ?? null;
             if ($st != 4) {
 
@@ -3427,8 +3426,6 @@ if (!function_exists('verifypelpayreslove')) {
                 $var = json_decode($var2);
                 $status = $var->status ?? null;
 
-                $message = json_encode($var);
-                send_notification($message);
 
 
                 $pstatus = $var->data->transactions[0]->status ?? null;
