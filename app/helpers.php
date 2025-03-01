@@ -2949,7 +2949,7 @@ if (!function_exists('verifypelpay')) {
 
                 }
 
-                $message = "CREDIT DATA =======>>>>>>> ". json_encode($databody);
+                $message = "CREDIT DATA =======>>>>>>> ". json_encode($databody) ."URL ===>>>>>".$url;
                 send_notification($message);
 
                 return 2;
