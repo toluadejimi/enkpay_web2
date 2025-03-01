@@ -225,8 +225,11 @@ class WovenController extends Controller
                 $trxck->save();
 
 
+
+
                 $type ="epayment";
-                $fund = credit_user_wallet($url, $user_email, $trx->amount, $order_id, $type, $session_id);
+                $account_no = $request->nuban;
+                $fund = credit_user_wallet($url, $user_email, $trx->amount, $order_id, $type, $session_id, $account_no);
 
                 return response()->json([
                     'status' => true,

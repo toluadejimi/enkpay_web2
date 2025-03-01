@@ -164,7 +164,8 @@ class TransactionController extends Controller
 
             $type = "epayment";
             $session_id = $order_id;
-            $fund = credit_user_wallet($url, $user_email, $amount, $order_id, $type, $session_id);
+            $account_no = $request->receiver_account_number;
+            $fund = credit_user_wallet($url, $user_email, $amount, $order_id, $type, $session_id, $account_no);
 
             return response()->json([
                 'status' => true,
@@ -335,7 +336,8 @@ class TransactionController extends Controller
 
                 $type = "epayment";
                 $session_id = $request->sessionid;
-                $fund = credit_user_wallet($url, $user_email, $amount, $order_id, $type, $session_id);
+                $account_no = $request->receiver_account_number;
+                $fund = credit_user_wallet($url, $user_email, $amount, $order_id, $type, $session_id, $account_no);
 
                 Webtransfer::where('trans_id', $trx->trans_id)->update(['status' => 1]);
 

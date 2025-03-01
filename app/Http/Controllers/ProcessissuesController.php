@@ -75,8 +75,8 @@ class ProcessissuesController extends Controller
 
             $type ="epayment";
             $session_id = "DRESOLVE";
-            $fund = credit_user_wallet($url, $user_email, $amount, $order_id, $type, $session_id);
-
+            $account_no = 000;
+            credit_user_wallet($url, $user_email, $amount, $order_id, $type, $session_id, $account_no);
 
             return back()->with('message', "$user_email has been funded  NGN$amount on $site_name");
 
@@ -129,8 +129,8 @@ class ProcessissuesController extends Controller
 
 
             $type ="epayment";
-            $session_id = "DRESOLVE";
-            $fund = credit_user_wallet($url, $user_email, $amount, $order_id, $type, $session_id);
+            $session_id = "DRESOLVE";$account_no = $request->nuban;
+            $fund = credit_user_wallet($url, $user_email, $amount, $order_id, $type, $session_id, $account_no);
             return back()->with('message', "$user_email has been funded $amount on $site_name");
 
         }

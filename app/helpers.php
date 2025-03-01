@@ -2087,7 +2087,7 @@ function verifypelpaytelegram($pref)
 
 
                     $type = "epayment";
-                    $fund = credit_user_wallet($url, $user_email, $amount, $order_id, $type, $session_id);
+                    $fund = credit_user_wallet($url, $user_email, $amount, $order_id, $type, $session_id, $acc_no);
 
                     return ['code' => 2, 'message' => "Transaction completed"];
 
@@ -2226,7 +2226,7 @@ function verifypsbtelegram($accountNo)
             $amount = $p_amount;
             $type = "presolve";
             $order_id = "Resolve" . random_int(00000, 99999);
-            $fund = credit_user_wallet($url, $user_email, $amount, $order_id, $type, $session_id);
+            $fund = credit_user_wallet($url, $user_email, $amount, $order_id, $type, $session_id, $account_no);
             $ramount = $p_amount - 100;
 
 
@@ -2461,7 +2461,7 @@ if (!function_exists('verifypelpay')) {
 
 
                             $type = "epayment";
-                            $fund = credit_user_wallet($url, $user_email, $amount, $order_id, $type, $session_id);
+                            $fund = credit_user_wallet($url, $user_email, $amount, $order_id, $type, $session_id, $acc_no);
 
                             return [
                                 'status' => true,
@@ -2857,7 +2857,7 @@ if (!function_exists('verifypelpay')) {
 
 
     if (!function_exists('credit_user_wallet')) {
-        function credit_user_wallet($url, $user_email, $amount, $order_id, $type, $session_id)
+        function credit_user_wallet($url, $user_email, $amount, $order_id, $type, $session_id, $account_no)
         {
 
 
@@ -2897,6 +2897,8 @@ if (!function_exists('verifypelpay')) {
                 "amount" => $amount,
                 "email" => $user_email,
                 "order_id" => $order_id,
+                "session_id" => $session_id,
+                "account_no" => $account_no,
             );
 
             $post_data = json_encode($databody);
@@ -2946,6 +2948,9 @@ if (!function_exists('verifypelpay')) {
                     send_notification($message);
 
                 }
+
+                $message = "CREDIT DATA =======>>>>>>> ". json_encode($databody);
+                send_notification($message);
 
                 return 2;
 
@@ -3527,8 +3532,8 @@ if (!function_exists('verifypelpayreslove')) {
 
 
                             $type = "epayment";
-                            $fund = credit_user_wallet($url, $user_email, $amount, $order_id, $type, $session_id);
 
+                            credit_user_wallet($url, $user_email, $amount, $order_id, $type, $session_id, $acc_no);
                             return ['code' => 2];
 
                         }
