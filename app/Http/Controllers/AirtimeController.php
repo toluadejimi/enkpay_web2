@@ -436,7 +436,7 @@ class AirtimeController extends Controller
 
                 $status = $var->response_description ?? null;
 
-                $message = "Error message from VAS AIRTIME ". $var;
+                $message = "Error message from VAS AIRTIME ". json_encode($var);
 
                 if ($status == 'TRANSACTION SUCCESSFUL') {
 
