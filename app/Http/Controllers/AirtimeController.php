@@ -427,11 +427,7 @@ class AirtimeController extends Controller
                 ));
 
                 $var = curl_exec($curl);
-
-
-
                 curl_close($curl);
-
                 $var = json_decode($var);
 
                 $trx_id = $var->requestId ?? null;
@@ -440,7 +436,7 @@ class AirtimeController extends Controller
 
                 $status = $var->response_description ?? null;
 
-                $message = "Error message from VAS AIRTIME ". $get_message ?? $var;
+                $message = "Error message from VAS AIRTIME ". $var;
 
                 if ($status == 'TRANSACTION SUCCESSFUL') {
 
