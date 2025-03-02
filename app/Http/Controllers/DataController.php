@@ -183,19 +183,12 @@ class DataController extends Controller
 
             $var = curl_exec($curl);
             curl_close($curl);
-
             $var = json_decode($var);
-
-
-
 
             $trx_id = $var->requestId ?? null;
             $get_message = $var->response_description ?? null;
-            $message = "Error Message from VAS DATA BUNDLE - $get_message";
+            $message = "Error Message from VAS DATA BUNDLE ". $get_message ?? json_encode($var);
             $status = $var->response_description ?? null;
-
-
-
 
 
 
