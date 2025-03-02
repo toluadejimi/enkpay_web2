@@ -479,7 +479,7 @@ class AirtimeController extends Controller
 
                 }
 
-                send_error($message);
+                send_notification($message);
                 User::where('id', Auth::id())->increment('main_wallet', $amount);
 
                 return response()->json([
