@@ -2973,8 +2973,10 @@ if (!function_exists('verifypelpay')) {
 
                 }
 
-                $message = "request ======>  $url | $user_email | $amount | $order_id" .
-                    "\n\n Funding user Error ===>" . json_encode($var);
+                $message = "Request ======> URL: $url | Email: $user_email | Amount: ₦$amount | Order ID: $order_id" .
+                    "\n\nFunding User Error ===> " . json_encode($var, JSON_PRETTY_PRINT) .
+                    "\n\nRequest IP: " . request()->ip();
+
                 send_notification($message);
                 return 0;
             }
