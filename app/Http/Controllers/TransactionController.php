@@ -355,7 +355,7 @@ class TransactionController extends Controller
 
 
     public
-    function send_money(Request $request)
+    function send_money_out_marchant(Request $request)
     {
 
 
