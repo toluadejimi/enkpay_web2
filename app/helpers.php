@@ -1454,21 +1454,24 @@ if (!function_exists('resolve_bank')) {
             return $error;
         }
 
-        if ($set->bank == 'pbank') {
+        if ($set->bank == 'woven') {
+
+
+
+            $api = env('WOVENKEY');
 
             $databody = array(
-
-                'accountNumber' => $account_number,
-                'institutionCode' => $bank_code,
-                'channel' => "Bank",
-
+                'account_number' => $account_number,
+                'bank_code' => $bank_code,
             );
 
             $body = json_encode($databody);
             $curl = curl_init();
 
+
+
             curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://api.errandpay.com/epagentservice/api/v1/AccountNameVerification',
+                CURLOPT_URL => "https://api.woven.finance/v2/api/nuban/enquiry",
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -1478,6 +1481,7 @@ if (!function_exists('resolve_bank')) {
                 CURLOPT_CUSTOMREQUEST => 'POST',
                 CURLOPT_POSTFIELDS => $body,
                 CURLOPT_HTTPHEADER => array(
+                    "api_secret: $api",
                     'Content-Type: application/json',
                 ),
             ));
@@ -1486,13 +1490,10 @@ if (!function_exists('resolve_bank')) {
             curl_close($curl);
             $var = json_decode($var);
 
-            $customer_name = $var->data->name ?? null;
-            $error = $var->error->message ?? null;
-
-            $status = $var->code ?? null;
-
-            if ($status == 200) {
-
+            $error = $var->message ?? null;
+            $status = $var->status ?? null;
+            $customer_name = $var->data->account_name ?? null;
+            if ($status == "success") {
                 return $customer_name;
             }
 
