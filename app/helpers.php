@@ -2920,11 +2920,13 @@ if (!function_exists('verifypelpay')) {
                 ),
             ));
 
+
+
+
             $var = curl_exec($curl);
             curl_close($curl);
             $result = json_decode($var);
             $status = $result->status ?? null;
-
 
             if ($status == true) {
                 if ($type == "wresolve") {
@@ -2968,8 +2970,10 @@ if (!function_exists('verifypelpay')) {
 
                 } else {
 
+                    $error = curl_error($curl);
                     $message = "Error Reslove WOVEN ======>  $url | $user_email | $amount | $order_id" .
                         "\n\n Funding user Error ===>" . json_encode($var);
+                        "\n\n Funding user Error ===>" . json_encode($error);
                     send_notification_resolve($message);
 
                 }
@@ -3011,7 +3015,7 @@ if (!function_exists('verifypelpay')) {
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://api.woven.finance/v2/api/nuban/dynamic',
+//            CURLOPT_URL => 'https://api.woven.finance/v2/api/nuban/dynamic',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -3054,7 +3058,7 @@ if (!function_exists('verifypelpay')) {
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://api.woven.finance/v2/api/nuban/dynamic',
+//                CURLOPT_URL => 'https://api.woven.finance/v2/api/nuban/dynamic',
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
