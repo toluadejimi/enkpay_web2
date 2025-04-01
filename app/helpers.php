@@ -3016,7 +3016,7 @@ if (!function_exists('verifypelpay')) {
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-//            CURLOPT_URL => 'https://api.woven.finance/v2/api/nuban/dynamic',
+            CURLOPT_URL => 'https://api.woven.finance/v2/api/nuban/dynamic',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
