@@ -2924,6 +2924,7 @@ if (!function_exists('verifypelpay')) {
 
 
             $var = curl_exec($curl);
+
             curl_close($curl);
             $result = json_decode($var);
             $status = $result->status ?? null;
