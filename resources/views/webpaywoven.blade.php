@@ -72,10 +72,13 @@
                     }</script>
             </div>
 
-            <h6 class="text-secondary">Pay to {{$bname ?? "Name"}}</h6>
 
 
             <div class="modal-body">
+
+                <h6 class="text-secondary my-3">Pay to {{$bname ?? "Name"}}</h6>
+
+
                 <ul class="nav nav-tabs" id="paymentTabs" role="tablist">
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active" id="transfer-tab" data-bs-toggle="tab"
@@ -85,7 +88,7 @@
                     </li>
 
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="btc-tab" data-bs-toggle="tab" data-bs-target="#btc" type="button"
+                        <button class="nav-link" id="btc" data-bs-toggle="tab" data-bs-target="#btc" type="button"
                                 role="tab">BTC
                         </button>
                     </li>
