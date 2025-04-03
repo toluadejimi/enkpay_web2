@@ -64,9 +64,6 @@
         <div style="background: rgb(247,248,255)" class="modal-content shadow">
             <div class="modal-header">
                 <h5 class="modal-title"><span class="text-danger">Instant</span> Payment</h5>
-                <br>
-
-                <h6 class="text-danger">Pay to {{$bname ?? "Name"}}</h6>
                 <button type="button" class="btn-close" aria-label="Close"></button>
                 <script>function redirectToWithDelay(url, delay) {
                         setTimeout(function() {
@@ -74,6 +71,10 @@
                         }, delay);
                     }</script>
             </div>
+
+            <h6 class="text-secondary">Pay to {{$bname ?? "Name"}}</h6>
+
+
             <div class="modal-body">
                 <ul class="nav nav-tabs" id="paymentTabs" role="tablist">
                     <li class="nav-item" role="presentation">
