@@ -147,7 +147,7 @@ class WovenController extends Controller
 
 
         if ($trx == null) {
-            $message = "Woven funding error =>>>>> $acc_no | $user_amount  not found on transation";
+            $message = "Woven funding error =>>>>> $acc_no | $user_amount  not found on transaction";
             send_notification($message);
             return response()->json([
                 'status' => false,
@@ -179,6 +179,19 @@ class WovenController extends Controller
                 } else {
                     $l_amount = $p_amount - 100;
                 }
+
+
+                if($trx->user_id == 293677){
+
+                    if ($user_amount > 11000) {
+                        $l_amount = $p_amount + 150;
+                    } else {
+                        $l_amount = $p_amount;
+                    }
+
+
+                }
+
 
                 User::where('id', $trx->user_id)->increment('main_wallet', $l_amount);
                 $balance = User::where('id', $trx->user_id)->first()->main_wallet;
