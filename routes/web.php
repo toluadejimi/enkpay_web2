@@ -34,6 +34,9 @@ Route::get('verify-card-code', [WovenController::class, 'verify_card_woven']);
 Route::get('resend-otp-code', [WovenController::class, 'resend_otp']);
 
 
+Route::post('/get-btc-wallet', [TransactionController::class, 'getBtcWallet']);
+
+
 
 
 Route::get('/', function () {

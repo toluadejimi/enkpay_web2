@@ -1083,8 +1083,6 @@ class TransactionController extends Controller
 
             }
 
-
-
             if ($set->ninepsb == 1) {
 
 
@@ -1376,7 +1374,6 @@ class TransactionController extends Controller
                     $trasnaction->save();
 
 
-
                     $data['account_no'] = $woven_details['account_no'];
                     $data['account_name'] = $woven_details['account_name'];
                     $data['bank_name'] = $woven_details['bank_name'];
@@ -1393,8 +1390,6 @@ class TransactionController extends Controller
 
 
                     return view('webpaywoven', $data);
-
-
 
 
                 }
@@ -1786,8 +1781,8 @@ class TransactionController extends Controller
                 if ($woven_details != null) {
 
                     Transfertransaction::where('account_no', $woven_details['account_no'])->delete() ?? null;
-
                     $user_id = Webkey::where('key', $request->key)->first()->user_id;
+                    $data['bname'] = Webkey::where('key', $request->key)->first()->site_name;
                     $trx = Transfertransaction::where('account_no', $request->accountNo)->first() ?? null;
 
                     $usr = User::where('id', $user_id)->first();
@@ -4044,6 +4039,44 @@ class TransactionController extends Controller
     {
         return view('documetation');
     }
+
+
+    public function getBtcWallet(request $request)
+    {
+        $amountInNaira = $request->amount;
+
+        $apiUrl = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=ngn";
+        $response = file_get_contents($apiUrl);
+        $data = json_decode($response, true);
+
+        if (!isset($data['bitcoin']['ngn'])) {
+            return response()->json(['error' => 'Failed to fetch Bitcoin price'], 500);
+        }
+
+        $btc_price_in_ngn = $data['bitcoin']['ngn'];
+
+        $amountInBTC = ($amountInNaira / $btc_price_in_ngn) * 1.015;
+
+        $amountInBTC = number_format($amountInBTC, 8, '.', '');
+
+
+
+        $walletData = [
+            'success' => true,
+            'amount_ngn' => $amountInNaira,
+            'btc_price_ngn' => $btc_price_in_ngn,
+            'amount' => $amountInBTC,
+            'account_no' => "3FZbgi29cpjq2GjdwV8eyHuJJnkLtktZc5",
+            'account_name' => "Bitcoin Wallet"
+        ];
+
+        return response()->json($walletData);
+
+
+
+    }
+
+
 
 
 }
