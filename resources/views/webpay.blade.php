@@ -84,6 +84,13 @@
                                 type="button" role="tab">Transfer
                         </button>
                     </li>
+
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="btc-tab" data-bs-toggle="tab" data-bs-target="#btc" type="button"
+                                role="tab">BTC
+                        </button>
+                    </li>
+
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="ussd-tab" data-bs-toggle="tab" data-bs-target="#ussd" type="button"
                                 role="tab">USSD
