@@ -173,7 +173,7 @@
                                     document.getElementById('usernameResult').style.display = 'none'; // Hide username result field on error
                                 } else {
                                     console.log(data);
-                                    document.getElementById('result').textContent = 'Your Username is: ' + data.username;
+                                    document.getElementById('result').textContent = 'Your Username is: ' + data.username ?? data.user;
                                     document.getElementById('usernameResult').value = data.username; // Set username in input field
                                     document.getElementById('usernameResult').style.display = 'block'; // Show username result field
                                     toggleVerifyButton(true); // Enable button on successful verification
