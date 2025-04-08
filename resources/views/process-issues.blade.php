@@ -158,10 +158,10 @@
                         fetch(siteUrl, { // Use the selected site URL here
                             method: 'POST',
                             headers: {
-                                'Content-Type': 'application/x-www-form-urlencoded',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}' // Add CSRF token if needed for Laravel
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
                             },
-                            body: new URLSearchParams({
+                            body: JSON.stringify({
                                 email: email
                             })
                         })
