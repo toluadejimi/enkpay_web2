@@ -49,6 +49,8 @@ Route::post('repush-woven',[WovenController::class, 'repush_woven']);
 Route::any('charm/callback',[CharmController::class, 'charm_webhook']);
 Route::any('paypoint/callback',[PalmpayController::class, 'paypoint_webhook']);
 
+Route::get('get-usdt-wallet',[TransactionController::class, 'getusdtWallet']);
+
 
 
 

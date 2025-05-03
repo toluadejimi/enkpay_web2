@@ -13,6 +13,7 @@ use App\Models\Webhook;
 use App\Models\Webkey;
 use App\Models\Webtransfer;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 
 if (!function_exists('refxx')) {
@@ -2705,29 +2706,17 @@ if (!function_exists('verifypelpay')) {
         function get_min($to_curr)
         {
 
-            $key = env("CRYPAPI");
+            $url = 'https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=ngn';
 
-            $curl = curl_init();
+            $response = Http::get($url);
 
-            curl_setopt_array($curl, array(
-                CURLOPT_URL => "https://api.nowpayments.io/v1/min-amount?currency_from=$to_curr&currency_to=usd&fiat_equivalent=usd&is_fee_paid_by_user=False",
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'GET',
-                CURLOPT_HTTPHEADER => array(
-                    "x-api-key: $key"
-                ),
-            ));
+            if ($response->successful()) {
+                $ngnRate = $response->json()['tether']['ngn'];
+                return $ngnRate;
+            }
 
-            $var = curl_exec($curl);
-            curl_close($curl);
-            $var = json_decode($var);
+            return null;
 
-            return $var->fiat_equivalent;
         }
     }
 

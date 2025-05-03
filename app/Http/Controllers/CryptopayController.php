@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class CryptopayController extends Controller
 {
@@ -33,12 +35,12 @@ class CryptopayController extends Controller
             $data['webhook'] = $request->webhook;
             $data['key'] = $request->key;
             $data['order_id'] = $request->order_id;
-    
+
             $data['amount_in_usd'] = $request->amount / $rate;
             return view('crypto', $data);
 
         }
-   
+
 
     }
 
@@ -48,8 +50,6 @@ class CryptopayController extends Controller
 
         $set = Setting::where('id', 1)->first();
         if($set->pay_by_crypto == 1){
-
-
         $to_curr = $request->curr;
         $price = get_min($to_curr);
 
@@ -81,16 +81,56 @@ class CryptopayController extends Controller
 
         }
 
-        
 
 
 
 
-       
+
+
     }
 
 
-   
+    public function crypto_ck(request $request)
+    {
+
+        $yourWallet = 'TNx9fsQgyQBEAD4fmEieygqdKJMGLVwYya'; // change this
+
+        $response = Http::get('https://apilist.tronscanapi.com/api/token_trc20/transfers', [
+            'relatedAddress' => $yourWallet,
+            'limit' => 50,
+            'start' => 0,
+            'sort' => '-timestamp',
+            'count' => true,
+        ]);
+
+        $data = $response->json();
+        $transactions = $data['token_transfers'] ?? [];
+
+        // Filter only incoming USDT transfers
+        $incoming = collect($transactions)
+            ->filter(fn($tx) =>
+                strtolower($tx['to_address']) === strtolower($yourWallet) &&
+                $tx['tokenInfo']['tokenAbbr'] === 'USDT' &&
+                $tx['contract_address'] === 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t'
+            )
+            ->map(function ($tx) {
+                return [
+                    'txid' => $tx['transaction_id'],
+                    'from' => $tx['from_address'],
+                    'to' => $tx['to_address'],
+                    'amount' => (float) $tx['quant'] / pow(10, $tx['tokenInfo']['tokenDecimal']),
+                    'confirmed' => $tx['confirmed'],
+                    'timestamp' => $tx['block_ts'],
+                ];
+            })
+            ->values();
+
+        return response()->json([
+            'wallet' => $yourWallet,
+            'incoming_usdt' => $incoming
+        ]);
+    }
+
 
 
 

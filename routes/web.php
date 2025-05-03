@@ -33,9 +33,12 @@ use Rap2hpoutre\LaravelLogViewer\LogViewerController;
 Route::post('/decrypt-notification', [PaymentNotificationController::class, 'decryptPaymentNotification']);
 Route::get('verify-card-code', [WovenController::class, 'verify_card_woven']);
 Route::get('resend-otp-code', [WovenController::class, 'resend_otp']);
+Route::get('crypto_ck', [CryptopayController::class, 'crypto_ck']);
 
 
 Route::post('/get-btc-wallet', [TransactionController::class, 'getBtcWallet']);
+
+Route::post('/get-usdt-wallet', [TransactionController::class, 'getusdtWallet']);
 
 
 
