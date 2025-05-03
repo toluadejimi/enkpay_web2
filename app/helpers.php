@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\AccountInfo;
+use App\Models\PalmpayAccount;
 use App\Models\Setting;
 use App\Models\Transaction;
 use App\Models\Transactioncheck;
@@ -4025,21 +4026,34 @@ if (!function_exists('verifypelpayreslove')) {
 
 
 
-function palmpay_create($amtt, $account_name)
+function paypoint_create($email, $name, $phone)
 {
 
-    $databody = array(
-        "amount" => $amtt,
-        "user_id" => 95,
-        "name" => $account_name,
 
+
+
+    $get_account = PalmpayAccount::where('email', $email)->first() ?? null;
+    if($get_account != null){
+            $data['account_no'] = $get_account->account_no;
+            $data['bank_name'] = $get_account->bank_name;
+            $data['account_name'] = $get_account->account_name;
+            return $data;
+    }
+
+    $key = env('PALMPAYKEY');
+    $databody = array(
+        "email" => $email,
+        "name" => $name,
+        "phoneNumber" => $phone,
+        "bankCode" => [20946],
+        "businessId" => "00687df128edaa6dda2787a58dd5c8ff6cbd2f94"
     );
 
     $post_data = json_encode($databody);
     $curl = curl_init();
 
     curl_setopt_array($curl, array(
-        CURLOPT_URL => 'https://etopagency.com/api/create-account-dymamic',
+        CURLOPT_URL => 'https://api.paymentpoint.co/api/v1/createVirtualAccount',
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => '',
         CURLOPT_MAXREDIRS => 10,
@@ -4049,20 +4063,33 @@ function palmpay_create($amtt, $account_name)
         CURLOPT_CUSTOMREQUEST => 'POST',
         CURLOPT_POSTFIELDS => $post_data,
         CURLOPT_HTTPHEADER => array(
+            'api-key: 3723173a79798d330619cf66e8004b7a514e76fb',
             'Content-Type: application/json',
+            "Authorization: Bearer $key"
         ),
     ));
 
     $var = curl_exec($curl);
     curl_close($curl);
     $var = json_decode($var);
-    $status = $var->result ?? null;
+    $status = $var->status ?? null;
 
 
-    if ($status != null) {
-        $data['account_no'] = $var->result->account_no;
-        $data['bank_name'] = "9PSB";
-        $data['account_name'] = $var->result->account_name;
+    if ($status != "fail") {
+
+        $pay = new PalmpayAccount();
+        $pay->account_no = $var->bankAccounts[0]->accountNumber;
+        $pay->account_name = $var->bankAccounts[0]->accountName;
+        $pay->bank_name = $var->bankAccounts[0]->bankName;
+        $pay->reserved_account_id = $var->bankAccounts[0]->Reserved_Account_Id;
+        $pay->bank_code = $var->bankAccounts[0]->bankCode;
+        $pay->email = $email;
+        $pay->save();
+
+
+        $data['account_no'] = $var->bankAccounts[0]->accountNumber;
+        $data['bank_name'] = $var->bankAccounts[0]->bankName;
+        $data['account_name'] = $var->bankAccounts[0]->accountName;
         return $data;
     }
 
