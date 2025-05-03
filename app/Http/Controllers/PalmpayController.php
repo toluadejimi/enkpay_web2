@@ -111,7 +111,11 @@ class PalmpayController extends Controller
 
 
 
-        $acc_no = $request->receiver->account_number;
+        $acc_no = $request->receiver;
+
+
+        dd($acc_no);
+
         $user_amount = $request->amount_paid;
         $amount_to_pay = $request->amount_paid;
         $session_id = $request->transaction_id;
