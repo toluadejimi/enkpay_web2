@@ -2046,7 +2046,7 @@ class TransactionController extends Controller
 
 
             $set = Setting::where('id', 1)->first();
-            if ($request->type == 1) {
+            if ($request->type == "testpaypoint") {
                 $faker = Factory::create();
                 $phone_no = "+234" . str_pad(random_int(0, 9999999999), 10, '0', STR_PAD_LEFT);
                 $data['pamount'] = $request->amount;
