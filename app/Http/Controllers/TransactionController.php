@@ -2107,10 +2107,11 @@ class TransactionController extends Controller
                     $bank = $paypoint_details['bank_name'];
                     $burl = Webkey::where('key', $request->key)->first()->user_url;
                     $data['bname'] = Webkey::where('key', $request->key)->first()->site_name;
+                    $sitename = Webkey::where('key', $request->key)->first()->site_name;
                     $data['back_url'] =$burl."?status=failed&ref=".$request->ref ?? null;
 
 
-                    $message = "Transfer Payment Initiated Paypoint | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount . "| ".$request->email;
+                    $message = "Transfer Payment Initiated Paypoint | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount . "| ".$request->email ."| on $sitename";
                     send_notification($message);
 
 
