@@ -47,7 +47,7 @@ Route::post('get-account/wvn',[WovenController::class, 'get_account']);
 Route::post('woven/callback',[WovenController::class, 'woven_webhook']);
 Route::post('repush-woven',[WovenController::class, 'repush_woven']);
 Route::any('charm/callback',[CharmController::class, 'charm_webhook']);
-Route::any('paypoint/callback',[PalmpayController::class, 'palmpay_webhook']);
+Route::any('paypoint/callback',[PalmpayController::class, 'paypoint_webhook']);
 
 
 
