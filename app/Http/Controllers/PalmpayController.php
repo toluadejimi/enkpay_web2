@@ -108,6 +108,12 @@ class PalmpayController extends Controller
         send_notification($message);
 
 
+        return response()->json([
+            'status' => true,
+            'message' => "Transaction Successful"
+        ]);
+
+
         $acc_no = $request->receiver->account_number;
         $user_amount = $request->amount_paid;
         $amount_to_pay = $request->amount_paid;
