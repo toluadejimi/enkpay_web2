@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CableController;
 use App\Http\Controllers\CharmController;
+use App\Http\Controllers\PalmpayController;
 use App\Http\Controllers\TeleController;
 use App\Http\Controllers\TelegramController;
 use App\Http\Controllers\WovenController;
@@ -46,6 +47,7 @@ Route::post('get-account/wvn',[WovenController::class, 'get_account']);
 Route::post('woven/callback',[WovenController::class, 'woven_webhook']);
 Route::post('repush-woven',[WovenController::class, 'repush_woven']);
 Route::any('charm/callback',[CharmController::class, 'charm_webhook']);
+Route::any('paypoint/callback',[PalmpayController::class, 'palmpay_webhook']);
 
 
 

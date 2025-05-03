@@ -4025,3 +4025,48 @@ if (!function_exists('verifypelpayreslove')) {
 
 
 
+function palmpay_create($amtt, $account_name)
+{
+
+    $databody = array(
+        "amount" => $amtt,
+        "user_id" => 95,
+        "name" => $account_name,
+
+    );
+
+    $post_data = json_encode($databody);
+    $curl = curl_init();
+
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => 'https://etopagency.com/api/create-account-dymamic',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 20,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_POSTFIELDS => $post_data,
+        CURLOPT_HTTPHEADER => array(
+            'Content-Type: application/json',
+        ),
+    ));
+
+    $var = curl_exec($curl);
+    curl_close($curl);
+    $var = json_decode($var);
+    $status = $var->result ?? null;
+
+
+    if ($status != null) {
+        $data['account_no'] = $var->result->account_no;
+        $data['bank_name'] = "9PSB";
+        $data['account_name'] = $var->result->account_name;
+        return $data;
+    }
+
+
+}
+
+
