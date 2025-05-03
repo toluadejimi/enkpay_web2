@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CableController;
 use App\Http\Controllers\CharmController;
+use App\Http\Controllers\PalmpayController;
 use App\Http\Controllers\PaymentNotificationController;
 use App\Http\Controllers\ProcessissuesController;
 use App\Http\Controllers\TelegramController;
@@ -69,6 +70,7 @@ Route::post('session-check', [TransactionController::class, 'session_check']);
 
 Route::post('verifypsb', [TransactionController::class, 'verifypsb']);
 Route::post('verifypsbboomzy', [TransactionController::class, 'verifypsbboomzy']);
+Route::get('verifypaypoint', [PalmpayController::class, 'verifypaypoint']);
 
 Route::post('verifywema', [TransactionController::class, 'verifywema']);
 Route::post('verifywemaboomzy', [TransactionController::class, 'verifywemaboomzy']);

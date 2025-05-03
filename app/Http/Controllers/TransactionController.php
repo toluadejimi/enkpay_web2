@@ -2042,6 +2042,101 @@ class TransactionController extends Controller
 
         }
 
+        if ($request->type == "testpaypoint") {
+
+
+            $set = Setting::where('id', 1)->first();
+            if ($request->type == 1) {
+                $faker = Factory::create();
+                $phone_no = "+234" . str_pad(random_int(0, 9999999999), 10, '0', STR_PAD_LEFT);
+                $data['pamount'] = $request->amount;
+                $first_name = User::inRandomOrder()->first()->first_name;
+                $last_name = User::inRandomOrder()->first()->last_name;
+                $tremail = $faker->email;
+                $phone = User::inRandomOrder()->first()->phone;
+
+                if($request->amount > 11000){
+                    $amtt  = $request->amount + 300;
+                }else{
+                    $amtt = $request->amount + 100;
+                }
+
+                $code = Setting::where('id', 1)->first()->woven_collective_code;
+                $localNumber = preg_replace('/^\+234/', '0', $phone_no);
+
+                $paypoint_details = paypoint_create($request->email, $faker->name, $localNumber) ?? null;
+
+
+                if ($paypoint_details != null) {
+
+                        Transfertransaction::where('account_no', $paypoint_details['account_no'])->delete() ?? null;
+                    $user_id = Webkey::where('key', $request->key)->first()->user_id;
+                    $trx = Transfertransaction::where('account_no', $request->accountNo)->first() ?? null;
+
+                    $usr = User::where('id', $user_id)->first();
+                    $trasnaction = new Transfertransaction();
+                    $trasnaction->user_id = $user_id;
+                    $trasnaction->type = "webpay";
+                    $trasnaction->key = $request->key;
+                    $trasnaction->email = $request->email;
+                    $trasnaction->ref_trans_id = $request->ref;
+                    $trasnaction->amount = $request->amount;
+                    $trasnaction->transaction_type = "WEBTRANSFER";
+                    $trasnaction->bank = $paypoint_details['bank_name'];
+                    $trasnaction->ref = $request->ref;
+                    $trasnaction->account_no = $paypoint_details['account_no'];
+                    $trasnaction->v_account_name = $paypoint_details['account_name'];
+                    $trasnaction->amount_to_pay = $amtt;
+                    $trasnaction->title = "WEBTRANSFER";
+                    $trasnaction->main_type = "PAYPOINT";
+                    $trasnaction->note = "WEBTRANSFER";
+                    $trasnaction->e_charges = 0;
+                    $trasnaction->enkPay_Cashout_profit = 0;
+                    $trasnaction->status = 0;
+                    $trasnaction->save();
+
+
+                    $data['account_no'] = $paypoint_details['account_no'];
+                    $data['account_name'] = preg_replace('/\s*\(.*?\)/', '', $paypoint_details['account_name']);
+                    $data['bank_name'] = $paypoint_details['bank_name'];
+
+
+
+
+                    $acc_no = $paypoint_details['account_no'];
+                    $acc_name = $paypoint_details['account_name'];
+                    $bank = $paypoint_details['bank_name'];
+                    $burl = Webkey::where('key', $request->key)->first()->user_url;
+                    $data['bname'] = Webkey::where('key', $request->key)->first()->site_name;
+                    $data['back_url'] =$burl."?status=failed&ref=".$request->ref ?? null;
+
+
+                    $message = "Transfer Payment Initiated Paypoint | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount . "| ".$request->email;
+                    send_notification($message);
+
+
+                    return view('webpaypoint', $data);
+
+
+
+
+                }
+
+                return response()->json([
+                    'account_no' => "Try again later",
+                    'account_name' =>   "Try again later",
+                    'bank' =>  "Try again later",
+                ]);
+
+
+                return view('webpaypoint', $data);
+
+
+            }
+
+
+        }
+
 
 
         if ($data['woven'] == 1 && $data['charm'] == 1 && $data['palmpay_transfer'] == 1 && $data['woven'] == 0 && $data['opay_transfer'] == 1 && $data['ninepsb'] == 0) {
