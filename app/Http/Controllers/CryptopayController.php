@@ -156,7 +156,7 @@ class CryptopayController extends Controller
 
                     }
 
-                    $c_amount = $cryp->amount - 2;
+                    $c_amount = $cryp->amount - 1;
                     $cur = $cryp->currency;
 
                     if($cur == "USDT_TON"){
