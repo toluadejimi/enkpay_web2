@@ -4377,6 +4377,8 @@ class TransactionController extends Controller
             $crypto->m_key = $dat->key;
             $crypto->email = $email;
             $crypto->ref = $request->trx;
+            $crypto->currency = $wallet['data']['currency'];
+            $crypto->amount = $wallet['data']['amount'];
             $crypto->inv_id = $wallet['data']['id'];
             $crypto->save();
 
@@ -4411,6 +4413,16 @@ class TransactionController extends Controller
             $status = $get_wallet->json()['status'] ?? null;
 
 
+            $dat = Transfertransaction::where('ref_trans_id', $request->trx)->first();
+            $crypto = new CryptoPayment();
+            $crypto->m_key = $dat->key;
+            $crypto->email = $email;
+            $crypto->ref = $request->trx;
+            $crypto->currency = $wallet['data']['currency'];
+            $crypto->amount = $wallet['data']['amount'];
+            $crypto->inv_id = $wallet['data']['id'];
+            $crypto->save();
+
 
             if($status == 'success'){
 
@@ -4439,6 +4451,16 @@ class TransactionController extends Controller
             $wallet = $get_wallet->json();
             $status = $get_wallet->json()['status'] ?? null;
 
+
+            $dat = Transfertransaction::where('ref_trans_id', $request->trx)->first();
+            $crypto = new CryptoPayment();
+            $crypto->m_key = $dat->key;
+            $crypto->email = $email;
+            $crypto->ref = $request->trx;
+            $crypto->currency = $wallet['data']['currency'];
+            $crypto->amount = $wallet['data']['amount'];
+            $crypto->inv_id = $wallet['data']['id'];
+            $crypto->save();
 
 
             if($status == 'success'){

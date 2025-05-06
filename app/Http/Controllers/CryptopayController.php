@@ -128,6 +128,8 @@ class CryptopayController extends Controller
                 $update = CryptoPayment::where('ref', $ref)->update(['status' => 4]);
                 if ($update) {
                     $trx = Transfertransaction::where('ref_trans_id', $ref)->first();
+                    $cryp = CryptoPayment::where('ref', $ref)->where('status', 4)->first();
+
                     $user_amount = $trx->amount;
                     if ($user_amount > 11000) {
                         $p_amount = $user_amount - 300;
@@ -154,36 +156,24 @@ class CryptopayController extends Controller
 
                     }
 
+                    $c_amount = $cryp->amount - 2;
+                    $cur = $cryp->currency;
 
-                    User::where('id', $trx->user_id)->increment('main_wallet', $l_amount);
-                    $balance = User::where('id', $trx->user_id)->first()->main_wallet;
+                    if($cur == "USDT_TON"){
+                        User::where('id', $trx->user_id)->increment('usdt_ton', $c_amount);
+                    }elseif ($cur == "BTC"){
+                        User::where('id', $trx->user_id)->increment('btc', $c_amount);
+                    }elseif ($cur == "USDT_TRX"){
+                        User::where('id', $trx->user_id)->increment('usdt_trx', $c_amount);
+                    }
+
                     $user = User::where('id', $trx->user_id)->first();
-
 
                     $url = Webkey::where('key', $trx->key)->first()->url_fund ?? null;
                     $user_email = $trx->email ?? null;
                     $order_id = $trx->ref_trans_id ?? null;
                     $site_name = Webkey::where('key', $trx->key)->first()->site_name ?? null;
 
-                    $trasnaction = new Transaction();
-                    $trasnaction->user_id = $trx->user_id;
-                    $trasnaction->e_ref = $ref;
-                    $trasnaction->ref_trans_id = $order_id;
-                    $trasnaction->type = "webpay";
-                    $trasnaction->transaction_type = "VirtualFundWallet";
-                    $trasnaction->title = "Wallet Funding";
-                    $trasnaction->main_type = "CRYPTO";
-                    $trasnaction->credit = $l_amount;
-                    $trasnaction->email = $user_email;
-                    $trasnaction->note = "Transaction Successful | Web Pay | for $user_email";
-                    $trasnaction->fee = $fee ?? 0;
-                    $trasnaction->amount = $trx->amount;
-                    $trasnaction->e_charges = 0;
-                    $trasnaction->charge = $payable ?? 0;
-                    $trasnaction->enkPay_Cashout_profit = 0;
-                    $trasnaction->balance = $balance;
-                    $trasnaction->status = 1;
-                    $trasnaction->save();
 
                     $message = "Business funded  | $ref | $l_amount | $user->first_name " . " " . $user->last_name . " | for $user_email";
                     send_notification($message);
