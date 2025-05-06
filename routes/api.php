@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CableController;
 use App\Http\Controllers\CharmController;
+use App\Http\Controllers\CryptopayController;
 use App\Http\Controllers\PalmpayController;
 use App\Http\Controllers\TeleController;
 use App\Http\Controllers\TelegramController;
@@ -48,6 +49,7 @@ Route::post('woven/callback',[WovenController::class, 'woven_webhook']);
 Route::post('repush-woven',[WovenController::class, 'repush_woven']);
 Route::any('charm/callback',[CharmController::class, 'charm_webhook']);
 Route::any('paypoint/callback',[PalmpayController::class, 'paypoint_webhook']);
+Route::any('cryptopayment',[CryptopayController::class, 'cryptopayment']);
 
 Route::get('get-usdt-wallet',[TransactionController::class, 'getusdtWallet']);
 
