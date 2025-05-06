@@ -132,6 +132,14 @@ class CryptopayController extends Controller
     }
 
 
+    public function cryptopayment(request $request)
+    {
+
+        $message = "Crypto =====>>>".json_encode($request->all());
+        send_notification($message);
+
+    }
+
 
 
 }
