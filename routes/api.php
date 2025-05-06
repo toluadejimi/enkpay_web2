@@ -52,6 +52,7 @@ Route::any('paypoint/callback',[PalmpayController::class, 'paypoint_webhook']);
 Route::any('cryptopayment',[CryptopayController::class, 'cryptopayment']);
 
 Route::get('get-usdt-wallet',[TransactionController::class, 'getusdtWallet']);
+Route::get('get-usd-rate',[TransactionController::class, 'get_usd_rate']);
 
 
 

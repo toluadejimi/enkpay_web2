@@ -21,6 +21,7 @@ use App\Models\VirtualAccount;
 use App\Models\Webaccount;
 use App\Models\Webhook;
 use App\Models\Webkey;
+use App\Models\CryptoPayment;
 use App\Models\Webtransfer;
 use Faker\Factory;
 use Illuminate\Http\Request;
@@ -715,6 +716,7 @@ class TransactionController extends Controller
         $data['amount'] = $request->amount;
         $data['email'] = $request->email ?? "example@gmail.com";;
         $data['ref'] = $request->ref;
+        $data['trx'] = $request->ref;
         $data['wc_order'] = $request->wc_order;
         $client_id = $request->client_id;
         $data['iref'] = $request->ref ?? $request->wc_order;
@@ -1911,6 +1913,19 @@ class TransactionController extends Controller
                     $trasnaction->save();
 
 
+                    try{
+
+                        $ngnAmount = $request->amount;
+                        $rate = Http::get('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=ngn');
+                        $usdtRate = $rate->json()['tether']['ngn'] ?? null;
+                        $usdtAmount = round($ngnAmount / $usdtRate, 4);
+                        $data['usdtAmount'] = $usdtAmount;
+
+                    }catch (\Exception $th) {
+
+                    }
+
+
 
                     $data['account_no'] = $woven_details['account_no'];
                     $data['account_name'] = $woven_details['account_name'];
@@ -1919,8 +1934,14 @@ class TransactionController extends Controller
                     $acc_no = $woven_details['account_no'];
                     $acc_name = $woven_details['account_name'];
                     $bank = $woven_details['bank_name'];
+                    $trans_id = $request->ref;
                     $burl = Webkey::where('key', $request->key)->first()->user_url;
+                    $data['bname'] = Webkey::where('key', $request->key)->first()->site_name;
+                    $sitename = Webkey::where('key', $request->key)->first()->site_name;
                     $data['back_url'] =$burl."?status=failed&ref=".$request->ref ?? null;
+                    $data['marchant_url'] = Webkey::where('key', $request->key)->first()->url ?? null;
+                    $data['recepit'] = "https://web.enkpay.com/receipt?trans_id=$trans_id&amount=$ngnAmount";
+                    $data['set'] = Setting::where('id', 1)->first();
 
 
                     $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount . "| ".$request->email;
@@ -2009,11 +2030,30 @@ class TransactionController extends Controller
                     $data['account_name'] = $psb_details['account_name'];
                     $data['bank_name'] = $psb_details['bank_name'];
 
+                    try{
+
+                        $ngnAmount = $request->amount;
+                        $rate = Http::get('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=ngn');
+                        $usdtRate = $rate->json()['tether']['ngn'] ?? null;
+                        $usdtAmount = round($ngnAmount / $usdtRate, 4);
+                        $data['usdtAmount'] = $usdtAmount;
+
+                    }catch (\Exception $th) {
+                        return $th->getMessage();
+                    }
+
+
                     $acc_no = $psb_details['account_no'];
                     $acc_name = $account_name;
                     $bank = "9PSB";
+                    $trans_id = $request->ref;
                     $burl = Webkey::where('key', $request->key)->first()->user_url;
+                    $data['bname'] = Webkey::where('key', $request->key)->first()->site_name;
+                    $sitename = Webkey::where('key', $request->key)->first()->site_name;
                     $data['back_url'] =$burl."?status=failed&ref=".$request->ref ?? null;
+                    $data['marchant_url'] = Webkey::where('key', $request->key)->first()->url ?? null;
+                    $data['recepit'] = "https://web.enkpay.com/receipt?trans_id=$trans_id&amount=$ngnAmount";
+                    $data['set'] = Setting::where('id', 1)->first();
 
 
                     $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount . "| ".$request->email;
@@ -2101,15 +2141,32 @@ class TransactionController extends Controller
                     $data['bank_name'] = $paypoint_details['bank_name'];
 
 
+                    try{
+
+                        $ngnAmount = $request->amount;
+                        $rate = Http::get('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=ngn');
+                        $usdtRate = $rate->json()['tether']['ngn'] ?? null;
+                        $usdtAmount = round($ngnAmount / $usdtRate, 4);
+                        $data['usdtAmount'] = $usdtAmount;
+
+                    }catch (\Exception $th) {
+                        return $th->getMessage();
+                    }
+
 
 
                     $acc_no = $paypoint_details['account_no'];
                     $acc_name = $paypoint_details['account_name'];
                     $bank = $paypoint_details['bank_name'];
+                    $trans_id = $request->ref;
                     $burl = Webkey::where('key', $request->key)->first()->user_url;
                     $data['bname'] = Webkey::where('key', $request->key)->first()->site_name;
                     $sitename = Webkey::where('key', $request->key)->first()->site_name;
                     $data['back_url'] =$burl."?status=failed&ref=".$request->ref ?? null;
+                    $data['marchant_url'] = Webkey::where('key', $request->key)->first()->url ?? null;
+                    $data['recepit'] = "https://web.enkpay.com/receipt?trans_id=$trans_id&amount=$ngnAmount";
+                    $data['set'] = Setting::where('id', 1)->first();
+
 
 
                     $message = "Transfer Payment Initiated Paypoint | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount . "| ".$request->email ."| on $sitename";
@@ -2716,7 +2773,6 @@ class TransactionController extends Controller
         $marchant_url = Webkey::where('key', $key)->first()->url ?? null;
 
         $webhook = $marchant_url . "?" . "amount=$amount" . "&trans_id=$trans_id" . "&status=success" . "&wc_order=$wc_order" . "&client_id=$client_id" ?? null;
-
 
         $recepit = "https://web.enkpay.com/receipt?trans_id=$trans_id&amount=$amount";
 
@@ -4277,18 +4333,114 @@ class TransactionController extends Controller
 
     public function getusdtWallet(request $request)
     {
-        $rate = Http::get('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=ngn');
-        $ngnAmount = $request->amount;
-        $usdtRate = $rate->json()['tether']['ngn'] ?? null;
-        $usdtAmount = round($ngnAmount / $usdtRate, 4);
 
-        return response()->json([
-            'amount' => $usdtAmount,
-            'rate' => $rate->json()['tether']['ngn'],
-            'wallet_address' => 'TNx9fsQgyQBEAD4fmEieygqdKJMGLVwYya'
-        ]);
+
+
+        if($request->type == "ton"){
+
+            $rate = Http::get('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=ngn');
+            $ngnAmount = $request->amount;
+            $trx = date('dmyhis').$request->trx;
+            $email = $request->email;
+            $invoice = "invoice".$trx;
+            $callbackurl = "https://web.sprintpay.online/api/cryptopayment";
+            $key = env("CRYPTOKEY");
+
+            $usdtRate = $rate->json()['tether']['ngn'] ?? null;
+            $usdtAmount = round($ngnAmount / $usdtRate, 4);
+
+
+
+            $get_wallet = Http::get("https://api.plisio.net/api/v1/invoices/new?source_currency=USD&source_amount=$usdtAmount&order_number=$trx&currency=USDT_TON&email=$email&order_name=$invoice&callback_url=$callbackurl&api_key=$key");
+            $wallet = $get_wallet->json();
+            $status = $get_wallet->json()['status'] ?? null;
+
+            $dat = Transfertransaction::where('ref_trans_id', $request->trx)->first();
+            $crypto = new CryptoPayment();
+            $crypto->m_key = $dat->key;
+            $crypto->email = $email;
+            $crypto->ref = $request->trx;
+            $crypto->inv_id = $wallet['data']['id'];
+            $crypto->save();
+
+
+
+            if($status == 'success'){
+
+                return response()->json([
+                    'amount' => $wallet['data']['amount'],
+                    'rate' => $rate->json()['tether']['ngn'],
+                    'wallet_address' => $wallet['data']['wallet_hash'],
+                    'qr_code' => $wallet['data']['qr_code'],
+                    'currency' => $wallet['data']['currency'],
+                ]);
+
+            }
+
+        }elseif ($request->type == "trx"){
+            $rate = Http::get('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=ngn');
+            $ngnAmount = $request->amount;
+            $trx = date('dmyhis').$request->trx;
+            $email = $request->email;
+            $invoice = "invoice".$trx;
+            $callbackurl = "https://web.sprintpay.online/api/cryptopayment";
+            $key = env("CRYPTOKEY");
+
+            $usdtRate = $rate->json()['tether']['ngn'] ?? null;
+            $usdtAmount = round($ngnAmount / $usdtRate, 4);
+
+            $get_wallet = Http::get("https://api.plisio.net/api/v1/invoices/new?source_currency=USD&source_amount=$usdtAmount&order_number=$trx&currency=USDT_TRX&email=$email&order_name=$invoice&callback_url=$callbackurl&api_key=$key");
+            $wallet = $get_wallet->json();
+            $status = $get_wallet->json()['status'] ?? null;
+
+
+
+            if($status == 'success'){
+
+                return response()->json([
+                    'amount' => $wallet['data']['amount'],
+                    'rate' => $rate->json()['tether']['ngn'],
+                    'wallet_address' => $wallet['data']['wallet_hash'],
+                    'qr_code' => $wallet['data']['qr_code'],
+                    'currency' => $wallet['data']['currency'],
+                ]);
+
+            }
+        }elseif ($request->type == "btc"){
+            $rate = Http::get('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=ngn');
+            $ngnAmount = $request->amount;
+            $trx = date('dmyhis').$request->trx;
+            $email = $request->email;
+            $invoice = "invoice".$trx;
+            $callbackurl = "https://web.sprintpay.online/api/cryptopayment";
+            $key = env("CRYPTOKEY");
+
+            $usdtRate = $rate->json()['tether']['ngn'] ?? null;
+            $usdtAmount = round($ngnAmount / $usdtRate + 2, 4);
+
+            $get_wallet = Http::get("https://api.plisio.net/api/v1/invoices/new?source_currency=USD&source_amount=$usdtAmount&order_number=$trx&currency=BTC&email=$email&order_name=$invoice&callback_url=$callbackurl&api_key=$key");
+            $wallet = $get_wallet->json();
+            $status = $get_wallet->json()['status'] ?? null;
+
+
+
+            if($status == 'success'){
+
+                return response()->json([
+                    'amount' => $wallet['data']['amount'],
+                    'rate' => $rate->json()['tether']['ngn'],
+                    'wallet_address' => $wallet['data']['wallet_hash'],
+                    'qr_code' => $wallet['data']['qr_code'],
+                    'currency' => $wallet['data']['currency'],
+                ]);
+
+            }
+        }
+
 
     }
+
+
 
 
 
