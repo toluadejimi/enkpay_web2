@@ -1918,7 +1918,8 @@ class TransactionController extends Controller
                         $ngnAmount = $request->amount;
                         $rate = Http::get('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=ngn');
                         $usdtRate = $rate->json()['tether']['ngn'] ?? null;
-                        $usdtAmount = round($ngnAmount / $usdtRate, 4);
+                        $rate = Setting::where('id', 1)->first()->usd_rate;
+                        $usdtAmount = round($ngnAmount / $usdtRate ?? $rate, 4);
                         $data['usdtAmount'] = $usdtAmount;
 
                     }catch (\Exception $th) {
@@ -2035,7 +2036,8 @@ class TransactionController extends Controller
                         $ngnAmount = $request->amount;
                         $rate = Http::get('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=ngn');
                         $usdtRate = $rate->json()['tether']['ngn'] ?? null;
-                        $usdtAmount = round($ngnAmount / $usdtRate, 4);
+                        $rate = Setting::where('id', 1)->first()->usd_rate;
+                        $usdtAmount = round($ngnAmount / $usdtRate ?? $rate, 4);
                         $data['usdtAmount'] = $usdtAmount;
 
                     }catch (\Exception $th) {
@@ -2146,7 +2148,8 @@ class TransactionController extends Controller
                         $ngnAmount = $request->amount;
                         $rate = Http::get('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=ngn');
                         $usdtRate = $rate->json()['tether']['ngn'] ?? null;
-                        $usdtAmount = round($ngnAmount / $usdtRate, 4);
+                        $rate = Setting::where('id', 1)->first()->usd_rate;
+                        $usdtAmount = round($ngnAmount / $usdtRate ?? $rate, 4);
                         $data['usdtAmount'] = $usdtAmount;
 
                     }catch (\Exception $th) {
