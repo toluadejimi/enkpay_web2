@@ -161,7 +161,7 @@ class TransactionController extends Controller
 
             $acct = $request->email;
             $message = "Business funded | $acct | $f_amount | $user->first_name " . " " . $user->last_name;
-            send_notification($message);
+           Log::info($message);
 
 
             $type = "epayment";
@@ -294,7 +294,7 @@ class TransactionController extends Controller
 
                 $acct = $data['acc_no'];
                 $message = "Business funded | $acct | $f_amount | $user->first_name " . " " . $user->last_name;
-                send_notification($message);
+               Log::info($message);
 
                     Webhook::where('account_no', $acct)->delete() ?? null;
 
@@ -706,7 +706,7 @@ class TransactionController extends Controller
         if ($attempts > 5) {
             $url = $request->fullUrl();
             $message = "Too many requests from your IP | $ip | $url";
-            send_notification($message);
+           Log::info($message);
 
             abort(Response::HTTP_TOO_MANY_REQUESTS, 'Too many requests from your IP.');
         }
@@ -1058,7 +1058,7 @@ class TransactionController extends Controller
 
 
                         $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount . "| ".$request->email;
-                        send_notification($message);
+                       Log::info($message);
 
                         return response()->json([
                             'account_no' => $woven_details['account_no'],
@@ -1154,7 +1154,7 @@ class TransactionController extends Controller
 
 
                         $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount . "| ".$request->email;
-                        send_notification($message);
+                         Log::info($message);
 
                         return response()->json([
                             'account_no' => $psb_details['account_no'],
@@ -1392,7 +1392,7 @@ class TransactionController extends Controller
 
 
                     $message = "Transfer Payment Initiated Paypoint | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount . "| ".$request->email;
-                    send_notification($message);
+                   Log::info($message);
 
 
                     return view('webpaypoint', $data);
@@ -1487,7 +1487,7 @@ class TransactionController extends Controller
 
 
                     $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount . "| ".$request->email;
-                    send_notification($message);
+                   Log::info($message);
 
 
                     return view('webpaywoven', $data);
@@ -1615,7 +1615,7 @@ class TransactionController extends Controller
 
 
                         $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount . "| ".$request->email;
-                        send_notification($message);
+                       Log::info($message);
 
                         return response()->json([
                             'account_no' => $woven_details['account_no'],
@@ -1713,7 +1713,7 @@ class TransactionController extends Controller
 
 
                         $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount . "| ".$request->email;
-                        send_notification($message);
+                       Log::info($message);
 
                         return response()->json([
                             'account_no' => $psb_details['account_no'],
@@ -1810,7 +1810,7 @@ class TransactionController extends Controller
 
 
                 $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount . "| ".$request->email;
-                send_notification($message);
+               Log::info($message);
 
 
                 return view('webpaywoven', $data);
@@ -1922,7 +1922,7 @@ class TransactionController extends Controller
 
 
                     $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount . "| ".$request->email;
-                    send_notification($message);
+                    Log::info($message);
 
 
                     return view('webpaywoven', $data);
@@ -2033,7 +2033,7 @@ class TransactionController extends Controller
 
 
                     $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount . "| ".$request->email;
-                    send_notification($message);
+                   Log::info($message);
 
 
                     return view('webpay', $data);
@@ -2144,7 +2144,7 @@ class TransactionController extends Controller
 
 
                     $message = "Transfer Payment Initiated Paypoint | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount . "| ".$request->email ."| on $sitename";
-                    send_notification($message);
+                   Log::info($message);
 
 
                     return view('webpaypoint', $data);
@@ -2256,13 +2256,13 @@ class TransactionController extends Controller
             $trx = Webtransfer::where('adviceReference', $request->adviceReference)->first() ?? null;
             if ($trx == null) {
                 $message = "Fools | Transaction not found on enkpay";
-                send_notification($message);
+               Log::info($message);
                 return view('notfound');
             }
 
             if ($trx->status == 1) {
                 $message = "Fools | Transaction already confrimed";
-                send_notification($message);
+               Log::info($message);
 
                 return view('confrimed');
             }
@@ -2308,7 +2308,7 @@ class TransactionController extends Controller
 
 
             $message = "Card Payment  Successful |" . $payment['merchantReference'];
-            send_notification($message);
+           Log::info($message);
 
 
             return view('success', compact('webhook', 'marchant_url', 'amount', 'trans_id', 'wc_order', 'client_id', 'wc', 'recepit'));
@@ -3598,7 +3598,7 @@ class TransactionController extends Controller
     function notify_webhook(request $request)
     {
         $message = "Card Webhook | " . json_encode($request->all());
-        send_notification($message);
+       Log::info($message);
 
         $PaymentReference = $request->PaymentReference;
         $AmountCollected = $request->AmountCollected;
@@ -3609,7 +3609,7 @@ class TransactionController extends Controller
         if ($TransactionStatus != 'Successful') {
 
             $message = "Card Transaction Failed";
-            send_notification($message);
+           Log::info($message);
         }
 
 
@@ -3651,7 +3651,7 @@ class TransactionController extends Controller
 
 
             $message = "Card Transaction saved on pending";
-            send_notification($message);
+           Log::info($message);
 
         }
 
@@ -3672,14 +3672,14 @@ class TransactionController extends Controller
                 $cws->save();
 
                 $message = "Card Transaction saved for approval";
-                send_notification($message);
+               Log::info($message);
 
 
             }
 
             // if ($cw->status == 1) {
             //     $message = "Card Transaction Already Confirmed";
-            //     send_notification($message);
+            //    Log::info($message);
             //     return "success";
             // }
         }
@@ -3687,7 +3687,7 @@ class TransactionController extends Controller
 
         if ($trx->status == 1) {
             $message = "Card Transaction Already Confirmed";
-            send_notification($message);
+           Log::info($message);
         }
 
 
@@ -3725,7 +3725,7 @@ class TransactionController extends Controller
 
         //update Transactions
         $message = "Card Payment Completed |" . $MerchantReference . " Business funded | " . number_format($amt1, 2) . "| $first_name " . " " . $last_name;
-        send_notification($message);
+       Log::info($message);
 
 
         // return response()->json([
@@ -3764,7 +3764,7 @@ class TransactionController extends Controller
         $trasnaction->save();
 
         $message = "Card Payment Initiated |" . $request->ref . " For  $usr->first_name " . " " . $usr->last_name . " | " . number_format($ref->payable_amount, 2);
-        send_notification($message);
+       Log::info($message);
     }
 
 
@@ -3798,7 +3798,7 @@ class TransactionController extends Controller
         $message = "Transfer Payment Initiated |" . $request->ref . "| ON OPAY " . "For " . $usr->last_name . " | " . number_format($ref->payable_amount, 2);
         Log::info('Transfer Initiated', ['message' => $message]);
 
-//        send_notification($message);
+//       Log::info($message);
 //        send_notification_opay($message);
 //        send_notification2($message);
         //send_notification3($message);
@@ -3838,7 +3838,7 @@ class TransactionController extends Controller
         $message = "Transfer Payment Initiated |" . $request->ref . "| ON PALMPAY " . "For " . $usr->last_name . " | " . number_format($ref->payable_amount, 2);
         Log::info('Transfer Initiated', ['message' => $message]);
 
-        //        send_notification($message);
+        //       Log::info($message);
 
 
 //        send_notification_palmpay($message);
@@ -3924,7 +3924,7 @@ class TransactionController extends Controller
 
             $message = "Transfer Payment Initiated | " . $request->accountNo . " | " . $request->ref . "| ON 9PSB " . "For " . $usr->last_name . " | " . number_format($trx->payable_amount, 2);
             //Log::info('Transfer Initiated', ['message' => $message]);
-            send_notification($message);
+           Log::info($message);
 
             return response()->json([
                 'status' => true,
@@ -4028,7 +4028,7 @@ class TransactionController extends Controller
             $message = "Transfer Payment Initiated |" . $request->pay_ref . "| ON WEMA " . "For " . $usr->last_name . " | " . number_format($trx->payable_amount, 2);
             Log::info('Transfer Initiated', ['message' => $message]);
 
-            // send_notification($message);
+            //Log::info($message);
 
             return response()->json([
                 'status' => true,
@@ -4060,7 +4060,7 @@ class TransactionController extends Controller
         $message = "Transfer Payment Initiated |" . $request->trx_id . "| ON 9PSB " . "For " . $usr->last_name . " | " . number_format($ref->payable_amount, 2);
         Log::info('Transfer Initiated', ['message' => $message]);
 
-        // send_notification($message);
+        //Log::info($message);
 
         $data['ref'] = $ref->manual_acc_ref;
         $data['account_no'] = $request->account_no;
@@ -4084,7 +4084,7 @@ class TransactionController extends Controller
 
         $message = "Boomzy  Payment Initiated |" . $request->trx_id . "| ON 9PSB " . "For " . $usr->last_name . " | " . number_format($ref->payable_amount, 2);
         Log::info('Transfer Initiated', ['message' => $message]);
-        send_notification($message);
+       Log::info($message);
 
         $data['ref'] = $ref->manual_acc_ref;
         $data['account_no'] = $request->account_no;
@@ -4105,7 +4105,7 @@ class TransactionController extends Controller
 
 
         $message = "Wema  Payment Initiated |" . $request->trx_id . "| ON WEMA " . "For " . $usr->last_name . " | " . number_format($ref->payable_amount, 2);
-        send_notification($message);
+       Log::info($message);
 
         $data['ref'] = $ref->manual_acc_ref;
         $data['account_no'] = $request->account_no;
@@ -4131,7 +4131,7 @@ class TransactionController extends Controller
         Log::info('Transfer Initiated', ['message' => $message]);
 
 
-        // send_notification($message);
+        //Log::info($message);
 
         $data['ref'] = $ref->manual_acc_ref;
         $data['account_no'] = $request->account_no;
