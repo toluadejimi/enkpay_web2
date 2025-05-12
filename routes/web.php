@@ -252,8 +252,8 @@ Route::any('delete-trx', [ProcessissuesController::class, 'delete_transaction'])
 
 
 
-Route::get('/logs', [LogController::class, 'showLogs'])->name('logs.show');
-
+Route::get('/logs', [LogController::class, 'index'])->name('logs.show');
+Route::get('/logs/search', [LogController::class, 'search'])->name('logs.search');
 
 
 
