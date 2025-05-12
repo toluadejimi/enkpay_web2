@@ -4415,7 +4415,7 @@ class TransactionController extends Controller
             $crypto->email = $email;
             $crypto->ref = $request->trx;
             $crypto->currency = $wallet['data']['currency'];
-            $crypto->amount = $wallet['data']['amount'];
+            $crypto->amount = $wallet['data']['params']['source_amount'];
             $crypto->inv_id = $wallet['data']['id'];
             $crypto->save();
 
