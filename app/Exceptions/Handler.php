@@ -67,7 +67,7 @@ class Handler extends ExceptionHandler
             $message = $message2. "\n\nMessage========>" . $message . "\n\nLine========>" . $line . "\n\nFile========>" . $file . "\n\nURL========>" . $url . "\n\nIP========> " . $ip;
 
             //$message = "Error Message on ENKPAY APP";
-            send_notification($message);
+            Log::info($message);
 
             return view('errors.500');
 
