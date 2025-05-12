@@ -19,7 +19,7 @@
     <link rel="stylesheet" type="text/css" href="{{url('')}}/public/assets/assets/styles/styles.css"/>
     <link rel="manifest" href="{{url('')}}/public/assets/assets/__manifest.json"
           data-pwa-version="set_in_manifest_and_pwa_js">
-    <link rel="apple-touch-icon" sizes="192x192" href="{{url('')}}/public/assets/assets/app/icons/icon-192x192.png">
+    <link rel="apple-touch-icon" sizes="400x400" href="{{url('')}}/public/assets/assets/app/icons/icon-192x192.png">
 </head>
 
 <body>
