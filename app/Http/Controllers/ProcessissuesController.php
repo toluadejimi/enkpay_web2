@@ -179,7 +179,12 @@ class ProcessissuesController extends Controller
 
 
             if($request->agent == 1){
-                User::where('id', $user_id)->increment('main_wallet', $p_amount);
+                if ($p_amount > 15000) {
+                    $my_amount = $p_amount - 300;
+                } else {
+                    $my_amount = $p_amount - 100;
+                }
+                User::where('id', $user_id)->increment('main_wallet', $my_amount);
             }
                 $balance = User::where('id', $user_id)->first()->main_wallet;
                 $user = User::where('id', $user_id)->first();
