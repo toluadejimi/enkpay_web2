@@ -22,7 +22,7 @@
             <td>{{$item->created_at}}</td>
             <td>
                 @if($item->status == 0)
-                    <a href="repush?id={{$item->id}}" onclick="return confirmrepush2();" class="btn btn-warning">Push </a>
+                    <a style="margin: 2px" href="repush?id={{$item->id}}" onclick="return confirmrepush2();" class="btn btn-warning">Push </a>
                     <script>
                         function confirmrepush2() {
                             return confirm('Are you sure you want to Push');
