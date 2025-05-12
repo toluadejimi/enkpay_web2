@@ -5,6 +5,7 @@
         <th>Ref</th>
         <th>Email</th>
         <th>Amount</th>
+        <th>Amount to Pay</th>
         <th>Bank</th>
         <th>Acct no</th>
         <th>Date</th>
@@ -17,6 +18,7 @@
             <td>{{$item->ref}}</td>
             <td>{{$item->email}}</td>
             <td>{{number_format($item->amount, 2)}}</td>
+            <td>{{number_format($item->amount_to_pay, 2)}}</td>
             <td>{{$item->bank}}</td>
             <td>{{$item->account_no}}</td>
             <td>{{$item->created_at}}</td>
