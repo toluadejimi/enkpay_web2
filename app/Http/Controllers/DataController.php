@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class DataController extends Controller
@@ -89,7 +90,7 @@ class DataController extends Controller
         if (Auth::user()->status != 2) {
 
             $message = Auth::user()->first_name. " ".Auth::user()->last_name. " | Unverified Account trying to buy data";
-            send_notification($message);
+            Log::info($message);
 
             return response()->json([
                 'status' => $this->failed,
@@ -254,7 +255,7 @@ class DataController extends Controller
 
             }
 
-            send_notification($message);
+            Log::info($message);
 
 
             return response()->json([

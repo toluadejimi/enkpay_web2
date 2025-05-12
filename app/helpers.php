@@ -14,6 +14,7 @@ use App\Models\Webkey;
 use App\Models\Webtransfer;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 
 if (!function_exists('refxx')) {
@@ -129,12 +130,12 @@ if (!function_exists('send_notification_resolve')) {
                 return response()->json(['account_no' => $p_acct_no, 'account_name' => $p_acct_name]);
 
                 $message = "Account Created on Providus";
-                send_notification($message);
+                Log::info($message);
             }
 
 
             $message = "Error from Providus Account Creation | Account Created on Providus";
-            send_notification($message);
+            Log::info($message);
         }
     }
 
@@ -203,7 +204,7 @@ if (!function_exists('send_notification_resolve')) {
                 // $user->save();
 
                 $message = "Account Created on Providus";
-                send_notification($message);
+                Log::info($message);
 
 
                 $data_array = array();
@@ -218,7 +219,7 @@ if (!function_exists('send_notification_resolve')) {
 
 
             $message = "Error from Providus Account Creation | Account Created on Providus";
-            send_notification($message);
+            Log::info($message);
         }
     }
 }
@@ -226,7 +227,7 @@ if (!function_exists('send_notification_resolve')) {
 
 if (!function_exists('send_notification')) {
 
-    function send_notification($message)
+    function Log::info($message);
     {
 
         $boturl = env('BOTURL');
@@ -318,12 +319,12 @@ if (!function_exists('send_notification')) {
                 return response()->json(['account_no' => $p_acct_no, 'account_name' => $p_acct_name]);
 
                 $message = "Account Created on Providus";
-                send_notification($message);
+                Log::info($message);
             }
 
 
             $message = "Error from Providus Account Creation | Account Created on Providus";
-            send_notification($message);
+            Log::info($message);
         }
     }
 
@@ -392,7 +393,7 @@ if (!function_exists('send_notification')) {
                 // $user->save();
 
                 $message = "Account Created on Providus";
-                send_notification($message);
+                Log::info($message);
 
 
                 $data_array = array();
@@ -407,7 +408,7 @@ if (!function_exists('send_notification')) {
 
 
             $message = "Error from Providus Account Creation | Account Created on Providus";
-            send_notification($message);
+            Log::info($message);
         }
     }
 }
@@ -504,12 +505,12 @@ if (!function_exists('send_notification2')) {
                 return response()->json(['account_no' => $p_acct_no, 'account_name' => $p_acct_name]);
 
                 $message = "Account Created on Providus";
-                send_notification($message);
+                Log::info($message);
             }
 
 
             $message = "Error from Providus Account Creation | Account Created on Providus";
-            send_notification($message);
+            Log::info($message);
         }
     }
 
@@ -578,7 +579,7 @@ if (!function_exists('send_notification2')) {
                 // $user->save();
 
                 $message = "Account Created on Providus";
-                send_notification($message);
+                Log::info($message);
 
 
                 $data_array = array();
@@ -593,7 +594,7 @@ if (!function_exists('send_notification2')) {
 
 
             $message = "Error from Providus Account Creation | Account Created on Providus";
-            send_notification($message);
+            Log::info($message);
         }
     }
 }
@@ -690,12 +691,12 @@ if (!function_exists('send_notification3')) {
                 return response()->json(['account_no' => $p_acct_no, 'account_name' => $p_acct_name]);
 
                 $message = "Account Created on Providus";
-                send_notification($message);
+                Log::info($message);
             }
 
 
             $message = "Error from Providus Account Creation | Account Created on Providus";
-            send_notification($message);
+            Log::info($message);
         }
     }
 
@@ -764,7 +765,7 @@ if (!function_exists('send_notification3')) {
                 // $user->save();
 
                 $message = "Account Created on Providus";
-                send_notification($message);
+                Log::info($message);
 
 
                 $data_array = array();
@@ -779,7 +780,7 @@ if (!function_exists('send_notification3')) {
 
 
             $message = "Error from Providus Account Creation | Account Created on Providus";
-            send_notification($message);
+            Log::info($message);
         }
     }
 }
@@ -876,12 +877,12 @@ if (!function_exists('send_notification_palmpay')) {
                 return response()->json(['account_no' => $p_acct_no, 'account_name' => $p_acct_name]);
 
                 $message = "Account Created on Providus";
-                send_notification($message);
+                Log::info($message);
             }
 
 
             $message = "Error from Providus Account Creation | Account Created on Providus";
-            send_notification($message);
+            Log::info($message);
         }
     }
 
@@ -950,7 +951,7 @@ if (!function_exists('send_notification_palmpay')) {
                 // $user->save();
 
                 $message = "Account Created on Providus";
-                send_notification($message);
+                Log::info($message);
 
 
                 $data_array = array();
@@ -965,7 +966,7 @@ if (!function_exists('send_notification_palmpay')) {
 
 
             $message = "Error from Providus Account Creation | Account Created on Providus";
-            send_notification($message);
+            Log::info($message);
         }
     }
 }
@@ -1063,12 +1064,12 @@ if (!function_exists('send_notification_opay')) {
                 return response()->json(['account_no' => $p_acct_no, 'account_name' => $p_acct_name]);
 
                 $message = "Account Created on Providus";
-                send_notification($message);
+                Log::info($message);
             }
 
 
             $message = "Error from Providus Account Creation | Account Created on Providus";
-            send_notification($message);
+            Log::info($message);
         }
     }
 
@@ -1137,7 +1138,7 @@ if (!function_exists('send_notification_opay')) {
                 // $user->save();
 
                 $message = "Account Created on Providus";
-                send_notification($message);
+                Log::info($message);
 
 
                 $data_array = array();
@@ -1152,7 +1153,7 @@ if (!function_exists('send_notification_opay')) {
 
 
             $message = "Error from Providus Account Creation | Account Created on Providus";
-            send_notification($message);
+            Log::info($message);
         }
     }
 }
@@ -1218,12 +1219,12 @@ if (!function_exists('create_p_account')) {
             return response()->json(['account_no' => $p_acct_no, 'account_name' => $p_acct_name]);
 
             $message = "Account Created on Providus";
-            send_notification($message);
+            Log::info($message);
         }
 
 
         $message = "Error from Providus Account Creation | Account Created on Providus";
-        send_notification($message);
+        Log::info($message);
     }
 }
 
@@ -1290,12 +1291,12 @@ if (!function_exists('create_dynamic_p_account')) {
             return response()->json(['account_no' => $p_acct_no, 'account_name' => $p_acct_name]);
 
             $message = "Account Created on Providus";
-            send_notification($message);
+            Log::info($message);
         }
 
 
         $message = "Error from Providus Account Creation | Account Created on Providus";
-        send_notification($message);
+        Log::info($message);
     }
 }
 
@@ -1969,7 +1970,7 @@ function verifypelpaytelegram($pref)
 
         if ($var->requestSuccessful !== true) {
             $message = json_encode($var);
-            send_notification($message);
+            Log::info($message);
             return ['code' => -1, 'message' => $var->message ?? "Unknown API error."];
         }
 
@@ -2075,7 +2076,7 @@ function verifypelpaytelegram($pref)
                     $trasnaction->save();
 
                     $message = "Business funded | Resolve BOT | $acc_no | Charm | $ramount | $user->first_name " . " " . $user->last_name;
-                    send_notification($message);
+                    Log::info($message);
 
                     Webtransfer::where('trans_id', $trx->trans_id)->update(['status' => 4]);
                     Transfertransaction::where('account_no', $acc_no)->update(['status' => 4, 'resolve' => 1]);
@@ -2283,11 +2284,11 @@ function verifypsbtelegram($accountNo)
 
                 $date = date('d M Y H:i:s');
                 $message = $account_no . " | RESOLVE BOT | NGN  $amt | $trxs->email  | $site_name | $date | has been funded";
-                send_notification($message);
+                Log::info($message);
 
 
                 $message = "Business funded | Resolve BOT | $account_no | 9psb | $ramount | $user->first_name " . " " . $user->last_name;
-                send_notification($message);
+                Log::info($message);
 
                 return ['code' => 2, 'message' => "Transaction completed"];
 
@@ -2449,7 +2450,7 @@ if (!function_exists('verifypelpay')) {
                             $trasnaction->save();
 
                             $message = "Business funded | $acc_no | Charm | $p_amount | $user->first_name " . " " . $user->last_name;
-                            send_notification($message);
+                            Log::info($message);
 
                             Webtransfer::where('trans_id', $trx->trans_id)->update(['status' => 4]);
                             Transfertransaction::where('account_no', $acc_no)->update(['status' => 4, 'resolve' => 1]);
@@ -2564,7 +2565,7 @@ if (!function_exists('verifypelpay')) {
 
             $request = $ref;
             $message = "Wema Resolve error =======>" . json_encode($var2);
-            send_notification($message);
+            Log::info($message);
             return 0;
 
         }
@@ -2619,7 +2620,7 @@ if (!function_exists('verifypelpay')) {
 
             $request = $ref;
             $message = "Wema Resolve error =======>" . json_encode($var2);
-            send_notification($message);
+            Log::info($message);
             return 0;
 
         }
@@ -2939,12 +2940,12 @@ if (!function_exists('verifypelpay')) {
                 } else {
 
                     $message = "$url  | $user_email | $amount | $order_id successfully funded";
-                    send_notification($message);
+                    Log::info($message);
 
                 }
 
                 $message = "CREDIT DATA =======>>>>>>> ". json_encode($databody) ."URL ===>>>>>".$url;
-                send_notification($message);
+                Log::info($message);
 
                 return 2;
 
@@ -2973,7 +2974,7 @@ if (!function_exists('verifypelpay')) {
                     "\n\nFunding User Error ===> " . json_encode($var, JSON_PRETTY_PRINT) .
                     "\n\nRequest IP: " . request()->ip();
 
-                send_notification($message);
+                Log::info($message);
                 return 0;
             }
 
@@ -3080,13 +3081,13 @@ if (!function_exists('verifypelpay')) {
             }
 
             $message = json_encode($var);
-            send_notification($message);
+            Log::info($message);
 
 
         }
 
         $message = json_encode($var);
-        send_notification($message);
+        Log::info($message);
 
 
     }
@@ -3139,7 +3140,7 @@ function woven_create_webly($amtt, $code, $last_name, $tremail, $phone)
     }
 
     $message = json_encode($var);
-    send_notification($message);
+    Log::info($message);
 
 
 }
@@ -3327,7 +3328,7 @@ if (!function_exists('verifypelpayreslove')) {
 
             $request = $ref;
             $message = "Wema Resolve error =======>" . json_encode($var2);
-            send_notification($message);
+            Log::info($message);
             return 0;
 
         }
@@ -3382,7 +3383,7 @@ if (!function_exists('verifypelpayreslove')) {
 
             $request = $ref;
             $message = "Wema Resolve error =======>" . json_encode($var2);
-            send_notification($message);
+            Log::info($message);
             return 0;
 
         }
@@ -3515,7 +3516,7 @@ if (!function_exists('verifypelpayreslove')) {
                             $trasnaction->save();
 
                             $message = "Business funded | Resolve BOT | $acc_no | WOVEN | $ramount | $user->first_name " . " " . $user->last_name;
-                            send_notification($message);
+                            Log::info($message);
 
                             Webtransfer::where('trans_id', $trx->trans_id)->update(['status' => 4]);
                             Transfertransaction::where('account_no', $acc_no)->update(['status' => 4, 'resolve' => 1]);
@@ -3590,7 +3591,7 @@ if (!function_exists('verifypelpayreslove')) {
 
 
             $message = "WOVEN TELEGRAM Resolve error =======>" . json_encode($var2);
-            send_notification($message);
+            Log::info($message);
             return 0;
 
         }
@@ -3920,7 +3921,7 @@ if (!function_exists('verifypelpayreslove')) {
 //                } else {
 //
 //                    $message = "$url | $user_email | $amount | $order_id successfully funded";
-//                    send_notification($message);
+//                    Log::info($message);
 //
 //                }
 //
@@ -3947,7 +3948,7 @@ if (!function_exists('verifypelpayreslove')) {
 //
 //                $message = "request ======>  $url | $user_email | $amount | $order_id" .
 //                    "\n\n Funding user Error ===>" . json_encode($var);
-//                send_notification($message);
+//                Log::info($message);
 //                return 0;
 //            }
 //

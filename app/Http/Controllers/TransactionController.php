@@ -3876,7 +3876,7 @@ class TransactionController extends Controller
             $message = "Transfer Payment Initiated |" . $request->ref . "| ON KUDA " . "For " . $usr->last_name . " | " . number_format($ref->payable_amount, 2);
             Log::info('Transfer Initiated', ['message' => $message]);
 
-            //send_notification($message);
+            //Log::info($message);
         }
 
     }
@@ -3976,7 +3976,7 @@ class TransactionController extends Controller
             $message = "Transfer Payment Initiated |" . $request->ref . "| ON WOVEN " . "For " . $usr->last_name . " | " . number_format($trx->payable_amount, 2) . "|" . $trx->email;
             Log::info('Transfer Initiated', ['message' => $message]);
 
-            //send_notification($message);
+            //Log::info($message);
 
             return response()->json([
                 'status' => true,

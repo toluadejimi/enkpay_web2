@@ -6,6 +6,7 @@ use App\Models\Transfertransaction;
 use App\Models\Webkey;
 use App\Services\TelegramService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class TelegramController extends Controller
 {
@@ -28,7 +29,7 @@ class TelegramController extends Controller
         // Get the incoming update
         $update = $request->all();
         $message = "Telegrambot ========>".  json_encode($request->all());
-        send_notification($message);
+        Log::info($message);
 
         // Check if the update contains a message
         if (isset($update['message'])) {

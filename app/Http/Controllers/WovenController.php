@@ -79,7 +79,7 @@ class WovenController extends Controller
             $trasnaction->save();
 
             $message = "Transfer Payment Initiated | $request->accountNo |" . "| ON WOVEN " . "For " . $usr->last_name . " | " . $trx->payable_amount." | ".$trx->email;
-            send_notification($message);
+            Log::info($message);
 
             return response()->json([
                 'status' => true,
@@ -107,12 +107,12 @@ class WovenController extends Controller
 
         $ip = $request->ip();
         $message = $ip. "====>".json_encode($request->all());
-        send_notification($message);
+        Log::info($message);
 
 
         if($request->ip() != "35.162.80.204"){
             $message = "Wrong IP request | ===>>>".$request->ip();
-            send_notification($message);
+            Log::info($message);
             return response()->json([
                 'status' => false,
                 'message' => "Wrong IP request"
@@ -148,7 +148,7 @@ class WovenController extends Controller
 
         if ($trx == null) {
             $message = "Woven funding error =>>>>> $acc_no | $user_amount  not found on transaction";
-            send_notification($message);
+            Log::info($message);
             return response()->json([
                 'status' => false,
                 'message' => "Account Not found in our database",
@@ -224,7 +224,7 @@ class WovenController extends Controller
                 $trasnaction->save();
 
                 $message = "Business funded  | $request->nuban | $l_amount | $user->first_name " . " " . $user->last_name ." | for $user_email" ;
-                send_notification($message);
+                Log::info($message);
 
                 Webtransfer::where('trans_id', $trx->trans_id)->update(['status' => 4]);
                 Transfertransaction::where('account_no', $acc_no)->update(['status' => 4, 'resolve' => 1]);
@@ -291,7 +291,7 @@ class WovenController extends Controller
 
         if ($trx == null) {
             $message = "Woven funding error =>>>>> $acc_no | $user_amount  not found on transation";
-            send_notification($message);
+            Log::info($message);
             return response()->json([
                 'status' => false,
                 'message' => "Account Not found in our database",
@@ -358,7 +358,7 @@ class WovenController extends Controller
 
 
                 $message = "Business funded  | $request->nuban  |" .number_format($u_amt, 2). "| $user->first_name " . " " . $user->last_name ." | for $user_email" ;
-                send_notification($message);
+                Log::info($message);
 
                 Webtransfer::where('trans_id', $trx->trans_id)->update(['status' => 4]);
                 Transfertransaction::where('account_no', $acc_no)->update(['status' => 4, 'resolve' => 1]);

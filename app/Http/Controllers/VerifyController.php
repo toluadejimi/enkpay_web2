@@ -277,14 +277,14 @@ class VerifyController extends Controller
             $message = "Business funded | $reff | $f_amount | $user->first_name " . " " . $user->last_name;
             Log::info('Business Funded', ['message' => $message]);
 
-            //send_notification($message);
+            //Log::info($message);
 
             $date = date('d M Y H:i:s');
             $message = "$reff | $order->ref | NGN  $order->r_amount | $order->email  | $site_name | $date | has been funded";
             Log::info('Business Funded', ['message' => $message]);
 
 
-            //            send_notification($message);
+            //            Log::info($message);
 //            send_notification2($message);
 //            send_notification3($message);
 
@@ -517,7 +517,7 @@ class VerifyController extends Controller
     {
 
         $message = "9psb Resolve Request ====>" . json_encode($request->all());
-        send_notification($message);
+        Log::info($message);
 
 
         if ($request->username == "Not Found, Pleas try again") {
@@ -696,7 +696,7 @@ class VerifyController extends Controller
                 $date = date('d M Y H:i:s');
                 $message = $account_no . " | NGN  $amt | $request->email  | $site_name | $date | has been funded";
                 //Log::info('User Funded', ['message' => $message]);
-                send_notification($message);
+                Log::info($message);
 
                 $data['trans'] = $request->sessionid;
                 $data['recepit'] = "payment";
@@ -720,7 +720,7 @@ class VerifyController extends Controller
 //    public function reslove_wema(request $request)
 //    {
 //        $message = "Charm Wema Resolve Request ==>>>>" . json_encode($request->all());
-//        send_notification($message);
+//        Log::info($message);
 //
 ////        if ($request->username == "Not Found, Pleas try again") {
 ////            return back()->with('error', 'Email is invalid, please try again');
@@ -874,7 +874,7 @@ class VerifyController extends Controller
 ////
 ////                $date = date('d M Y H:i:s');
 ////                $message = $request->account_no . " | NGN  $amount | $email  | $site_name | $date | has been funded";
-////                send_notification($message);
+////                Log::info($message);
 ////
 ////
 ////                $type = "wresolve";
@@ -1110,7 +1110,7 @@ class VerifyController extends Controller
 
                 $date = date('d M Y H:i:s');
                 $message = $acct_no . " | NGN  $amt | $request->email  | $site_name | $date | has been funded";
-                send_notification($message);
+                Log::info($message);
 
 
                 $type = "wresolve";

@@ -40,6 +40,6 @@ class SendCron extends Command
             ->delete();
 
         //$message = "Web Transfer Records updated";
-        //send_notification($message);
+        //Log::info($message);
     }
 }

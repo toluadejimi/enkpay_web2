@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class AirtimeController extends Controller
@@ -289,7 +290,7 @@ class AirtimeController extends Controller
                 if (Auth::user()->status != 2) {
 
                     $message = Auth::user()->first_name. " ".Auth::user()->last_name. " | Unverified Account trying to buy airtime";
-                    send_notification($message);
+                    Log::info($message);
 
                     return response()->json([
                         'status' => $this->failed,
@@ -453,7 +454,6 @@ class AirtimeController extends Controller
                     $transaction->status = 1;
                     $transaction->amount = $amount;
                     $transaction->main_type = "vtpass";
-                    $transaction->main_type = "enkpay_vas";
                     $transaction->note = "Airtime Purchase to $phone";
                     //$trasnaction->title = $title;
                     $transaction->save();
@@ -475,7 +475,7 @@ class AirtimeController extends Controller
 
                 }
 
-                send_notification($message);
+                Log::info($message);
                 User::where('id', Auth::id())->increment('main_wallet', $amount);
 
                 return response()->json([

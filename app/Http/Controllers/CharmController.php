@@ -21,7 +21,7 @@ class CharmController extends Controller
 
 
         $message = "wema Webhook=======>" . json_encode($request->all());
-        send_notification($message);
+        Log::info($message);
 
 
         $webh = Webhook::where('account_no', $request->customer['account']['virtualAccountNumber'])->first() ?? null;
@@ -76,7 +76,7 @@ class CharmController extends Controller
             $trasnaction->save();
 
             $message = "Transfer Payment Initiated |" . $request->ref . "| ON CHARM " . "For " . $usr->last_name . " | " . " $request->accountNo " . number_format($trx->payable_amount, 2);
-            send_notification($message);
+            Log::info($message);
 
             return response()->json([
                 'status' => true,

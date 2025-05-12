@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Webkey;
 use App\Models\Webtransfer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ProcessissuesController extends Controller
 {
@@ -70,7 +71,7 @@ class ProcessissuesController extends Controller
             $trasnaction->status = 1;
             $trasnaction->save();
             $message = "Business funded | Direct resolve for | $user_email | $p_amount | $user->first_name " . " " . $user->last_name;
-            send_notification($message);
+            Log::info($message);
 
 
             $type ="epayment";
@@ -124,7 +125,7 @@ class ProcessissuesController extends Controller
             $trasnaction->status = 1;
             $trasnaction->save();
             $message = "Business funded | Direct resolve for | $user_email | $p_amount | $user->first_name " . " " . $user->last_name;
-            send_notification($message);
+            Log::info($message);
 
 
 
@@ -208,7 +209,7 @@ class ProcessissuesController extends Controller
             $trasnaction->status = 1;
             $trasnaction->save();
             $message = "Business funded | Direct resolve for | $account_no | $user_email | $p_amount | $user->first_name " . " " . $user->last_name;
-            send_notification($message);
+            Log::info($message);
 
 
             $type ="epayment";

@@ -386,7 +386,7 @@ class VirtualaccountController extends Controller
 
 
                     $message = "Your Pool account has been credited |  $message_amount | from VFD Virtual account";
-                    send_notification($message);
+                    Log::info($message);
 
 
                     $get_web_transfer = Webtransfer::where('v_account_no', $VirtualCustomerAccount)
@@ -703,7 +703,7 @@ class VirtualaccountController extends Controller
 
                 $message = "Your Pool account has been credited |  $transactionAmount | from PROVIDUS Virtual account";
 
-                send_notification($message);
+                Log::info($message);
 
                 //send to user
 

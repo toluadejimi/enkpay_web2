@@ -6,6 +6,7 @@ use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class CableController extends Controller
@@ -156,7 +157,7 @@ class CableController extends Controller
             if (Auth::user()->status != 2) {
 
                 $message = Auth::user()->first_name. " ".Auth::user()->last_name. " | Unverified Account trying to buy airtime";
-                send_notification($message);
+                Log::info($message);
 
                 return response()->json([
                     'status' => false,

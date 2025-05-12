@@ -18,7 +18,7 @@ class DDoSProtectionMiddleware
 
         if (Cache::has($blockKey)) {
             $message = "IP >>>>>> | $ip | Too many requests. You are temporarily blocked";
-            send_notification($message);
+            Log::info($message);
             return response('Too many requests. You are temporarily blocked.', 429);
         }
 
@@ -33,7 +33,7 @@ class DDoSProtectionMiddleware
             Cache::forget($cacheKey); // Reset request count
 
             $message = "IP >>>>>> | $ip | Too many requests. You are temporarily blocked";
-            send_notification($message);
+            Log::info($message);
 
             return response('Too many requests. You are temporarily blocked.', 429);
         }
