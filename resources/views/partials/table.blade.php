@@ -29,7 +29,7 @@
                         }
                     </script>
 
-                    <a href="repush?id={{$item->id}}&agent=1" onclick="return confirmrepush3();" class="btn btn-primary">Push / Agent </a>
+                    <a href="repush?id={{$item->id}}&agent=1" onclick="return confirmrepush3();" class="btn btn-primary">Agent </a>
                     <script>
                         function confirmrepush3() {
                             return confirm('Are you sure you want to Push with Agent');
