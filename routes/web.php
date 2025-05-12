@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CableController;
 use App\Http\Controllers\CharmController;
+use App\Http\Controllers\LogController;
 use App\Http\Controllers\PalmpayController;
 use App\Http\Controllers\PaymentNotificationController;
 use App\Http\Controllers\ProcessissuesController;
