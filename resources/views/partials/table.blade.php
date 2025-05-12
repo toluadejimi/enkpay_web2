@@ -6,6 +6,7 @@
         <th>Email</th>
         <th>Amount</th>
         <th>Amount to Pay</th>
+        <th>Amount Paid</th>
         <th>Bank</th>
         <th>Acct no</th>
         <th>Date</th>
@@ -19,6 +20,7 @@
             <td>{{$item->email}}</td>
             <td>{{number_format($item->amount, 2)}}</td>
             <td>{{number_format($item->amount_to_pay, 2)}}</td>
+            <td>{{number_format($item->amount_paid, 2)}}</td>
             <td>{{$item->bank}}</td>
             <td>{{$item->account_no}}</td>
             <td>{{$item->created_at}}</td>
@@ -50,6 +52,25 @@
                     <a href="#" style="width: 100%" class="btn btn-success">User Funded</a>
                 @elseif($item->status == 5)
                     <a href="#" class="btn btn-danger">Processing</a>
+
+                @elseif($item->status == 8)
+                    <span class="btn btn-warning">Partial Payment</span>
+
+                    <a style="margin: 2px" href="repush?id={{$item->id}}" onclick="return confirmrepush2();" class="btn btn-success">Push </a>
+                    <script>
+                        function confirmrepush2() {
+                            return confirm('Are you sure you want to Push');
+                        }
+                    </script>
+
+                    <a href="repush?id={{$item->id}}&agent=1" onclick="return confirmrepush3();" class="btn btn-primary">Agent </a>
+                    <script>
+                        function confirmrepush3() {
+                            return confirm('Are you sure you want to Push with Agent');
+                        }
+                    </script>
+
+
                 @else
                     <a href="#" class="btn btn-success">Completed</a>
                 @endif

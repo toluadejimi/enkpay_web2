@@ -144,12 +144,27 @@ class PalmpayController extends Controller
 
 
             if ($trx == null) {
-                $message = "Paypoint funding error =>>>>> $acc_no | $user_amount  not found on transaction";
-               Log::info($message);
-                return response()->json([
-                    'status' => false,
-                    'message' => "Account Not found in our database",
-                ]);
+
+               $incmplete = Transfertransaction::where([
+                    'account_no' => $acc_no,
+                    'status' => 0
+                ])->update(['amount_paid' => $payable, 'status' => 8]) ?? null;
+               if($incmplete){
+                   return response()->json([
+                       'status' => true,
+                       'message' => "Incomplete Amount",
+                   ], 200);
+               }else{
+
+                   return response()->json([
+                       'status' => false,
+                       'message' => "Not found",
+                   ]);
+
+               }
+
+
+
             }
 
 
@@ -168,7 +183,7 @@ class PalmpayController extends Controller
                             'account_no' => $acc_no,
                             'amount_to_pay' => $amount_to_pay,
                             'status' => 0
-                        ])->first()->update(['session_id' => $session_id, 'status' => 4, 'resolve' => 1]) ?? null;
+                        ])->first()->update(['session_id' => $session_id, 'status' => 4, 'amount_paid' => $payable, 'resolve' => 1]) ?? null;
 
 
                     if ($user_amount > 11000) {
