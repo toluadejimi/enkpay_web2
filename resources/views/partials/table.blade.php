@@ -4,6 +4,7 @@
     <tr>
         <th>Ref</th>
         <th>Email</th>
+        <th>Name</th>
         <th>Amount</th>
         <th>Amount to Pay</th>
         <th>Amount Paid</th>
