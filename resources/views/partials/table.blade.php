@@ -18,6 +18,10 @@
         <tr>
             <td>{{$item->ref}}</td>
             <td>{{$item->email}}</td>
+            <td>
+                @php $site = \App\Models\Webkey::where('key', $item->key)->site_name; @endphp
+                {{$site ?? "name"}}
+            </td>
             <td>{{number_format($item->amount, 2)}}</td>
             <td>{{number_format($item->amount_to_pay, 2)}}</td>
             <td>{{number_format($item->amount_paid, 2)}}</td>
