@@ -22,11 +22,17 @@
             <td>{{$item->created_at}}</td>
             <td>
                 @if($item->status == 0)
-                    <a href="repush?id={{$item->id}}" onclick="return confirmrepush2();" class="btn btn-warning">Pending</a>
-
+                    <a href="repush?id={{$item->id}}" onclick="return confirmrepush2();" class="btn btn-warning">Push </a>
                     <script>
                         function confirmrepush2() {
                             return confirm('Are you sure you want to Push');
+                        }
+                    </script>
+
+                    <a href="repush?id={{$item->id}}&agent=1" onclick="return confirmrepush3();" class="btn btn-primary">Push / Agent </a>
+                    <script>
+                        function confirmrepush3() {
+                            return confirm('Are you sure you want to Push with Agent');
                         }
                     </script>
 

@@ -178,9 +178,11 @@ class ProcessissuesController extends Controller
             }
 
 
-            //User::where('id', $user_id)->increment('main_wallet', $p_amount);
-            $balance = User::where('id', $user_id)->first()->main_wallet;
-            $user = User::where('id', $user_id)->first();
+            if($request->agent == 1){
+                User::where('id', $user_id)->increment('main_wallet', $p_amount);
+            }
+                $balance = User::where('id', $user_id)->first()->main_wallet;
+                $user = User::where('id', $user_id)->first();
 
 
             $url = Webkey::where('key', $key)->first()->url_fund;
@@ -214,7 +216,9 @@ class ProcessissuesController extends Controller
 
             $type ="epayment";
             $session_id = "DRESOLVE";
-            $fund = credit_user_wallet($url, $user_email, $p_amount, $order_id, $type, $session_id);
+
+
+            $fund = credit_user_wallet($url, $user_email, $p_amount, $order_id, $type, $session_id, $account_no);
 
             Transfertransaction::where('id', $request->id)->update(['status' => 4]);
 

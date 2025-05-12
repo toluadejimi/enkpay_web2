@@ -115,7 +115,7 @@
                 fetch(`{{ url('/payment-search') }}?query=${query}&page=${page}`)
                     .then(response => response.text())
                     .then(html => {
-                        console.log('HTML Response:', html); // Check if this contains the expected content
+                        console.log('HTML Response:', html);
                         if (tableContainer) {
                             tableContainer.innerHTML = html;
                         }
