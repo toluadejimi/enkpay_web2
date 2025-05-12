@@ -20,7 +20,7 @@ class LogController extends Controller
             $logs = collect(['No log file found.']);
         }
 
-        return view('logs.index', compact('logs'));
+        return view('logs.show', compact('logs'));
     }
 
     // Method to search logs
