@@ -45,7 +45,7 @@
                         }
                     </script>
                 @elseif($item->status == 4)
-                    <a href="#" class="btn btn-success">User Funded</a>
+                    <a href="#" style="width: 100%" class="btn btn-success">User Funded</a>
                 @elseif($item->status == 5)
                     <a href="#" class="btn btn-danger">Processing</a>
                 @else
