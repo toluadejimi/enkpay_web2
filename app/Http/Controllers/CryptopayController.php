@@ -11,6 +11,7 @@ use App\Models\Webkey;
 use App\Models\Webtransfer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class CryptopayController extends Controller
 {
@@ -176,7 +177,7 @@ class CryptopayController extends Controller
 
 
                     $message = "Business funded  | $ref | $l_amount | $user->first_name " . " " . $user->last_name . " | for $user_email";
-                    send_notification($message);
+                   Log::info($message);
 
                     Webtransfer::where('trans_id', $trx->trans_id)->update(['status' => 4]);
 
@@ -210,7 +211,7 @@ class CryptopayController extends Controller
     {
 
         $message = "Crypto =====>>>" . json_encode($request->all());
-        send_notification($message);
+       Log::info($message);
 
     }
 

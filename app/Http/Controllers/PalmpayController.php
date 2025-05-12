@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\Webkey;
 use App\Models\Webtransfer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class PalmpayController extends Controller
 {
@@ -105,7 +106,7 @@ class PalmpayController extends Controller
 
         $ip = $request->ip();
         $message = $ip . "Paypoint Webhook====>" . json_encode($request->all());
-        send_notification($message);
+       Log::info($message);
 
 
 
@@ -144,7 +145,7 @@ class PalmpayController extends Controller
 
             if ($trx == null) {
                 $message = "Paypoint funding error =>>>>> $acc_no | $user_amount  not found on transaction";
-                send_notification($message);
+               Log::info($message);
                 return response()->json([
                     'status' => false,
                     'message' => "Account Not found in our database",
@@ -220,7 +221,7 @@ class PalmpayController extends Controller
                     $trasnaction->save();
 
                     $message = "Business funded  | $request->nuban | $l_amount | $user->first_name " . " " . $user->last_name . " | for $user_email";
-                    send_notification($message);
+                    Log::info($message);
 
                     Webtransfer::where('trans_id', $trx->trans_id)->update(['status' => 4]);
                     Transfertransaction::where('account_no', $acc_no)->update(['status' => 4, 'resolve' => 1]);
