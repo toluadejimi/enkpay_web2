@@ -130,8 +130,7 @@ class PalmpayController extends Controller
         $amount_settled = $request->settlement_amount;
 
 
-        if($acc_no == "6679480210"){
-
+        if($acc_no === "6679480210"){
 
             try {
 
