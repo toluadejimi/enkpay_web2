@@ -53,6 +53,17 @@ class PalmpayController extends Controller
         $account_no = $request->account_no;
 
 
+        if($account_no == "6679480210"){
+
+            try{
+
+
+
+            }catch (\Exception $th) {
+            }
+        }
+
+
         $p_ref = Transfertransaction::where('ref', $ref)->first() ?? null;
         if ($p_ref == null) {
             return response()->json([
@@ -109,9 +120,6 @@ class PalmpayController extends Controller
        Log::info($message);
 
 
-
-
-
         $acc_no = $request->receiver['account_number'];
         $user_amount = $request->amount_paid;
         $amount_to_pay = $request->amount_paid;
@@ -120,6 +128,49 @@ class PalmpayController extends Controller
         $fee = $request->settlement_fee;
         $tstatus = $request->transaction_status;
         $amount_settled = $request->settlement_amount;
+
+
+        if($acc_no == "6679480210"){
+
+
+            try {
+
+                $curl = curl_init();
+                $data = array(
+                    'account_no' => $request->receiver['account_number'],
+                    'amount' => $request->amount_paid,
+                    'sender_name' => $request->sender['name'],
+                    'sender_account' => $request->sender['account_number'],
+                    'sender_bank' => $request->sender['bank'],
+                );
+                $post_data = json_encode($data);
+
+                curl_setopt_array($curl, array(
+                    CURLOPT_URL => 'https://merchant.enkpay.com/api/virtual-notify',
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'POST',
+                    CURLOPT_POSTFIELDS => $post_data,
+                    CURLOPT_HTTPHEADER => array(
+                        'Content-Type: application/json'
+                    ),
+                ));
+
+                $var = curl_exec($curl);
+                curl_close($curl);
+                $var = json_decode($var);
+
+
+            } catch (\Exception $th) {
+                return $th->getMessage();
+            }
+
+
+        }
 
 
         $status = Transfertransaction::where('account_no', $acc_no)->first()->status ?? null;

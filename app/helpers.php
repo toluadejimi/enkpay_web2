@@ -3832,9 +3832,6 @@ if (!function_exists('verifypelpayreslove')) {
 function paypoint_create($email, $name, $phone)
 {
 
-
-
-
     $get_account = PalmpayAccount::where('email', $email)->first() ?? null;
     if($get_account != null){
             $data['account_no'] = $get_account->account_no;
