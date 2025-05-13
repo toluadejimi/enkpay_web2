@@ -145,7 +145,7 @@ class PalmpayController extends Controller
                 $post_data = json_encode($data);
 
                 curl_setopt_array($curl, array(
-                    CURLOPT_URL => 'https://merchant.enkpay.com/api/virtual-notify',
+                    CURLOPT_URL => 'https://merchant.enkpay.com/api/v1/virtual-notify',
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_ENCODING => '',
                     CURLOPT_MAXREDIRS => 10,
