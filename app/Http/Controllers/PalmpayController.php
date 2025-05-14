@@ -160,12 +160,12 @@ class PalmpayController extends Controller
                 ));
 
                 $var = curl_exec($curl);
-                $message = "push trx===>".json_encode($var);
-                Log::info($message);
-
                 curl_close($curl);
                 $var = json_decode($var);
 
+
+                $message = "push trx===>".json_encode($var);
+                Log::info($message);
 
 
 
