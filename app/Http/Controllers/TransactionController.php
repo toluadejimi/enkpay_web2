@@ -1614,8 +1614,11 @@ class TransactionController extends Controller
                         $data['back_url'] =$burl."?status=failed&ref=".$request->ref ?? null;
 
 
+
                         $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount . "| ".$request->email;
-                       Log::info($message);
+                        Log::info($message);
+
+
 
                         return response()->json([
                             'account_no' => $woven_details['account_no'],
