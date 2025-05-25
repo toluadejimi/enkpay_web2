@@ -687,11 +687,18 @@ class TransactionController extends Controller
 
 
     public
-    function webpay_view(Request $request)
+    function webpay_view_pay(Request $request)
     {
 
 
+        $data['data'] = $request->all();
+        return view('pay', $data);
 
+    }
+
+    public
+    function webpay_view(Request $request)
+    {
 
         if ($request->key == null) {
             abort(Response::HTTP_LOCKED, 'Yo take it easy');

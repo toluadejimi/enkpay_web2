@@ -166,7 +166,8 @@ Route::post('change-support', [VerifyController::class, 'change_support']);
 
 
 
-Route::get('pay', [TransactionController::class, 'webpay_view']);
+Route::get('pay', [TransactionController::class, 'webpay_view_pay']);
+Route::get('paynow', [TransactionController::class, 'webpay_view']);
 
 
 Route::get('invalid', [TransactionController::class, 'invalid']);
