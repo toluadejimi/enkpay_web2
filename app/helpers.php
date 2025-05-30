@@ -226,15 +226,16 @@ if (!function_exists('send_notification_resolve')) {
 
 
 
-if (!function_exists('send_notification2')) {
+if (!function_exists('send_notification')) {
 
-    function send_notification2($message)
+    function send_notification($message)
     {
 
+        $token = env('BOTURL');
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://api.telegram.org/bot7367843064:AAEyN0r9i95tUWjb1itYpijCf7TL_1CxMFM/sendMessage?chat_id=6511481215',
+            CURLOPT_URL =>  $token,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -243,10 +244,8 @@ if (!function_exists('send_notification2')) {
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'POST',
             CURLOPT_POSTFIELDS => array(
-                'chat_id' => "6511481215",
+                'chat_id' => env('BOTID'),
                 'text' => $message,
-
-
             ),
             CURLOPT_HTTPHEADER => array(),
         ));
@@ -2803,7 +2802,9 @@ if (!function_exists('verifypelpay')) {
             $bank_name = "VFD";
         } elseif ($code == "000017") {
             $bank_name = "WEMA";
-        } else {
+        }  elseif ($code == "000027") {
+            $bank_name = "GLOBUS BANK";
+        }else {
             $bank_name = "CORONATION MERVHANT BANK";
         }
 
@@ -2835,11 +2836,12 @@ if (!function_exists('verifypelpay')) {
             ),
         ));
 
-        $var = curl_exec($curl);
+        $var2 = curl_exec($curl);
         curl_close($curl);
-        $var = json_decode($var);
+        $var = json_decode($var2);
         $message = $var->message ?? null;
         $status = $var->message ?? null;
+
 
 
         if ($message == "The process was completed successfully") {
@@ -2878,10 +2880,9 @@ if (!function_exists('verifypelpay')) {
                 ),
             ));
 
-            $var = curl_exec($curl);
-
+            $var2 = curl_exec($curl);
             curl_close($curl);
-            $var = json_decode($var);
+            $var = json_decode($var2);
             $message = $var->message ?? null;
             $status = $var->message ?? null;
 
@@ -2893,14 +2894,18 @@ if (!function_exists('verifypelpay')) {
                 return $data;
             }
 
-            $message = json_encode($var);
-            Log::info($message);
+
+            $message = "Woven Error======>". json_encode($var2);
+            Log::error($message);
+            send_notification($message);
 
 
         }
 
-        $message = json_encode($var);
-        Log::info($message);
+        $message = "Woven Error======>". json_encode($var2);
+        Log::error($message);
+        send_notification($message);
+
 
 
     }

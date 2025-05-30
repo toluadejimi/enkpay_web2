@@ -700,6 +700,9 @@ class TransactionController extends Controller
     function webpay_view(Request $request)
     {
 
+
+
+
         if ($request->key == null) {
             abort(Response::HTTP_LOCKED, 'Yo take it easy');
         }
@@ -1234,54 +1237,6 @@ class TransactionController extends Controller
 
         $set = Setting::where('id', 1)->first();
 
-        if ($set->pay_by_card == 1) {
-            $faker = Factory::create();
-            $data['amount'] = $request->amount;
-            $amtt = $request->amount;
-            $first_name = User::inRandomOrder()->first()->first_name;
-            $last_name = User::inRandomOrder()->first()->last_name;
-            $tremail = $faker->email;
-            $userId = Str::random(4); //$request->user_id;
-            $data['trans_id'] = $data['iref'];
-            $data['ref'] = trx();
-            $pkey = $data['key'];
-            $pre = pre_pay($amtt, $first_name, $last_name, $tremail, $ref, $userId, $txid, $keyrr);
-            $adviceReference = $pre['adviceReference'] ?? null;
-            $data['pre_link'] = $pre['paymentUrl'] ?? null;
-
-
-        } else {
-            $data['pre_link'] = "#";
-        }
-
-
-
-
-        if ($set->charm == 1) {
-
-            $faker = Factory::create();
-            if ($request->amount > 15000) {
-                $data['pamount'] = $request->amount + 300;
-            } else {
-                $data['pamount'] = $request->amount + 100;
-            }
-
-            $first_name = User::inRandomOrder()->first()->first_name;
-            $last_name = User::inRandomOrder()->first()->last_name;
-            $tremail = $faker->email;
-            $userId = Str::random(4); //$request->user_id;
-            $data['trans_id'] = $data['iref'];
-            $data['ref'] = $data['iref'];
-            $ref = $data['iref'] . date('his');
-            $pkey = $data['key'];
-            $amtt = $data['pamount'];
-            $pre = pre_pay($amtt, $first_name, $last_name, $tremail, $ref, $userId, $txid, $keyrr);
-            $data['payment_ref'] = $pre['adviceReference'] ?? null;
-        } else {
-            $data['pre_link'] = "#";
-            $data['payment_ref'] = null;
-            $data['pamount'] = $request->amount;
-        }
 
 
         $data['opay_acct'] = ManualAccount::where('status', 1)->where('type', "opay")->first() ?? null;
@@ -1847,6 +1802,9 @@ class TransactionController extends Controller
         if ($set->woven == 1) {
 
 
+
+
+
             $set = Setting::where('id', 1)->first();
             if ($set->woven == 1) {
                 $faker = Factory::create();
@@ -1862,8 +1820,13 @@ class TransactionController extends Controller
                     $amtt = $request->amount + 100;
                 }
 
+
+
+
                 $code = Setting::where('id', 1)->first()->woven_collective_code;
                 $woven_details = woven_create($amtt, $code, $last_name, $tremail, $phone) ?? null;
+
+
 
                 $amount_to_pay = $amtt;
 
@@ -1901,16 +1864,14 @@ class TransactionController extends Controller
                     $trasnaction->save();
 
 
-                    try{
 
-                        $ngnAmount = $request->amount;
+
+                    $ngnAmount = $request->amount;
                         $rate = Setting::where('id', 1)->first()->usd_rate;
                         $usdtAmount = round($ngnAmount / $rate, 4);
                         $data['usdtAmount'] = $usdtAmount;
 
-                    }catch (\Exception $th) {
 
-                    }
 
 
 
@@ -1929,6 +1890,7 @@ class TransactionController extends Controller
                     $data['marchant_url'] = Webkey::where('key', $request->key)->first()->url ?? null;
                     $data['recepit'] = "https://web.enkpay.com/receipt?trans_id=$trans_id&amount=$ngnAmount";
                     $data['set'] = Setting::where('id', 1)->first();
+                    $data['web_transfer'] = 1;
 
 
                     $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount . "| ".$request->email;
@@ -1941,6 +1903,14 @@ class TransactionController extends Controller
 
 
                 }
+
+
+                $ngnAmount = $request->amount;
+                $rate = Setting::where('id', 1)->first()->usd_rate;
+                $usdtAmount = round($ngnAmount / $rate, 4);
+                $data['usdtAmount'] = $usdtAmount;
+                $data['set'] = Setting::where('id', 1)->first();
+                $data['web_transfer'] = 0;
 
 
                 $data['account_no'] = "Try again later";

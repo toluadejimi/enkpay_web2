@@ -97,7 +97,7 @@
                 <p style="font-size: 11px" class="instructions">To complete your payment, please select one of the options below that works best for you
                 </p>
                 <div id="paymentMethodsSection" class="currency-grid">
-                    @if($set->web_transfer == 1)
+                    @if($web_transfer == 1)
                         <a style="color: #596dfc" class="currency-link" href="#" onclick="loadContent('bank')">
                             <div class="currency-item bank">
                                 <svg width="34" height="31" viewBox="0 0 34 31" fill="none" xmlns="http://www.w3.org/2000/svg">
