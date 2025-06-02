@@ -28,24 +28,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
 
-        // $schedule->command('app:auto-birth-day-wish')
-        // ->dailyAt('12:00');
-
-
-        $schedule->command('send:cron')
-            ->everyFiveMinutes();
-
-
         $schedule->command('account:send-creations')->everyFiveMinutes();
-
-
-//        $schedule->command('app:solve-credit')
-//            ->dailyAt('5:00');
-//
-//        $schedule->command('send:endmonth')
-//            ->monthlyOn(1, '00:00');
-
-
 
     }
 
