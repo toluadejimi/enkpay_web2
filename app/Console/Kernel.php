@@ -28,7 +28,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
 
-        $schedule->command('account:send-creations')->everyFiveMinutes();
+        $schedule->command('account:send-creations')->cron('*/25 * * * *');
 
     }
 
