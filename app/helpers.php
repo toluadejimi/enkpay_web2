@@ -2677,7 +2677,7 @@ if (!function_exists('verifypelpay')) {
 
                 }else{
 
-                    $message = "Woven Error======>" . json_encode($var2);
+                    $message = "Woven Error======>" . json_encode($var2)."\n\n".$post_data;
                     Log::error($message);
                     send_notification($message);
 
