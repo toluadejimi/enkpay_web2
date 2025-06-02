@@ -155,6 +155,8 @@ class WovenController extends Controller
             $globus = GlobusAccount::where('account_no', $acc_no)->first() ?? null;
             if($globus){
 
+                $user_id = Webkey::where('key', $globus->m_key)->first()->url;
+
 
                 $set = Setting::where('id', 1)->first();
                 if ($user_amount > 11000) {
@@ -171,7 +173,7 @@ class WovenController extends Controller
                 }
 
 
-                if($trx->user_id == 293677){
+                if($user_id == 293677){
 
                     if ($user_amount > 11000) {
                         $l_amount = $p_amount + 150;
@@ -183,7 +185,6 @@ class WovenController extends Controller
                 }
 
 
-                $user_id = Webkey::where('key', $globus->m_key)->first()->url;
 
                 User::where('id', $user_id)->increment('main_wallet', $l_amount);
                 $balance = User::where('id', $user_id)->first()->main_wallet;
