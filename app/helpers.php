@@ -226,7 +226,6 @@ if (!function_exists('send_notification_resolve')) {
 }
 
 
-
 if (!function_exists('send_notification')) {
 
     function send_notification($message)
@@ -236,7 +235,7 @@ if (!function_exists('send_notification')) {
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-            CURLOPT_URL =>  $token,
+            CURLOPT_URL => $token,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -1273,7 +1272,6 @@ if (!function_exists('resolve_bank')) {
         if ($set->bank == 'woven') {
 
 
-
             $api = env('WOVENKEY');
 
             $databody = array(
@@ -1283,7 +1281,6 @@ if (!function_exists('resolve_bank')) {
 
             $body = json_encode($databody);
             $curl = curl_init();
-
 
 
             curl_setopt_array($curl, array(
@@ -1738,8 +1735,6 @@ if (!function_exists('tokenkey')) {
 }
 
 
-
-
 function verifypsbtelegram($accountNo)
 {
 
@@ -1747,12 +1742,9 @@ function verifypsbtelegram($accountNo)
 
 
         $ckt = Transactioncheck::where('account_no', $accountNo)->first() ?? null;
-        if($ckt != null){
+        if ($ckt != null) {
             return ['code' => 4];
         }
-
-
-
 
 
         $ckstatus = Transfertransaction::where('account_no', $accountNo)->first()->status ?? null;
@@ -1765,7 +1757,6 @@ function verifypsbtelegram($accountNo)
 //            ];
 //
 //        }
-
 
 
         if ($ckstatus == "4" || $ckstatus == 4) {
@@ -2537,8 +2528,6 @@ if (!function_exists('verifypelpay')) {
             ));
 
 
-
-
             $var = curl_exec($curl);
 
             curl_close($curl);
@@ -2569,7 +2558,7 @@ if (!function_exists('verifypelpay')) {
 
                 }
 
-                $message = "CREDIT DATA =======>>>>>>> ". json_encode($databody) ."URL ===>>>>>".$url;
+                $message = "CREDIT DATA =======>>>>>>> " . json_encode($databody) . "URL ===>>>>>" . $url;
                 Log::info($message);
 
                 return 2;
@@ -2590,7 +2579,7 @@ if (!function_exists('verifypelpay')) {
                     $error = curl_error($curl);
                     $message = "Error Reslove WOVEN ======>  $url | $user_email | $amount | $order_id" .
                         "\n\n Funding user Error ===>" . json_encode($var);
-                        "\n\n Funding user Error ===>" . json_encode($error);
+                    "\n\n Funding user Error ===>" . json_encode($error);
                     send_notification_resolve($message);
 
                 }
@@ -2611,25 +2600,20 @@ if (!function_exists('verifypelpay')) {
     {
 
 
-
-
-
         if ($code == "090110") {
             $bank_name = "VFD";
         } elseif ($code == "000017") {
             $bank_name = "WEMA";
-        }  elseif ($code == "000027") {
+        } elseif ($code == "000027") {
 
 
-
-           $ck_account = GlobusAccount::where('email', $tremail)->where('m_key', $m_key)->first() ?? null;
-           if($ck_account != null){
-               $data['account_no'] = $ck_account->account_no;
-               $data['bank_name'] = $ck_account->bank_name;
-               $data['account_name'] = $ck_account->account_name;
-               return $data;
-           }
-
+            $ck_account = GlobusAccount::where('email', $tremail)->where('m_key', $m_key)->first() ?? null;
+            if ($ck_account != null) {
+                $data['account_no'] = $ck_account->account_no;
+                $data['bank_name'] = $ck_account->bank_name;
+                $data['account_name'] = $ck_account->account_name;
+                return $data;
+            }
 
 
             $bank_name = "GLOBUS BANK";
@@ -2639,6 +2623,7 @@ if (!function_exists('verifypelpay')) {
             $databody = array(
                 "email" => $tremail,
                 "name" => "PAYMENTSTAND",
+                "customer_reference" => $m_key,
             );
 
 
@@ -2668,16 +2653,9 @@ if (!function_exists('verifypelpay')) {
             $message = $var->message ?? null;
             $status = $var->message ?? null;
 
-            if($var == null){
-                $data['account_no'] = "Try_Again";
-                $data['bank_name'] = "Try_Again";
-                $data['account_name'] = "Try_Again";
-                return $data;
-
-            }else{
+            if ($var2 != false && $message == "The process was completed successfully") {
 
                 $fund_url = Webkey::where('key', $m_key)->first()->url_fund;
-
                 $acc = new GlobusAccount();
                 $acc->email = $tremail;
                 $acc->account_no = $var->data->vnuban;
@@ -2687,25 +2665,27 @@ if (!function_exists('verifypelpay')) {
                 $acc->fund_url = $fund_url;
                 $acc->save();
 
-                if ($message == "The process was completed successfully") {
-                    $data['account_no'] = $var->data->vnuban;
-                    $data['bank_name'] = $bank_name;
-                    $data['account_name'] = $var->data->account_name;
-                    return $data;
-                }
+                $data['account_no'] = $var->data->vnuban;
+                $data['bank_name'] = $bank_name;
+                $data['account_name'] = $var->data->account_name;
+                return $data;
+
+            }else{
+
+                $message = "Woven Error======>" . json_encode($var2);
+                Log::error($message);
+                send_notification($message);
+
+                $data['account_no'] = "Try_Again";
+                $data['bank_name'] = "Try_Again";
+                $data['account_name'] = "Try_Again";
+                return $data;
 
 
             }
 
 
-
-            $message = "Woven Error======>". json_encode($var2);
-            Log::error($message);
-            send_notification($message);
-
-
-
-        }else {
+        } else {
             $bank_name = "CORONATION MERVHANT BANK";
         }
 
@@ -2744,79 +2724,30 @@ if (!function_exists('verifypelpay')) {
         $status = $var->message ?? null;
 
 
-        if($var == null){
-            $data['account_no'] = "Try_Again";
-            $data['bank_name'] = "Try_Again";
-            $data['account_name'] = "Try_Again";
-            return $data;
-        }
+        if ($var2 != false && $message === "The process was completed successfully") {
 
-
-        if ($message == "The process was completed successfully") {
             $data['account_no'] = $var->data->vnuban;
             $data['bank_name'] = $bank_name;
             $data['account_name'] = "WOV CHECKOUT";
             return $data;
+
+
         } else {
 
-
-            $bank_name = "WEMA";
-            $key = env('WOVENKEY');
-            $databody = array(
-                "amount" => $amtt,
-                "collection_bank" => "000017",
-                "callback_url" => url('') . "/api/woven/callback",
-
-            );
-
-            $post_data = json_encode($databody);
-            $curl = curl_init();
-
-            curl_setopt_array($curl, array(
-//               CURLOPT_URL => 'https://api.woven.finance/v2/api/nuban/dynamic',
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => $post_data,
-                CURLOPT_HTTPHEADER => array(
-                    'Content-Type: application/json',
-                    "api_secret: $key"
-                ),
-            ));
-
-            $var2 = curl_exec($curl);
-            curl_close($curl);
-            $var = json_decode($var2);
-            $message = $var->message ?? null;
-            $status = $var->message ?? null;
-
-
-            if ($message == "The process was completed successfully") {
-                $data['account_no'] = $var->data->vnuban;
-                $data['bank_name'] = $bank_name;
-                $data['account_name'] = "WOV CHECKOUT";
-                return $data;
-            }
-
-
-            $message = "Woven Error======>". json_encode($var2);
-            Log::error($message);
-            send_notification($message);
+            $data['account_no'] = "Try_Again";
+            $data['bank_name'] = "Try_Again";
+            $data['account_name'] = "Try_Again";
+            return $data;
 
 
         }
 
-        $message = "Woven Error======>". json_encode($var2);
-        Log::error($message);
-        send_notification($message);
 
 
 
     }
+
+
 }
 
 
@@ -3122,12 +3053,10 @@ if (!function_exists('verifypelpayreslove')) {
         {
 
 
-
             $ckt = Transactioncheck::where('account_no', $title)->first() ?? null;
-            if($ckt != null){
+            if ($ckt != null) {
                 return ['code' => 4];
             }
-
 
 
             $st = Transfertransaction::where('account_no', $title)->first()->status ?? null;
@@ -3155,7 +3084,6 @@ if (!function_exists('verifypelpayreslove')) {
                 curl_close($curl);
                 $var = json_decode($var2);
                 $status = $var->status ?? null;
-
 
 
                 $pstatus = $var->data->transactions[0]->status ?? null;
@@ -3740,17 +3668,15 @@ if (!function_exists('verifypelpayreslove')) {
 }
 
 
-
-
 function paypoint_create($email, $name, $phone)
 {
 
     $get_account = PalmpayAccount::where('email', $email)->first() ?? null;
-    if($get_account != null){
-            $data['account_no'] = $get_account->account_no;
-            $data['bank_name'] = $get_account->bank_name;
-            $data['account_name'] = $get_account->account_name;
-            return $data;
+    if ($get_account != null) {
+        $data['account_no'] = $get_account->account_no;
+        $data['bank_name'] = $get_account->bank_name;
+        $data['account_name'] = $get_account->account_name;
+        return $data;
     }
 
     $key = env('PALMPAYKEY');
