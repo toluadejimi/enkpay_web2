@@ -30,7 +30,7 @@ class WovenController extends Controller
             $data['pamount'] = $request->amount;
             $first_name = User::inRandomOrder()->first()->first_name;
             $last_name = User::inRandomOrder()->first()->last_name;
-            $tremail = $faker->email;
+            $tremail = $request->email;
             $phone = User::inRandomOrder()->first()->phone;
             $amtt = $data['pamount'];
             $code = Setting::where('id', 1)->first()->woven_collective_code;

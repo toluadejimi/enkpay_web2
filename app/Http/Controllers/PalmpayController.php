@@ -117,7 +117,7 @@ class PalmpayController extends Controller
 
         $ip = $request->ip();
         $message = $ip . "Paypoint Webhook====>" . json_encode($request->all());
-       Log::info($message);
+        Log::info($message);
 
 
         $acc_no = $request->receiver['account_number'];
@@ -174,7 +174,6 @@ class PalmpayController extends Controller
                 return $th->getMessage();
             }
 
-
         }
 
 
@@ -189,8 +188,6 @@ class PalmpayController extends Controller
         }
 
 
-        if ($tstatus == "success") {
-
 
             $trx = Transfertransaction::where([
                 'account_no' => $acc_no,
@@ -199,25 +196,31 @@ class PalmpayController extends Controller
             ])->first() ?? null;
 
 
-            if ($trx == null) {
+            if($trx == null) {
 
-               $incmplete = Transfertransaction::where([
+                $incmplete = Transfertransaction::where([
                     'account_no' => $acc_no,
                     'status' => 0
                 ])->update(['amount_paid' => $payable, 'status' => 8]) ?? null;
-               if($incmplete){
-                   return response()->json([
-                       'status' => true,
-                       'message' => "Incomplete Amount",
-                   ], 200);
-               }else{
 
-                   return response()->json([
-                       'status' => false,
-                       'message' => "Not found",
-                   ]);
+                if($incmplete){
+                    return response()->json([
+                        'status' => true,
+                        'message' => "Incomplete Amount",
+                    ], 200);
 
-               }
+                }else{
+
+                    $tty = new Transfertransaction();
+                    $tty = new Transfertransaction();
+                    $tty = new Transfertransaction();
+
+                    return response()->json([
+                        'status' => false,
+                        'message' => "Not found",
+                    ]);
+
+                }
 
 
 
@@ -323,7 +326,8 @@ class PalmpayController extends Controller
                 ]);
             }
 
-        }
+
+
 
 
     }

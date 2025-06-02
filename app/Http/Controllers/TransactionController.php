@@ -1811,7 +1811,7 @@ class TransactionController extends Controller
                 $data['pamount'] = $request->amount;
                 $first_name = User::inRandomOrder()->first()->first_name;
                 $last_name = User::inRandomOrder()->first()->last_name;
-                $tremail = $faker->email;
+                $tremail = $request->email;
                 $phone = User::inRandomOrder()->first()->phone;
 
                 if($request->amount > 11000){
