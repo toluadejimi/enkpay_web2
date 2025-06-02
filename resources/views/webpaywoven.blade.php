@@ -45,7 +45,7 @@
         max-width: 400px;
         width: 90%;
         text-align: center;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         font-family: Arial, sans-serif;
     }
 
@@ -69,9 +69,6 @@
 </style>
 
 
-
-
-
 <div class="background">
     <div class="theme-toggle">
         <div class="toggle-circle"></div>
@@ -79,10 +76,13 @@
     <div class="payment-card">
         <div class="card-header">
             Instant Payment
-            <span class="status"><a href="{{ $marchant_url }}?amount={{ $amount }}&trans_id={{ $trans_id }}&status=failure">
+            <span class="status"><a
+                    href="{{ $marchant_url }}?amount={{ $amount }}&trans_id={{ $trans_id }}&status=failure">
         <svg width="20" height="20" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
 <circle cx="9" cy="9" r="9" fill="#FF4F4F"/>
-<path d="M6.529 6.44765L6.57593 6.3895C6.65756 6.30156 6.76579 6.2481 6.88093 6.23882C6.99607 6.22955 7.11048 6.26508 7.20336 6.33896L7.25736 6.3895L9.16664 8.44496L11.0759 6.38881C11.1204 6.33924 11.1736 6.29971 11.2325 6.27253C11.2913 6.24534 11.3546 6.23105 11.4186 6.23049C11.4826 6.22992 11.5461 6.24309 11.6053 6.26923C11.6646 6.29536 11.7184 6.33395 11.7637 6.38272C11.8089 6.4315 11.8447 6.48949 11.8689 6.55331C11.8931 6.61713 11.9053 6.68551 11.9047 6.75445C11.9041 6.8234 11.8908 6.89152 11.8655 6.95486C11.8402 7.01819 11.8034 7.07547 11.7574 7.12334L9.84871 9.1795L11.758 11.2357C11.8396 11.3237 11.8891 11.4403 11.8976 11.5642C11.9061 11.6882 11.873 11.8114 11.8043 11.9113L11.7574 11.9695C11.6757 12.0574 11.5675 12.1109 11.4524 12.1202C11.3372 12.1294 11.2228 12.0939 11.1299 12.02L11.0759 11.9695L9.16664 9.91404L7.25736 11.9702C7.21286 12.0198 7.15964 12.0593 7.1008 12.0865C7.04197 12.1137 6.9787 12.1279 6.91468 12.1285C6.85066 12.1291 6.78718 12.1159 6.72793 12.0898C6.66869 12.0636 6.61488 12.025 6.56963 11.9763C6.52438 11.9275 6.48861 11.8695 6.46439 11.8057C6.44018 11.7419 6.42801 11.6735 6.42859 11.6045C6.42918 11.5356 6.44251 11.4675 6.46781 11.4041C6.4931 11.3408 6.52986 11.2835 6.57593 11.2357L8.48457 9.1795L6.57528 7.12334C6.49373 7.03534 6.4442 6.91874 6.4357 6.79475C6.42721 6.67075 6.46031 6.54759 6.529 6.44765Z" fill="white"/>
+<path
+    d="M6.529 6.44765L6.57593 6.3895C6.65756 6.30156 6.76579 6.2481 6.88093 6.23882C6.99607 6.22955 7.11048 6.26508 7.20336 6.33896L7.25736 6.3895L9.16664 8.44496L11.0759 6.38881C11.1204 6.33924 11.1736 6.29971 11.2325 6.27253C11.2913 6.24534 11.3546 6.23105 11.4186 6.23049C11.4826 6.22992 11.5461 6.24309 11.6053 6.26923C11.6646 6.29536 11.7184 6.33395 11.7637 6.38272C11.8089 6.4315 11.8447 6.48949 11.8689 6.55331C11.8931 6.61713 11.9053 6.68551 11.9047 6.75445C11.9041 6.8234 11.8908 6.89152 11.8655 6.95486C11.8402 7.01819 11.8034 7.07547 11.7574 7.12334L9.84871 9.1795L11.758 11.2357C11.8396 11.3237 11.8891 11.4403 11.8976 11.5642C11.9061 11.6882 11.873 11.8114 11.8043 11.9113L11.7574 11.9695C11.6757 12.0574 11.5675 12.1109 11.4524 12.1202C11.3372 12.1294 11.2228 12.0939 11.1299 12.02L11.0759 11.9695L9.16664 9.91404L7.25736 11.9702C7.21286 12.0198 7.15964 12.0593 7.1008 12.0865C7.04197 12.1137 6.9787 12.1279 6.91468 12.1285C6.85066 12.1291 6.78718 12.1159 6.72793 12.0898C6.66869 12.0636 6.61488 12.025 6.56963 11.9763C6.52438 11.9275 6.48861 11.8695 6.46439 11.8057C6.44018 11.7419 6.42801 11.6735 6.42859 11.6045C6.42918 11.5356 6.44251 11.4675 6.46781 11.4041C6.4931 11.3408 6.52986 11.2835 6.57593 11.2357L8.48457 9.1795L6.57528 7.12334C6.49373 7.03534 6.4442 6.91874 6.4357 6.79475C6.42721 6.67075 6.46031 6.54759 6.529 6.44765Z"
+    fill="white"/>
 </svg>
 
     </a></span>
@@ -94,39 +94,50 @@
         <div class="currency-section">
             <div class="currency-section">
                 <h4>Choose How You’d Like to Pay</h4>
-                <p style="font-size: 11px" class="instructions">To complete your payment, please select one of the options below that works best for you
+                <p style="font-size: 11px" class="instructions">To complete your payment, please select one of the
+                    options below that works best for you
                 </p>
                 <div id="paymentMethodsSection" class="currency-grid">
                     @if($web_transfer == 1)
                         <a style="color: #596dfc" class="currency-link" href="#" onclick="loadContent('bank')">
                             <div class="currency-item bank">
-                                <svg width="34" height="31" viewBox="0 0 34 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <svg width="34" height="31" viewBox="0 0 34 31" fill="none"
+                                     xmlns="http://www.w3.org/2000/svg">
                                     <ellipse cx="17" cy="15.5" rx="17" ry="15.5" fill="#5B65EA"/>
                                     <path fill-rule="evenodd" clip-rule="evenodd"
                                           d="M17.2048 8.52539C16.9689 8.52503 16.7375 8.5895 16.537 8.71149L10.3117 12.7125C9.86925 12.9989 9.73442 13.492 9.90506 13.9128C10.0694 14.3181 10.4844 14.5921 10.9795 14.5921H23.4302C23.9252 14.5921 24.3403 14.3181 24.5046 13.9128C24.6752 13.492 24.5404 12.9989 24.099 12.7135L24.098 12.7125L17.8727 8.71149C17.6721 8.5895 17.4408 8.52503 17.2048 8.52539ZM9.83133 20.7363C9.83133 20.1159 10.4338 19.8172 10.8847 19.8172H10.9426L10.9395 19.7613V16.4416C10.9395 16.3045 10.9949 16.173 11.0937 16.0761C11.1925 15.9792 11.3265 15.9247 11.4661 15.9247H13.2189C13.3586 15.9247 13.4926 15.9792 13.5913 16.0761C13.6901 16.173 13.7456 16.3045 13.7456 16.4416V19.7613L13.7424 19.8172H15.8049L15.8018 19.7613V16.4416C15.8018 16.3045 15.8572 16.173 15.956 16.0761C16.0548 15.9792 16.1887 15.9247 16.3284 15.9247H18.0812C18.1504 15.9247 18.2189 15.9381 18.2828 15.964C18.3467 15.99 18.4047 16.0281 18.4536 16.0761C18.5025 16.1241 18.5413 16.1811 18.5678 16.2438C18.5943 16.3065 18.6079 16.3737 18.6079 16.4416V19.7613L18.6047 19.8172H20.6672L20.664 19.7613V16.4416C20.664 16.3045 20.7195 16.173 20.8183 16.0761C20.9171 15.9792 21.051 15.9247 21.1907 15.9247H22.9435C23.0832 15.9247 23.2172 15.9792 23.3159 16.0761C23.4147 16.173 23.4702 16.3045 23.4702 16.4416V19.7613L23.467 19.8172H23.525C23.9758 19.8172 24.5783 20.1159 24.5783 20.7373V21.9438C24.5783 22.5641 23.9758 22.8629 23.525 22.8629H10.8847C10.4338 22.8629 9.83133 22.5641 9.83133 21.9428V20.7363Z"
                                           fill="white"/>
                                 </svg>
-                                <strong style="text-align: start">Bank Transfer<br/><small>Pay with Bank Transfer</small></strong>
+                                <strong style="text-align: start">Bank Transfer<br/><small>Pay with Bank
+                                        Transfer</small></strong>
                             </div>
                         </a>
                     @endif
                     @if($set->crypto == 1)
-                        <a style="color: #596dfc" class="currency-link" href="#"  onclick="loadContent('usdt')">
+                        <a style="color: #596dfc" class="currency-link" href="#" onclick="loadContent('usdt')">
                             <div class="currency-item bank">
-                                <svg width="34" height="31" viewBox="0 0 34 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <svg width="34" height="31" viewBox="0 0 34 31" fill="none"
+                                     xmlns="http://www.w3.org/2000/svg">
                                     <ellipse cx="17" cy="15.5" rx="17" ry="15.5" fill="#5B65EA"/>
-                                    <path d="M17 24.4L8 15.52L11.433 10H22.567L26 15.52L17 24.4ZM17.9 16.3V15.202C19.52 15.282 21.032 15.598 21.5 16.007C20.956 16.484 19.007 16.831 17 16.831C14.993 16.831 13.044 16.484 12.5 16.007C12.963 15.597 14.48 15.287 16.1 15.197V16.3H17.9ZM12.5 16.003V16.664C12.963 17.074 14.475 17.384 16.1 17.474V19.9H17.9V17.47C19.52 17.389 21.036 17.074 21.5 16.664V15.346C21.036 14.936 19.52 14.621 17.9 14.536V13.6H20.6V12.25H13.4V13.6H16.1V14.536C14.475 14.621 12.963 14.936 12.5 15.346V16.003Z" fill="white"/>
+                                    <path
+                                        d="M17 24.4L8 15.52L11.433 10H22.567L26 15.52L17 24.4ZM17.9 16.3V15.202C19.52 15.282 21.032 15.598 21.5 16.007C20.956 16.484 19.007 16.831 17 16.831C14.993 16.831 13.044 16.484 12.5 16.007C12.963 15.597 14.48 15.287 16.1 15.197V16.3H17.9ZM12.5 16.003V16.664C12.963 17.074 14.475 17.384 16.1 17.474V19.9H17.9V17.47C19.52 17.389 21.036 17.074 21.5 16.664V15.346C21.036 14.936 19.52 14.621 17.9 14.536V13.6H20.6V12.25H13.4V13.6H16.1V14.536C14.475 14.621 12.963 14.936 12.5 15.346V16.003Z"
+                                        fill="white"/>
                                 </svg>
                                 <strong style="text-align: start">USDT<br/><small>Pay with USDT Coins</small></strong>
                             </div>
                         </a>
-                        <a style="color: #596dfc" class="currency-link" href="#"  onclick="loadContent('btc');">
+                        <a style="color: #596dfc" class="currency-link" href="#" onclick="loadContent('btc');">
                             <div class="currency-item bank">
-                                <svg width="34" height="31" viewBox="0 0 29 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <svg width="34" height="31" viewBox="0 0 29 28" fill="none"
+                                     xmlns="http://www.w3.org/2000/svg">
                                     <ellipse cx="14.5" cy="14" rx="14.5" ry="14" fill="#5B65EA"/>
                                     <g clip-path="url(#clip0_6252_3799)">
-                                        <path d="M15 23C19.9706 23 24 18.9706 24 14C24 9.02944 19.9706 5 15 5C10.0294 5 6 9.02944 6 14C6 18.9706 10.0294 23 15 23Z" fill="#F7931A"/>
-                                        <path d="M19.0438 12.8863C19.2204 11.7073 18.3221 11.0733 17.0948 10.6503L17.493 9.05281L16.521 8.81094L16.1329 10.3662C15.8775 10.3021 15.6154 10.2425 15.3538 10.1829L15.7448 8.61744L14.7728 8.375L14.3745 9.97194C14.1626 9.92431 13.9556 9.87556 13.7535 9.82569L13.7546 9.82062L12.4136 9.48594L12.1549 10.5243C12.1549 10.5243 12.8766 10.6897 12.8614 10.6998C13.2551 10.7983 13.326 11.0587 13.3142 11.2657L12.8608 13.0854C12.8882 13.0917 12.9219 13.1024 12.9621 13.1174L12.8591 13.0921L12.2235 15.6414C12.1751 15.7606 12.0531 15.9401 11.7774 15.872C11.7876 15.8861 11.0709 15.6959 11.0709 15.6959L10.5883 16.8086L11.8539 17.1241C12.0891 17.1832 12.3197 17.2451 12.5464 17.303L12.1442 18.9185L13.1156 19.1604L13.5139 17.5629C13.779 17.6341 14.0374 17.7011 14.289 17.7637L13.8919 19.3544L14.8639 19.5963L15.2661 17.9842C16.9243 18.2981 18.1708 18.1715 18.6956 16.6719C19.1186 15.4648 18.6748 14.7678 17.8024 14.3139C18.438 14.1676 18.9161 13.7497 19.0438 12.8863ZM16.8219 16.0014C16.5221 17.2091 14.4887 16.556 13.8294 16.3923L14.3638 14.252C15.0231 14.4168 17.1364 14.7425 16.8219 16.0014ZM17.1229 12.8688C16.8489 13.9674 15.1569 13.4088 14.6085 13.2721L15.0923 11.3315C15.6407 11.4682 17.4086 11.723 17.1229 12.8688Z" fill="white"/>
+                                        <path
+                                            d="M15 23C19.9706 23 24 18.9706 24 14C24 9.02944 19.9706 5 15 5C10.0294 5 6 9.02944 6 14C6 18.9706 10.0294 23 15 23Z"
+                                            fill="#F7931A"/>
+                                        <path
+                                            d="M19.0438 12.8863C19.2204 11.7073 18.3221 11.0733 17.0948 10.6503L17.493 9.05281L16.521 8.81094L16.1329 10.3662C15.8775 10.3021 15.6154 10.2425 15.3538 10.1829L15.7448 8.61744L14.7728 8.375L14.3745 9.97194C14.1626 9.92431 13.9556 9.87556 13.7535 9.82569L13.7546 9.82062L12.4136 9.48594L12.1549 10.5243C12.1549 10.5243 12.8766 10.6897 12.8614 10.6998C13.2551 10.7983 13.326 11.0587 13.3142 11.2657L12.8608 13.0854C12.8882 13.0917 12.9219 13.1024 12.9621 13.1174L12.8591 13.0921L12.2235 15.6414C12.1751 15.7606 12.0531 15.9401 11.7774 15.872C11.7876 15.8861 11.0709 15.6959 11.0709 15.6959L10.5883 16.8086L11.8539 17.1241C12.0891 17.1832 12.3197 17.2451 12.5464 17.303L12.1442 18.9185L13.1156 19.1604L13.5139 17.5629C13.779 17.6341 14.0374 17.7011 14.289 17.7637L13.8919 19.3544L14.8639 19.5963L15.2661 17.9842C16.9243 18.2981 18.1708 18.1715 18.6956 16.6719C19.1186 15.4648 18.6748 14.7678 17.8024 14.3139C18.438 14.1676 18.9161 13.7497 19.0438 12.8863ZM16.8219 16.0014C16.5221 17.2091 14.4887 16.556 13.8294 16.3923L14.3638 14.252C15.0231 14.4168 17.1364 14.7425 16.8219 16.0014ZM17.1229 12.8688C16.8489 13.9674 15.1569 13.4088 14.6085 13.2721L15.0923 11.3315C15.6407 11.4682 17.4086 11.723 17.1229 12.8688Z"
+                                            fill="white"/>
                                     </g>
                                     <defs>
                                         <clipPath id="clip0_6252_3799">
@@ -207,18 +218,28 @@
                 </div>
 
 
+                   @if($bank_name == "GLOBUS BANK")
+
+                <span style="font-size: 10px; color: red">This account number is reusabe you can send funds to it anytime.</span>
+
+                  @else
                 <span style="font-size: 10px; color: red">This account number expires in a day.<br>A wrong transfer may take up to 72hrs
-                  to be refunded.</span>
+            to be refunded.</span>
 
-              <div style="margin: 10px; display: flex; justify-content: center; align-items: center; flex-direction: column;">
+               @endif
 
-                   @if($account_name == "Try again later")
-                <button class="btn btn-secondary w-100" onclick="reloadPage()">Retry Again</button>
-@else
+                <div style="margin: 10px; display: flex; justify-content: center; align-items: center; flex-direction: column;">
+
+            @if($account_name == "Try_Again")
+                <button class="button-10" role="button" onclick="reloadPage()">
+                  Retry Again
+               </button>
+
+            @else
                 <button class="button-10" role="button" id="transferBtn" onclick="initiateTransferCheck()">
                     I have made the transfer
                 </button>
-@endif
+               @endif
 
                 </div>
 
@@ -226,7 +247,7 @@
 
 
 `;
-            }else if (currency === 'usdt') {
+            } else if (currency === 'usdt') {
                 content = `
 
             <a class="go-back" style="margin-bottom: 15px; cursor: pointer; display: flex; align-items: center; color: #596dfc;" href="#" onclick="loadContent('menu')"">
@@ -310,9 +331,7 @@
 
 
                 `;
-            }
-
-            else if (currency === 'btc') {
+            } else if (currency === 'btc') {
                 content = `
 
             <a class="go-back" style="margin-bottom: 15px; cursor: pointer; display: flex; align-items: center; color: #596dfc;" href="#" onclick="loadContent('menu')"">
@@ -349,9 +368,7 @@
 
 
             `;
-            }
-
-            else if (currency === 'usdtton') {
+            } else if (currency === 'usdtton') {
                 content = `
             <a class="go-back" style="margin-bottom: 15px; cursor: pointer; display: flex; align-items: center; color: #596dfc;" href="#" onclick="loadContent('menu')"">
     <svg style="margin-right: 8px;" width="20" height="20" viewBox="0 0 20 20" fill="none"
@@ -473,7 +490,7 @@
                 </div>
 
 `;
-            }else if (currency === 'usdttrx') {
+            } else if (currency === 'usdttrx') {
                 content = `
             <a class="go-back" style="margin-bottom: 15px; cursor: pointer; display: flex; align-items: center; color: #596dfc;" href="#" onclick="loadContent('menu')"">
                 <svg style="margin-right: 8px;" width="20" height="20" viewBox="0 0 20 20" fill="none"
@@ -544,9 +561,7 @@
                 </div>
 
 `;
-            }
-
-            else if (currency === 'getusdtonwalllet') {
+            } else if (currency === 'getusdtonwalllet') {
                 content = `
 
                         <a class="go-back" style="margin-bottom: 15px; cursor: pointer; display: flex; align-items: center; color: #596dfc;" href="#" onclick="loadContent('usdt')"">
@@ -596,9 +611,7 @@
                             </button>
                         </div>
             `;
-            }
-
-            else if (currency === 'getusdtonwalllettrx') {
+            } else if (currency === 'getusdtonwalllettrx') {
                 content = `
 
 <a class="go-back" style="margin-bottom: 15px; cursor: pointer; display: flex; align-items: center; color: #596dfc;" href="#" onclick="loadContent('usdt')"">
@@ -646,9 +659,7 @@
                             </button>
                         </div>
             `;
-            }
-
-            else if (currency === 'getbtcwallet') {
+            } else if (currency === 'getbtcwallet') {
                 content = `
 
 <a class="go-back" style="margin-bottom: 15px; cursor: pointer; display: flex; align-items: center; color: #596dfc;" href="#" onclick="loadContent('menu')"">
@@ -690,9 +701,7 @@
                             </button>
                         </div>
             `;
-            }
-
-            else if (currency === 'timeout') {
+            } else if (currency === 'timeout') {
                 content = `
 
             <a class="go-back" style="margin-bottom: 15px; cursor: pointer; display: flex; align-items: center; color: #596dfc;" href="#" onclick="loadContent('usdt')"">
@@ -722,9 +731,7 @@
 
 
             `;
-            }
-
-            else if (currency === 'success') {
+            } else if (currency === 'success') {
                 content = `
 
 <svg style="margin: 10px;" width="100" height="98" viewBox="0 0 28 26" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -962,7 +969,6 @@
             let ref = "{{ $ref }}"; // Blade variable is still fine in JavaScript
 
 
-
             // Disable button & add loader
             transferBtnctypto.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Checking...';
             transferBtnctypto.disabled = true;
@@ -988,7 +994,7 @@
                         } else if (data.status === 'success' || data.status === 'paid') {
                             audio.play();
                             loadContent('success');
-                        }else if (data.status === 'expired') {
+                        } else if (data.status === 'expired') {
                             loadContent('timeout');
                         } else {
                             alert("Transaction not found. Please ensure the correct amount and address.");
@@ -1216,7 +1222,6 @@
         }
 
     </script>
-
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

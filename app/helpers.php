@@ -2669,6 +2669,13 @@ if (!function_exists('verifypelpay')) {
             $message = $var->message ?? null;
             $status = $var->message ?? null;
 
+            if($var == null){
+                $data['account_no'] = "Try_Again";
+                $data['bank_name'] = "Try_Again";
+                $data['account_name'] = "Try_Again";
+                return $data;
+            }
+
             $fund_url = Webkey::where('key', $m_key)->first()->url_fund;
 
             $acc = new GlobusAccount();
@@ -2676,7 +2683,7 @@ if (!function_exists('verifypelpay')) {
             $acc->account_no = $var->data->vnuban;
             $acc->account_name = $var->data->account_name;
             $acc->bank_name = $bank_name;
-            $acc->m_key = $key;
+            $acc->m_key = $m_key;
             $acc->fund_url = $fund_url;
             $acc->save();
 
@@ -2734,6 +2741,13 @@ if (!function_exists('verifypelpay')) {
         $message = $var->message ?? null;
         $status = $var->message ?? null;
 
+
+        if($var == null){
+            $data['account_no'] = "Try_Again";
+            $data['bank_name'] = "Try_Again";
+            $data['account_name'] = "Try_Again";
+            return $data;
+        }
 
 
         if ($message == "The process was completed successfully") {
