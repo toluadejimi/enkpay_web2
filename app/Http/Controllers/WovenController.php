@@ -197,7 +197,7 @@ class WovenController extends Controller
                 $site_name = Webkey::where('key', $globus->key)->first()->site_name ?? null;
 
                 $trasnaction = new Transaction();
-                $trasnaction->user_id = $globus->user_id;
+                $trasnaction->user_id = $user_id;
                 $trasnaction->e_ref = $order_id;
                 $trasnaction->ref_trans_id = $order_id;
                 $trasnaction->type = "webpay";
