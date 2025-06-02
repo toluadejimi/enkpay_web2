@@ -2616,73 +2616,82 @@ if (!function_exists('verifypelpay')) {
             }
 
 
-            $bank_name = "GLOBUS BANK";
+
+            $ck_account = GlobusAccount::where('email', $tremail)->where('m_key', $m_key)->first() ?? null;
+            if(!$ck_account){
+
+                $bank_name = "GLOBUS BANK";
+                $key = env('WOVENKEY');
+                $databody = array(
+                    "email" => $tremail,
+                    "name" => "PAYMENTSTAND",
+                    "customer_reference" => $m_key,
+                );
 
 
-            $key = env('WOVENKEY');
-            $databody = array(
-                "email" => $tremail,
-                "name" => "PAYMENTSTAND",
-                "customer_reference" => $m_key,
-            );
+                $post_data = json_encode($databody);
+                $curl = curl_init();
+                $url = "https://api.woven.finance/v2/api/vnubans/merchant_account";
+
+                curl_setopt_array($curl, array(
+                    CURLOPT_URL => $url,
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'POST',
+                    CURLOPT_POSTFIELDS => $post_data,
+                    CURLOPT_HTTPHEADER => array(
+                        'Content-Type: application/json',
+                        "api_secret: $key"
+                    ),
+                ));
+
+                $var2 = curl_exec($curl);
+                curl_close($curl);
+                $var = json_decode($var2);
+                $message = $var->message ?? null;
+                $status = $var->message ?? null;
+
+                if ($var2 != false && $message == "The process was completed successfully") {
 
 
-            $post_data = json_encode($databody);
-            $curl = curl_init();
-            $url = "https://api.woven.finance/v2/api/vnubans/merchant_account";
 
-            curl_setopt_array($curl, array(
-                CURLOPT_URL => $url,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => $post_data,
-                CURLOPT_HTTPHEADER => array(
-                    'Content-Type: application/json',
-                    "api_secret: $key"
-                ),
-            ));
 
-            $var2 = curl_exec($curl);
-            curl_close($curl);
-            $var = json_decode($var2);
-            $message = $var->message ?? null;
-            $status = $var->message ?? null;
+                    $fund_url = Webkey::where('key', $m_key)->first()->url_fund;
+                    $acc = new GlobusAccount();
+                    $acc->email = $tremail;
+                    $acc->account_no = $var->data->vnuban;
+                    $acc->account_name = $var->data->account_name;
+                    $acc->bank_name = $bank_name;
+                    $acc->m_key = $m_key;
+                    $acc->fund_url = $fund_url;
+                    $acc->save();
 
-            if ($var2 != false && $message == "The process was completed successfully") {
+                    $data['account_no'] = $var->data->vnuban;
+                    $data['bank_name'] = $bank_name;
+                    $data['account_name'] = $var->data->account_name;
+                    return $data;
 
-                $fund_url = Webkey::where('key', $m_key)->first()->url_fund;
-                $acc = new GlobusAccount();
-                $acc->email = $tremail;
-                $acc->account_no = $var->data->vnuban;
-                $acc->account_name = $var->data->account_name;
-                $acc->bank_name = $bank_name;
-                $acc->m_key = $m_key;
-                $acc->fund_url = $fund_url;
-                $acc->save();
+                }else{
 
-                $data['account_no'] = $var->data->vnuban;
-                $data['bank_name'] = $bank_name;
-                $data['account_name'] = $var->data->account_name;
-                return $data;
+                    $message = "Woven Error======>" . json_encode($var2);
+                    Log::error($message);
+                    send_notification($message);
 
-            }else{
+                    $data['account_no'] = "Try_Again";
+                    $data['bank_name'] = "Try_Again";
+                    $data['account_name'] = "Try_Again";
+                    return $data;
 
-                $message = "Woven Error======>" . json_encode($var2);
-                Log::error($message);
-                send_notification($message);
 
-                $data['account_no'] = "Try_Again";
-                $data['bank_name'] = "Try_Again";
-                $data['account_name'] = "Try_Again";
-                return $data;
-
+                }
 
             }
+
+
 
 
         } else {
