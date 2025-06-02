@@ -127,6 +127,7 @@ class WovenController extends Controller
         $session_id = $request->nip_session_id;
         $payable = $request->amount_payable;
         $fee = $request->fee;
+        $m_key = $request->account_reference;
 
 
         $status = Transfertransaction::where('account_no', $acc_no)->first()->status ?? null;
@@ -152,7 +153,7 @@ class WovenController extends Controller
         if ($trx == null) {
 
 
-            $globus = GlobusAccount::where('account_no', $acc_no)->first() ?? null;
+            $globus = GlobusAccount::where('account_no', $acc_no)->where('m_key', $m_key)->first() ?? null;
             if($globus){
 
                 $user_id = Webkey::where('key', $globus->m_key)->first()->user_id;
