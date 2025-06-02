@@ -2674,27 +2674,30 @@ if (!function_exists('verifypelpay')) {
                 $data['bank_name'] = "Try_Again";
                 $data['account_name'] = "Try_Again";
                 return $data;
+
+            }else{
+
+                $fund_url = Webkey::where('key', $m_key)->first()->url_fund;
+
+                $acc = new GlobusAccount();
+                $acc->email = $tremail;
+                $acc->account_no = $var->data->vnuban;
+                $acc->account_name = $var->data->account_name;
+                $acc->bank_name = $bank_name;
+                $acc->m_key = $m_key;
+                $acc->fund_url = $fund_url;
+                $acc->save();
+
+                if ($message == "The process was completed successfully") {
+                    $data['account_no'] = $var->data->vnuban;
+                    $data['bank_name'] = $bank_name;
+                    $data['account_name'] = $var->data->account_name;
+                    return $data;
+                }
+
+
             }
 
-            $fund_url = Webkey::where('key', $m_key)->first()->url_fund;
-
-            $acc = new GlobusAccount();
-            $acc->email = $tremail;
-            $acc->account_no = $var->data->vnuban;
-            $acc->account_name = $var->data->account_name;
-            $acc->bank_name = $bank_name;
-            $acc->m_key = $m_key;
-            $acc->fund_url = $fund_url;
-            $acc->save();
-
-
-
-            if ($message == "The process was completed successfully") {
-                $data['account_no'] = $var->data->vnuban;
-                $data['bank_name'] = $bank_name;
-                $data['account_name'] = $var->data->account_name;
-                return $data;
-            }
 
 
             $message = "Woven Error======>". json_encode($var2);
