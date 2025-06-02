@@ -2622,13 +2622,12 @@ if (!function_exists('verifypelpay')) {
 
 
 
-           $ck_account = GlobusAccount::where('email', $tremail)->first() ?? null;
+           $ck_account = GlobusAccount::where('email', $tremail)->where('m_key', $m_key)->first() ?? null;
            if($ck_account != null){
                $data['account_no'] = $ck_account->account_no;
                $data['bank_name'] = $ck_account->bank_name;
                $data['account_name'] = $ck_account->account_name;
                return $data;
-
            }
 
 
