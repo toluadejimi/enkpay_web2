@@ -2607,7 +2607,7 @@ if (!function_exists('verifypelpay')) {
 
     }
 
-    function woven_create($amtt, $code, $last_name, $tremail, $phone)
+    function woven_create($amtt, $code, $last_name, $tremail, $phone, $m_key)
     {
 
 
@@ -2669,12 +2669,15 @@ if (!function_exists('verifypelpay')) {
             $message = $var->message ?? null;
             $status = $var->message ?? null;
 
+            $fund_url = Webkey::where('key', $m_key)->first()->url_fund;
 
             $acc = new GlobusAccount();
             $acc->email = $tremail;
             $acc->account_no = $var->data->vnuban;
-            $acc->account_name = $var->data->account_name;;
+            $acc->account_name = $var->data->account_name;
             $acc->bank_name = $bank_name;
+            $acc->m_key = $key;
+            $acc->fund_url = $fund_url;
             $acc->save();
 
 

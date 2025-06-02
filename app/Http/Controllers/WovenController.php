@@ -150,12 +150,132 @@ class WovenController extends Controller
 
 
         if ($trx == null) {
-            $message = "Woven funding error =>>>>> $acc_no | $user_amount  not found on transaction";
-            Log::info($message);
-            return response()->json([
-                'status' => false,
-                'message' => "Account Not found in our database",
-            ]);
+
+
+            $globus = GlobusAccount::where('account_no', $acc_no)->first() ?? null;
+            if($globus){
+
+
+                $set = Setting::where('id', 1)->first();
+                if ($user_amount > 11000) {
+                    $p_amount = $user_amount - 300;
+                } else {
+                    $p_amount = $user_amount - 100;
+                }
+
+
+                if ($user_amount > 11000) {
+                    $l_amount = $p_amount - 300;
+                } else {
+                    $l_amount = $p_amount - 100;
+                }
+
+
+                if($trx->user_id == 293677){
+
+                    if ($user_amount > 11000) {
+                        $l_amount = $p_amount + 150;
+                    } else {
+                        $l_amount = $p_amount;
+                    }
+
+
+                }
+
+
+                $user_id = Webkey::where('key', $globus->m_key)->first()->url;
+
+                User::where('id', $user_id)->increment('main_wallet', $l_amount);
+                $balance = User::where('id', $user_id)->first()->main_wallet;
+                $user = User::where('id', $user_id)->first();
+
+
+                $url =  $globus->fund_url ?? null;
+                $user_email = $globus->email ?? null;
+                $order_id = "UserDirectFund".date('his') ?? null;
+                $site_name = Webkey::where('key', $globus->key)->first()->site_name ?? null;
+
+                $trasnaction = new Transaction();
+                $trasnaction->user_id = $trx->user_id;
+                $trasnaction->e_ref = $request->sessionid ?? $acc_no;
+                $trasnaction->ref_trans_id = $order_id;
+                $trasnaction->type = "webpay";
+                $trasnaction->transaction_type = "VirtualFundWallet";
+                $trasnaction->title = "Wallet Funding";
+                $trasnaction->main_type = "WOVEN";
+                $trasnaction->credit = $l_amount;
+                $trasnaction->email = $user_email;
+                $trasnaction->note = "Transaction Successful | Web Pay | for $user_email";
+                $trasnaction->fee = $fee ?? 0;
+                $trasnaction->amount = $trx->amount;
+                $trasnaction->e_charges = 0;
+                $trasnaction->charge = $payable ?? 0;
+                $trasnaction->enkPay_Cashout_profit = 0;
+                $trasnaction->balance = $balance;
+                $trasnaction->status = 1;
+                $trasnaction->save();
+
+                $message = "Business funded  | $request->nuban | $l_amount | $user->first_name " . " " . $user->last_name ." | for $user_email" ;
+                Log::info($message);
+
+                Webtransfer::where('trans_id', $trx->trans_id)->update(['status' => 4]);
+                Transfertransaction::where('account_no', $acc_no)->update(['status' => 4, 'resolve' => 1]);
+
+                $trasnaction = new Transfertransaction();
+                $trasnaction->user_id = $user_id;
+                $trasnaction->type = "webpay";
+                $trasnaction->key = $globus->m_key;
+                $trasnaction->email = $globus->email;
+                $trasnaction->ref_trans_id = $order_id;
+                $trasnaction->amount = $l_amount;
+                $trasnaction->transaction_type = "WEBTRANSFER";
+                $trasnaction->bank = "WOVEN";
+                $trasnaction->ref = $order_id;
+                $trasnaction->account_no = "Woven";
+                $trasnaction->v_account_name = "Woven";
+                $trasnaction->amount_to_pay = $l_amount;
+                $trasnaction->amount_paid = $l_amount;
+                $trasnaction->title = "WEBTRANSFER";
+                $trasnaction->main_type = "WOVEN";
+                $trasnaction->note = "WEBTRANSFER";
+                $trasnaction->e_charges = 0;
+                $trasnaction->enkPay_Cashout_profit = 0;
+                $trasnaction->status = 4;
+                $trasnaction->save();
+
+
+
+                $type ="epayment";
+                $account_no = $request->nuban;
+                $fund = credit_user_wallet($url, $user_email, $l_amount, $order_id, $type, $session_id, $account_no);
+
+                return response()->json([
+                    'status' => true,
+                    'message' => "Transaction Successful"
+                ]);
+
+
+
+            }
+
+
+            if($acc_no == "6481068849"){
+                return response()->json([
+                    'status' => false,
+                    'message' => "Account Not found in our database",
+                ]);
+            }else{
+
+                $message = "Woven funding error =>>>>> $acc_no | $user_amount  not found on transaction";
+                Log::info($message);
+                return response()->json([
+                    'status' => false,
+                    'message' => "Account Not found in our database",
+                ]);
+
+            }
+
+
         }
 
 
@@ -175,7 +295,6 @@ class WovenController extends Controller
                     'amount_to_pay' => $user_amount,
                     'status' => 0
                 ])->first()->update(['session_id' => $session_id, 'status' => 4, 'resolve' => 1]) ?? null;
-
 
                 if ($user_amount > 11000) {
                     $l_amount = $p_amount - 300;
@@ -239,7 +358,6 @@ class WovenController extends Controller
                 $trxck->account_no = $request->nuban;
                 $trxck->bank = "WOVEN";
                 $trxck->save();
-
 
 
 
