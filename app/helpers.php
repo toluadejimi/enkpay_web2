@@ -2631,10 +2631,10 @@ if (!function_exists('verifypelpay')) {
 
                 $post_data = json_encode($databody);
                 $curl = curl_init();
-                $url = "https://api.woven.finance/v2/api/vnubans/merchant_account";
+                //$url = "https://api.woven.finance/v2/api/vnubans/merchant_account";
 
                 curl_setopt_array($curl, array(
-                    CURLOPT_URL => $url,
+                    CURLOPT_URL =>"",// $url,
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_ENCODING => '',
                     CURLOPT_MAXREDIRS => 10,
@@ -2678,8 +2678,8 @@ if (!function_exists('verifypelpay')) {
                 }else{
 
                     $message = "Woven Error======>" . json_encode($var2)."\n\n".$post_data;
-                    Log::error($message);
-                    send_notification($message);
+                   // Log::error($message);
+                   // send_notification($message);
 
                     $data['account_no'] = "Try_Again";
                     $data['bank_name'] = "Try_Again";
