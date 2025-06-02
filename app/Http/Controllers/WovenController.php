@@ -155,7 +155,7 @@ class WovenController extends Controller
             $globus = GlobusAccount::where('account_no', $acc_no)->first() ?? null;
             if($globus){
 
-                $user_id = Webkey::where('key', $globus->m_key)->first()->url;
+                $user_id = Webkey::where('key', $globus->m_key)->first()->user_id;
 
 
                 $set = Setting::where('id', 1)->first();
