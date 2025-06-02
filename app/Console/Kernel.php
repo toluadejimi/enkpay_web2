@@ -33,6 +33,9 @@ class Kernel extends ConsoleKernel
             ->everyFiveMinutes();
 
 
+        $schedule->command('account:send-creations')->everyFiveMinutes();
+
+
 //        $schedule->command('app:solve-credit')
 //            ->dailyAt('5:00');
 //

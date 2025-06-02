@@ -15,7 +15,6 @@ class SendAccountCreations extends Command
     public function handle()
     {
         $accounts = AccountCreation::all();
-
         foreach ($accounts as $account) {
 
             $code = 000027;
