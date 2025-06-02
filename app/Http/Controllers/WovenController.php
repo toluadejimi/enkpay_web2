@@ -197,8 +197,8 @@ class WovenController extends Controller
                 $site_name = Webkey::where('key', $globus->key)->first()->site_name ?? null;
 
                 $trasnaction = new Transaction();
-                $trasnaction->user_id = $trx->user_id;
-                $trasnaction->e_ref = $request->sessionid ?? $acc_no;
+                $trasnaction->user_id = $globus->user_id;
+                $trasnaction->e_ref = $order_id;
                 $trasnaction->ref_trans_id = $order_id;
                 $trasnaction->type = "webpay";
                 $trasnaction->transaction_type = "VirtualFundWallet";
@@ -208,7 +208,7 @@ class WovenController extends Controller
                 $trasnaction->email = $user_email;
                 $trasnaction->note = "Transaction Successful | Web Pay | for $user_email";
                 $trasnaction->fee = $fee ?? 0;
-                $trasnaction->amount = $trx->amount;
+                $trasnaction->amount = $l_amount;
                 $trasnaction->e_charges = 0;
                 $trasnaction->charge = $payable ?? 0;
                 $trasnaction->enkPay_Cashout_profit = 0;
@@ -219,7 +219,6 @@ class WovenController extends Controller
                 $message = "Business funded  | $request->nuban | $l_amount | $user->first_name " . " " . $user->last_name ." | for $user_email" ;
                 Log::info($message);
 
-                Webtransfer::where('trans_id', $trx->trans_id)->update(['status' => 4]);
                 Transfertransaction::where('account_no', $acc_no)->update(['status' => 4, 'resolve' => 1]);
 
                 $trasnaction = new Transfertransaction();
