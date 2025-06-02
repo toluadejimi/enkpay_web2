@@ -17,20 +17,24 @@ class SendAccountCreations extends Command
         $accounts = AccountCreation::all();
         foreach ($accounts as $account) {
 
-            $code = 000027;
+            $code = "000027";
             $m_key = $account->m_key;
             $tremail = $account->email;
             $amtt = 0;
             $woven_details = woven_create($amtt, $code, $tremail, $m_key) ?? null;
+            $this->info("Response from woven_create: " . print_r($woven_details, true));
+
 
 
             if ($woven_details['account_no'] != "Try_Again") {
                 $account->delete();
                 $this->info("Account ID {$account->id} sent and deleted.");
             } else {
-                $this->error("Failed to send Account ID");
+                $this->error("Failed to send Account ID {$account->id}");
             }
         }
+
+
 
         return 0;
     }
