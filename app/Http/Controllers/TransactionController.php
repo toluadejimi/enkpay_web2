@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AccountCreation;
 use App\Models\Advert;
 use App\Models\CardwebTransaction;
 use App\Models\Charge;
 use App\Models\CompletedWebtransfer;
+use App\Models\CryptoPayment;
+use App\Models\GlobusAccount;
 use App\Models\ManualAccount;
 use App\Models\PendingcardTransaction;
 use App\Models\Setting;
@@ -21,7 +24,6 @@ use App\Models\VirtualAccount;
 use App\Models\Webaccount;
 use App\Models\Webhook;
 use App\Models\Webkey;
-use App\Models\CryptoPayment;
 use App\Models\Webtransfer;
 use Faker\Factory;
 use Illuminate\Http\Request;
@@ -161,7 +163,7 @@ class TransactionController extends Controller
 
             $acct = $request->email;
             $message = "Business funded | $acct | $f_amount | $user->first_name " . " " . $user->last_name;
-           Log::info($message);
+            Log::info($message);
 
 
             $type = "epayment";
@@ -190,9 +192,6 @@ class TransactionController extends Controller
             $webhook->sessionId = $request->sessionid;
             $webhook->save();
         }
-
-
-
 
 
         $set = Setting::where('id', 1)->first();
@@ -283,7 +282,6 @@ class TransactionController extends Controller
                 $trasnaction->save();
 
 
-
                 $trxck = new Transactioncheck();
                 $trxck->session_id = $request->sessionid;
                 $trxck->amount = $data['amount'];
@@ -294,7 +292,7 @@ class TransactionController extends Controller
 
                 $acct = $data['acc_no'];
                 $message = "Business funded | $acct | $f_amount | $user->first_name " . " " . $user->last_name;
-               Log::info($message);
+                Log::info($message);
 
                     Webhook::where('account_no', $acct)->delete() ?? null;
 
@@ -701,8 +699,6 @@ class TransactionController extends Controller
     {
 
 
-
-
         if ($request->key == null) {
             abort(Response::HTTP_LOCKED, 'Yo take it easy');
         }
@@ -716,7 +712,7 @@ class TransactionController extends Controller
         if ($attempts > 5) {
             $url = $request->fullUrl();
             $message = "Too many requests from your IP | $ip | $url";
-           Log::info($message);
+            Log::info($message);
 
             abort(Response::HTTP_TOO_MANY_REQUESTS, 'Too many requests from your IP.');
         }
@@ -772,6 +768,32 @@ class TransactionController extends Controller
         $data['p_account_no'] = $acc->v_account_no ?? null;
         $data['p_account_name'] = $acc->v_account_name ?? null;
         $data['p_bank_name'] = $acc->v_bank_name ?? null;
+
+
+
+
+
+
+        try {
+
+            $ck_account = GlobusAccount::where('email', $request->email)->where('m_key', $request->key)->first() ?? null;
+            if($ck_account == null){
+
+                $fund_url_get = Webkey::where('key', $request->key)->first();
+                $acct_creation = new AccountCreation();
+                $acct_creation->email = $request->email;
+                $acct_creation->m_key = $request->key;
+                $acct_creation->fund_url = $fund_url_get;
+                $acct_creation->save();
+
+            }
+
+
+        }catch (\Exception $th) {
+
+        }
+
+
 
 
 
@@ -997,7 +1019,7 @@ class TransactionController extends Controller
 
         }
 
-        if($request->platform == "momas"){
+        if ($request->platform == "momas") {
 
             $set = Setting::where('id', 1)->first();
 
@@ -1013,9 +1035,9 @@ class TransactionController extends Controller
                     $tremail = $request->email;
                     $phone = User::inRandomOrder()->first()->phone;
 
-                    if($request->amount > 11000){
-                        $amtt  = $request->amount + 300;
-                    }else{
+                    if ($request->amount > 11000) {
+                        $amtt = $request->amount + 300;
+                    } else {
                         $amtt = $request->amount + 100;
                     }
 
@@ -1060,21 +1082,19 @@ class TransactionController extends Controller
                         $data['bank_name'] = $woven_details['bank_name'];
 
 
-
-
                         $acc_no = $woven_details['account_no'];
                         $acc_name = $woven_details['account_name'];
                         $bank = $woven_details['bank_name'];
                         $burl = Webkey::where('key', $request->key)->first()->user_url;
-                        $data['back_url'] =$burl."?status=failed&ref=".$request->ref ?? null;
+                        $data['back_url'] = $burl . "?status=failed&ref=" . $request->ref ?? null;
 
 
-                        $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount . "| ".$request->email;
-                       Log::info($message);
+                        $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name . " | " . $request->amount . "| " . $request->email;
+                        Log::info($message);
 
                         return response()->json([
                             'account_no' => $woven_details['account_no'],
-                            'account_name' =>  $woven_details['account_name'],
+                            'account_name' => $woven_details['account_name'],
                             'bank' => $woven_details['bank_name'],
                             'amount' => $amtt,
                         ]);
@@ -1084,13 +1104,9 @@ class TransactionController extends Controller
 
                     return response()->json([
                         'account_no' => "Try again later",
-                        'account_name' =>   "Try again later",
-                        'bank' =>  "Try again later",
+                        'account_name' => "Try again later",
+                        'bank' => "Try again later",
                     ]);
-
-
-
-
 
 
                 }
@@ -1110,9 +1126,9 @@ class TransactionController extends Controller
                     $tremail = $faker->email;
                     $phone = User::inRandomOrder()->first()->phone;
 
-                    if($request->amount > 11000){
-                        $amtt  = $request->amount + 300;
-                    }else{
+                    if ($request->amount > 11000) {
+                        $amtt = $request->amount + 300;
+                    } else {
                         $amtt = $request->amount + 100;
                     }
 
@@ -1162,15 +1178,15 @@ class TransactionController extends Controller
                         $acc_name = $account_name;
                         $bank = "9PSB";
                         $burl = Webkey::where('key', $request->key)->first()->user_url;
-                        $data['back_url'] =$burl."?status=failed&ref=".$request->ref ?? null;
+                        $data['back_url'] = $burl . "?status=failed&ref=" . $request->ref ?? null;
 
 
-                        $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount . "| ".$request->email;
-                         Log::info($message);
+                        $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name . " | " . $request->amount . "| " . $request->email;
+                        Log::info($message);
 
                         return response()->json([
                             'account_no' => $psb_details['account_no'],
-                            'account_name' =>  $psb_details['account_name'],
+                            'account_name' => $psb_details['account_name'],
                             'bank' => $psb_details['bank_name'],
                             'amount' => $amtt,
                         ]);
@@ -1180,11 +1196,9 @@ class TransactionController extends Controller
 
                     return response()->json([
                         'account_no' => "Try again later",
-                        'account_name' =>   "Try again later",
-                        'bank' =>  "Try again later",
+                        'account_name' => "Try again later",
+                        'bank' => "Try again later",
                     ]);
-
-
 
 
                 }
@@ -1193,8 +1207,6 @@ class TransactionController extends Controller
             }
 
         }
-
-
 
 
         $web_commission = Charge::where('title', 'bwebpay')->first()->amount;
@@ -1238,7 +1250,6 @@ class TransactionController extends Controller
 
 
         $set = Setting::where('id', 1)->first();
-
 
 
         $data['opay_acct'] = ManualAccount::where('status', 1)->where('type', "opay")->first() ?? null;
@@ -1299,9 +1310,9 @@ class TransactionController extends Controller
                 $tremail = $faker->email;
                 $phone = User::inRandomOrder()->first()->phone;
 
-                if($request->amount > 11000){
-                    $amtt  = $request->amount + 300;
-                }else{
+                if ($request->amount > 11000) {
+                    $amtt = $request->amount + 300;
+                } else {
                     $amtt = $request->amount + 100;
                 }
 
@@ -1345,31 +1356,27 @@ class TransactionController extends Controller
                     $data['bank_name'] = $paypoint_details['bank_name'];
 
 
-
-
                     $acc_no = $paypoint_details['account_no'];
                     $acc_name = $paypoint_details['account_name'];
                     $bank = $paypoint_details['bank_name'];
                     $burl = Webkey::where('key', $request->key)->first()->user_url;
                     $data['bname'] = Webkey::where('key', $request->key)->first()->site_name;
-                    $data['back_url'] =$burl."?status=failed&ref=".$request->ref ?? null;
+                    $data['back_url'] = $burl . "?status=failed&ref=" . $request->ref ?? null;
 
 
-                    $message = "Transfer Payment Initiated Paypoint | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount . "| ".$request->email;
-                   Log::info($message);
+                    $message = "Transfer Payment Initiated Paypoint | $acc_no " . "| $bank " . "For " . $usr->last_name . " | " . $request->amount . "| " . $request->email;
+                    Log::info($message);
 
 
                     return view('webpaypoint', $data);
-
-
 
 
                 }
 
                 return response()->json([
                     'account_no' => "Try again later",
-                    'account_name' =>   "Try again later",
-                    'bank' =>  "Try again later",
+                    'account_name' => "Try again later",
+                    'bank' => "Try again later",
                 ]);
 
 
@@ -1387,87 +1394,84 @@ class TransactionController extends Controller
 
             $set = Setting::where('id', 1)->first();
 
-                $faker = Factory::create();
-                $data['pamount'] = $request->amount;
-                $first_name = User::inRandomOrder()->first()->first_name;
-                $last_name = User::inRandomOrder()->first()->last_name;
-                $tremail = $faker->email;
-                $phone = User::inRandomOrder()->first()->phone;
+            $faker = Factory::create();
+            $data['pamount'] = $request->amount;
+            $first_name = User::inRandomOrder()->first()->first_name;
+            $last_name = User::inRandomOrder()->first()->last_name;
+            $tremail = $faker->email;
+            $phone = User::inRandomOrder()->first()->phone;
 
-                if($request->amount > 11000){
-                    $amtt  = $request->amount + 300;
-                }else{
-                    $amtt = $request->amount + 100;
-                }
+            if ($request->amount > 11000) {
+                $amtt = $request->amount + 300;
+            } else {
+                $amtt = $request->amount + 100;
+            }
 
-                $code = Setting::where('id', 1)->first()->woven_collective_code;
-                $woven_details = woven_create($amtt, $code, $last_name, $tremail, $phone) ?? null;
+            $code = Setting::where('id', 1)->first()->woven_collective_code;
+            $woven_details = woven_create($amtt, $code, $last_name, $tremail, $phone) ?? null;
 
-                $amount_to_pay = $amtt;
-
-
-                if ($woven_details != null) {
-
-                   $delete =  Transfertransaction::where('account_no', $woven_details['account_no'])->delete() ?? null;
+            $amount_to_pay = $amtt;
 
 
+            if ($woven_details != null) {
 
-                    $user_id = Webkey::where('key', $request->key)->first()->user_id;
-                    $trx = Transfertransaction::where('account_no', $woven_details['account_no'])->first() ?? null;
-
-                    $usr = User::where('id', $user_id)->first();
-
-                    $trasnaction = new Transfertransaction();
-                    $trasnaction->user_id = $user_id;
-                    $trasnaction->type = "webpay";
-                    $trasnaction->key = $request->key;
-                    $trasnaction->email = $request->email;
-                    $trasnaction->ref_trans_id = $request->ref;
-                    $trasnaction->amount = $request->amount;
-                    $trasnaction->transaction_type = "WEBTRANSFER";
-                    $trasnaction->bank = $woven_details['bank_name'];
-                    $trasnaction->ref = $request->ref;
-                    $trasnaction->account_no = $woven_details['account_no'];
-                    $trasnaction->v_account_name = $woven_details['account_name'];
-                    $trasnaction->amount_to_pay = $amount_to_pay;
-                    $trasnaction->title = "WEBTRANSFER";
-                    $trasnaction->main_type = "WOVEN";
-                    $trasnaction->note = "WEBTRANSFER";
-                    $trasnaction->e_charges = 0;
-                    $trasnaction->enkPay_Cashout_profit = 0;
-                    $trasnaction->status = 0;
-                    $trasnaction->save();
+                $delete = Transfertransaction::where('account_no', $woven_details['account_no'])->delete() ?? null;
 
 
-                    $data['account_no'] = $woven_details['account_no'];
-                    $data['account_name'] = $woven_details['account_name'];
-                    $data['bank_name'] = $woven_details['bank_name'];
+                $user_id = Webkey::where('key', $request->key)->first()->user_id;
+                $trx = Transfertransaction::where('account_no', $woven_details['account_no'])->first() ?? null;
 
-                    $acc_no = $woven_details['account_no'];
-                    $acc_name = $woven_details['account_name'];
-                    $bank = $woven_details['bank_name'];
-                    $burl = Webkey::where('key', $request->key)->first()->user_url;
-                    $data['back_url'] =$burl."?status=failed&ref=".$request->ref ?? null;
+                $usr = User::where('id', $user_id)->first();
+
+                $trasnaction = new Transfertransaction();
+                $trasnaction->user_id = $user_id;
+                $trasnaction->type = "webpay";
+                $trasnaction->key = $request->key;
+                $trasnaction->email = $request->email;
+                $trasnaction->ref_trans_id = $request->ref;
+                $trasnaction->amount = $request->amount;
+                $trasnaction->transaction_type = "WEBTRANSFER";
+                $trasnaction->bank = $woven_details['bank_name'];
+                $trasnaction->ref = $request->ref;
+                $trasnaction->account_no = $woven_details['account_no'];
+                $trasnaction->v_account_name = $woven_details['account_name'];
+                $trasnaction->amount_to_pay = $amount_to_pay;
+                $trasnaction->title = "WEBTRANSFER";
+                $trasnaction->main_type = "WOVEN";
+                $trasnaction->note = "WEBTRANSFER";
+                $trasnaction->e_charges = 0;
+                $trasnaction->enkPay_Cashout_profit = 0;
+                $trasnaction->status = 0;
+                $trasnaction->save();
 
 
-                    $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount . "| ".$request->email;
-                   Log::info($message);
+                $data['account_no'] = $woven_details['account_no'];
+                $data['account_name'] = $woven_details['account_name'];
+                $data['bank_name'] = $woven_details['bank_name'];
+
+                $acc_no = $woven_details['account_no'];
+                $acc_name = $woven_details['account_name'];
+                $bank = $woven_details['bank_name'];
+                $burl = Webkey::where('key', $request->key)->first()->user_url;
+                $data['back_url'] = $burl . "?status=failed&ref=" . $request->ref ?? null;
 
 
-                    return view('webpaywoven', $data);
-
-
-                }
-
-
-                $data['account_no'] = "Try again later";
-                $data['account_name'] = "Try again later";
-                $data['bank_name'] = "Try again later";
+                $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name . " | " . $request->amount . "| " . $request->email;
+                Log::info($message);
 
 
                 return view('webpaywoven', $data);
 
 
+            }
+
+
+            $data['account_no'] = "Try again later";
+            $data['account_name'] = "Try again later";
+            $data['bank_name'] = "Try again later";
+
+
+            return view('webpaywoven', $data);
 
 
         }
@@ -1503,14 +1507,7 @@ class TransactionController extends Controller
         }
 
 
-
-
-
-
-
-
-
-        if($request->platform == "Telegram"){
+        if ($request->platform == "Telegram") {
 
             if ($set->woven == 1) {
 
@@ -1524,9 +1521,9 @@ class TransactionController extends Controller
                     $tremail = $faker->email;
                     $phone = User::inRandomOrder()->first()->phone;
 
-                    if($request->amount > 11000){
-                        $amtt  = $request->amount + 300;
-                    }else{
+                    if ($request->amount > 11000) {
+                        $amtt = $request->amount + 300;
+                    } else {
                         $amtt = $request->amount + 100;
                     }
 
@@ -1536,7 +1533,7 @@ class TransactionController extends Controller
 
                     if ($woven_details != null) {
 
-                       Transfertransaction::where('account_no', $woven_details['account_no'])->delete() ?? null;
+                            Transfertransaction::where('account_no', $woven_details['account_no'])->delete() ?? null;
 
                         $user_id = Webkey::where('key', $request->key)->first()->user_id;
                         $trx = Transfertransaction::where('account_no', $request->accountNo)->first() ?? null;
@@ -1569,24 +1566,20 @@ class TransactionController extends Controller
                         $data['bank_name'] = $woven_details['bank_name'];
 
 
-
-
                         $acc_no = $woven_details['account_no'];
                         $acc_name = $woven_details['account_name'];
                         $bank = $woven_details['bank_name'];
                         $burl = Webkey::where('key', $request->key)->first()->user_url;
-                        $data['back_url'] =$burl."?status=failed&ref=".$request->ref ?? null;
+                        $data['back_url'] = $burl . "?status=failed&ref=" . $request->ref ?? null;
 
 
-
-                        $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount . "| ".$request->email;
+                        $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name . " | " . $request->amount . "| " . $request->email;
                         Log::info($message);
-
 
 
                         return response()->json([
                             'account_no' => $woven_details['account_no'],
-                            'account_name' =>  $woven_details['account_name'],
+                            'account_name' => $woven_details['account_name'],
                             'bank' => $woven_details['bank_name'],
                             'amount' => $amtt,
                         ]);
@@ -1596,20 +1589,15 @@ class TransactionController extends Controller
 
                     return response()->json([
                         'account_no' => "Try again later",
-                        'account_name' =>   "Try again later",
-                        'bank' =>  "Try again later",
+                        'account_name' => "Try again later",
+                        'bank' => "Try again later",
                     ]);
-
-
-
-
 
 
                 }
 
 
             }
-
 
 
             if ($set->ninepsb == 1) {
@@ -1624,9 +1612,9 @@ class TransactionController extends Controller
                     $tremail = $faker->email;
                     $phone = User::inRandomOrder()->first()->phone;
 
-                    if($request->amount > 11000){
-                        $amtt  = $request->amount + 300;
-                    }else{
+                    if ($request->amount > 11000) {
+                        $amtt = $request->amount + 300;
+                    } else {
                         $amtt = $request->amount + 100;
                     }
 
@@ -1676,15 +1664,15 @@ class TransactionController extends Controller
                         $acc_name = $account_name;
                         $bank = "9PSB";
                         $burl = Webkey::where('key', $request->key)->first()->user_url;
-                        $data['back_url'] =$burl."?status=failed&ref=".$request->ref ?? null;
+                        $data['back_url'] = $burl . "?status=failed&ref=" . $request->ref ?? null;
 
 
-                        $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount . "| ".$request->email;
-                       Log::info($message);
+                        $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name . " | " . $request->amount . "| " . $request->email;
+                        Log::info($message);
 
                         return response()->json([
                             'account_no' => $psb_details['account_no'],
-                            'account_name' =>  $psb_details['account_name'],
+                            'account_name' => $psb_details['account_name'],
                             'bank' => $psb_details['bank_name'],
                             'amount' => $amtt,
                         ]);
@@ -1694,11 +1682,9 @@ class TransactionController extends Controller
 
                     return response()->json([
                         'account_no' => "Try again later",
-                        'account_name' =>   "Try again later",
-                        'bank' =>  "Try again later",
+                        'account_name' => "Try again later",
+                        'bank' => "Try again later",
                     ]);
-
-
 
 
                 }
@@ -1719,9 +1705,9 @@ class TransactionController extends Controller
             $tremail = $faker->email;
             $phone = User::inRandomOrder()->first()->phone;
 
-            if($request->amount > 11000){
-                $amtt  = $request->amount + 300;
-            }else{
+            if ($request->amount > 11000) {
+                $amtt = $request->amount + 300;
+            } else {
                 $amtt = $request->amount + 100;
             }
 
@@ -1767,22 +1753,17 @@ class TransactionController extends Controller
                 $acc_name = $woven_details['account_name'];
                 $bank = $woven_details['bank_name'];
                 $burl = Webkey::where('key', $request->key)->first()->user_url;
-                $data['back_url'] =$burl."?status=failed&ref=".$request->ref ?? null;
+                $data['back_url'] = $burl . "?status=failed&ref=" . $request->ref ?? null;
                 $data['payable_amount'] = $request->amount;
                 $data['amount'] = $request->amount;
                 $data['ref'] = $request->ref;
 
 
-
-
-
-                $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount . "| ".$request->email;
-               Log::info($message);
+                $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name . " | " . $request->amount . "| " . $request->email;
+                Log::info($message);
 
 
                 return view('webpaywoven', $data);
-
-
 
 
             }
@@ -1796,14 +1777,10 @@ class TransactionController extends Controller
             return view('webpaywoven', $data);
 
 
-
         }
 
 
-
         if ($set->woven == 1) {
-
-
 
 
 
@@ -1816,13 +1793,11 @@ class TransactionController extends Controller
                 $tremail = $request->email;
                 $phone = User::inRandomOrder()->first()->phone;
 
-                if($request->amount > 11000){
-                    $amtt  = $request->amount + 300;
-                }else{
+                if ($request->amount > 11000) {
+                    $amtt = $request->amount + 300;
+                } else {
                     $amtt = $request->amount + 100;
                 }
-
-
 
 
                 $code = Setting::where('id', 1)->first()->woven_collective_code;
@@ -1830,19 +1805,17 @@ class TransactionController extends Controller
                 $woven_details = woven_create($amtt, $code, $tremail, $m_key) ?? null;
 
 
-
                 $amount_to_pay = $amtt;
 
 
                 if ($woven_details != null) {
 
-                    Transfertransaction::where('account_no', $woven_details['account_no'])->delete() ?? null;
+                        Transfertransaction::where('account_no', $woven_details['account_no'])->delete() ?? null;
                     $user_id = Webkey::where('key', $request->key)->first()->user_id;
                     $data['bname'] = Webkey::where('key', $request->key)->first()->site_name;
                     $trx = Transfertransaction::where('account_no', $request->accountNo)->first() ?? null;
 
                     $usr = User::where('id', $user_id)->first();
-
 
 
                     $trasnaction = new Transfertransaction();
@@ -1867,15 +1840,10 @@ class TransactionController extends Controller
                     $trasnaction->save();
 
 
-
-
                     $ngnAmount = $request->amount;
-                        $rate = Setting::where('id', 1)->first()->usd_rate;
-                        $usdtAmount = round($ngnAmount / $rate, 4);
-                        $data['usdtAmount'] = $usdtAmount;
-
-
-
+                    $rate = Setting::where('id', 1)->first()->usd_rate;
+                    $usdtAmount = round($ngnAmount / $rate, 4);
+                    $data['usdtAmount'] = $usdtAmount;
 
 
                     $data['account_no'] = $woven_details['account_no'];
@@ -1889,20 +1857,21 @@ class TransactionController extends Controller
                     $burl = Webkey::where('key', $request->key)->first()->user_url;
                     $data['bname'] = Webkey::where('key', $request->key)->first()->site_name;
                     $sitename = Webkey::where('key', $request->key)->first()->site_name;
-                    $data['back_url'] =$burl."?status=failed&ref=".$request->ref ?? null;
+                    $data['back_url'] = $burl . "?status=failed&ref=" . $request->ref ?? null;
                     $data['marchant_url'] = Webkey::where('key', $request->key)->first()->url ?? null;
                     $data['recepit'] = "https://web.enkpay.com/receipt?trans_id=$trans_id&amount=$ngnAmount";
                     $data['set'] = Setting::where('id', 1)->first();
                     $data['web_transfer'] = 1;
 
 
-                    $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount . "| ".$request->email;
+                    $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name . " | " . $request->amount . "| " . $request->email;
                     Log::info($message);
 
 
+
+
+
                     return view('webpaywoven', $data);
-
-
 
 
                 }
@@ -1924,7 +1893,6 @@ class TransactionController extends Controller
                 return view('webpaywoven', $data);
 
 
-
             }
 
 
@@ -1942,9 +1910,9 @@ class TransactionController extends Controller
                 $tremail = $faker->email;
                 $phone = User::inRandomOrder()->first()->phone;
 
-                if($request->amount > 11000){
-                    $amtt  = $request->amount + 300;
-                }else{
+                if ($request->amount > 11000) {
+                    $amtt = $request->amount + 300;
+                } else {
                     $amtt = $request->amount + 100;
                 }
 
@@ -1958,7 +1926,7 @@ class TransactionController extends Controller
 
                 if ($psb_details != null) {
 
-                    Transfertransaction::where('account_no', $request->accountNo)->delete() ?? null;
+                        Transfertransaction::where('account_no', $request->accountNo)->delete() ?? null;
                     $user_id = Webkey::where('key', $request->key)->first()->user_id;
                     $trx = Transfertransaction::where('account_no', $request->accountNo)->first() ?? null;
 
@@ -1990,14 +1958,14 @@ class TransactionController extends Controller
                     $data['account_name'] = $psb_details['account_name'];
                     $data['bank_name'] = $psb_details['bank_name'];
 
-                    try{
+                    try {
 
                         $ngnAmount = $request->amount;
                         $rate = Setting::where('id', 1)->first()->usd_rate;
                         $usdtAmount = round($ngnAmount / $rate, 4);
                         $data['usdtAmount'] = $usdtAmount;
 
-                    }catch (\Exception $th) {
+                    } catch (\Exception $th) {
 
                     }
 
@@ -2009,19 +1977,17 @@ class TransactionController extends Controller
                     $burl = Webkey::where('key', $request->key)->first()->user_url;
                     $data['bname'] = Webkey::where('key', $request->key)->first()->site_name;
                     $sitename = Webkey::where('key', $request->key)->first()->site_name;
-                    $data['back_url'] =$burl."?status=failed&ref=".$request->ref ?? null;
+                    $data['back_url'] = $burl . "?status=failed&ref=" . $request->ref ?? null;
                     $data['marchant_url'] = Webkey::where('key', $request->key)->first()->url ?? null;
                     $data['recepit'] = "https://web.enkpay.com/receipt?trans_id=$trans_id&amount=$ngnAmount";
                     $data['set'] = Setting::where('id', 1)->first();
 
 
-                    $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount . "| ".$request->email;
-                   Log::info($message);
+                    $message = "Transfer Payment Initiated | $acc_no " . "| $bank " . "For " . $usr->last_name . " | " . $request->amount . "| " . $request->email;
+                    Log::info($message);
 
 
                     return view('webpay', $data);
-
-
 
 
                 }
@@ -2033,7 +1999,6 @@ class TransactionController extends Controller
 
 
                 return view('webpaywoven', $data);
-
 
 
             }
@@ -2054,9 +2019,9 @@ class TransactionController extends Controller
                 $tremail = $faker->email;
                 $phone = User::inRandomOrder()->first()->phone;
 
-                if($request->amount > 11000){
-                    $amtt  = $request->amount + 300;
-                }else{
+                if ($request->amount > 11000) {
+                    $amtt = $request->amount + 300;
+                } else {
                     $amtt = $request->amount + 100;
                 }
 
@@ -2068,7 +2033,7 @@ class TransactionController extends Controller
 
                 if ($paypoint_details != null) {
 
-                    Transfertransaction::where('account_no', $paypoint_details['account_no'])->delete() ?? null;
+                        Transfertransaction::where('account_no', $paypoint_details['account_no'])->delete() ?? null;
                     $user_id = Webkey::where('key', $request->key)->first()->user_id;
                     $trx = Transfertransaction::where('account_no', $request->accountNo)->first() ?? null;
 
@@ -2100,16 +2065,15 @@ class TransactionController extends Controller
                     $data['bank_name'] = $paypoint_details['bank_name'];
 
 
-                    try{
+                    try {
 
                         $ngnAmount = $request->amount;
                         $rate = Setting::where('id', 1)->first()->usd_rate;
                         $usdtAmount = round($ngnAmount / $rate, 4);
                         $data['usdtAmount'] = $usdtAmount;
 
-                    }catch (\Exception $th) {
+                    } catch (\Exception $th) {
                     }
-
 
 
                     $acc_no = $paypoint_details['account_no'];
@@ -2119,41 +2083,35 @@ class TransactionController extends Controller
                     $burl = Webkey::where('key', $request->key)->first()->user_url;
                     $data['bname'] = Webkey::where('key', $request->key)->first()->site_name;
                     $sitename = Webkey::where('key', $request->key)->first()->site_name;
-                    $data['back_url'] =$burl."?status=failed&ref=".$request->ref ?? null;
+                    $data['back_url'] = $burl . "?status=failed&ref=" . $request->ref ?? null;
                     $data['marchant_url'] = Webkey::where('key', $request->key)->first()->url ?? null;
                     $data['recepit'] = "https://web.enkpay.com/receipt?trans_id=$trans_id&amount=$ngnAmount";
                     $data['set'] = Setting::where('id', 1)->first();
 
 
-
-                    $message = "Transfer Payment Initiated Paypoint | $acc_no " . "| $bank " . "For " . $usr->last_name .  " | " . $request->amount . "| ".$request->email ."| on $sitename";
-                   Log::info($message);
+                    $message = "Transfer Payment Initiated Paypoint | $acc_no " . "| $bank " . "For " . $usr->last_name . " | " . $request->amount . "| " . $request->email . "| on $sitename";
+                    Log::info($message);
 
 
                     return view('webpaypoint', $data);
-
-
 
 
                 }
 
                 return response()->json([
                     'account_no' => "Try again later",
-                    'account_name' =>   "Try again later",
-                    'bank' =>  "Try again later",
+                    'account_name' => "Try again later",
+                    'bank' => "Try again later",
                 ]);
 
 
                 return view('webpaypoint', $data);
 
 
-
             }
 
 
         }
-
-
 
 
         if ($data['woven'] == 1 && $data['charm'] == 1 && $data['palmpay_transfer'] == 1 && $data['woven'] == 0 && $data['opay_transfer'] == 1 && $data['ninepsb'] == 0) {
@@ -2187,7 +2145,7 @@ class TransactionController extends Controller
 
             $views = ['webpaywoven'];
 
-        } elseif ($data['woven'] == 0  && $data['charm'] == 0  && $data['paypoint'] == 1 && $data['palmpay_transfer'] == 0 && $data['opay_transfer'] == 0 && $data['ninepsb'] == 0) {
+        } elseif ($data['woven'] == 0 && $data['charm'] == 0 && $data['paypoint'] == 1 && $data['palmpay_transfer'] == 0 && $data['opay_transfer'] == 0 && $data['ninepsb'] == 0) {
             $views = ['webpaypoint'];
         } elseif ($data['woven'] == 0 && $data['charm'] == 1 && $data['palmpay_transfer'] == 0 && $data['opay_transfer'] == 0 && $data['ninepsb'] == 1) {
             $views = ['webpay', 'webpaycharm'];
@@ -2239,13 +2197,13 @@ class TransactionController extends Controller
             $trx = Webtransfer::where('adviceReference', $request->adviceReference)->first() ?? null;
             if ($trx == null) {
                 $message = "Fools | Transaction not found on enkpay";
-               Log::info($message);
+                Log::info($message);
                 return view('notfound');
             }
 
             if ($trx->status == 1) {
                 $message = "Fools | Transaction already confrimed";
-               Log::info($message);
+                Log::info($message);
 
                 return view('confrimed');
             }
@@ -2291,7 +2249,7 @@ class TransactionController extends Controller
 
 
             $message = "Card Payment  Successful |" . $payment['merchantReference'];
-           Log::info($message);
+            Log::info($message);
 
 
             return view('success', compact('webhook', 'marchant_url', 'amount', 'trans_id', 'wc_order', 'client_id', 'wc', 'recepit'));
@@ -2653,9 +2611,6 @@ class TransactionController extends Controller
             ->first()->status ?? null;
 
 
-
-
-
         if ($status == 0) {
             return response()->json([
                 'status' => 'pending',
@@ -2790,7 +2745,7 @@ class TransactionController extends Controller
 
 
         $webhook = $marchant_url . "?" . "amount=$amount" . "&trans_id=$trans_id" . "&status=success" . "&wc_order=$wc_order" . "&client_id=$client_id" ?? null;
-        $recepit = url('')."/receipt?trans_id=$trans_id&amount=$amount";
+        $recepit = url('') . "/receipt?trans_id=$trans_id&amount=$amount";
 
         //
 
@@ -3581,7 +3536,7 @@ class TransactionController extends Controller
     function notify_webhook(request $request)
     {
         $message = "Card Webhook | " . json_encode($request->all());
-       Log::info($message);
+        Log::info($message);
 
         $PaymentReference = $request->PaymentReference;
         $AmountCollected = $request->AmountCollected;
@@ -3592,7 +3547,7 @@ class TransactionController extends Controller
         if ($TransactionStatus != 'Successful') {
 
             $message = "Card Transaction Failed";
-           Log::info($message);
+            Log::info($message);
         }
 
 
@@ -3634,7 +3589,7 @@ class TransactionController extends Controller
 
 
             $message = "Card Transaction saved on pending";
-           Log::info($message);
+            Log::info($message);
 
         }
 
@@ -3655,7 +3610,7 @@ class TransactionController extends Controller
                 $cws->save();
 
                 $message = "Card Transaction saved for approval";
-               Log::info($message);
+                Log::info($message);
 
 
             }
@@ -3670,7 +3625,7 @@ class TransactionController extends Controller
 
         if ($trx->status == 1) {
             $message = "Card Transaction Already Confirmed";
-           Log::info($message);
+            Log::info($message);
         }
 
 
@@ -3708,7 +3663,7 @@ class TransactionController extends Controller
 
         //update Transactions
         $message = "Card Payment Completed |" . $MerchantReference . " Business funded | " . number_format($amt1, 2) . "| $first_name " . " " . $last_name;
-       Log::info($message);
+        Log::info($message);
 
 
         // return response()->json([
@@ -3747,7 +3702,7 @@ class TransactionController extends Controller
         $trasnaction->save();
 
         $message = "Card Payment Initiated |" . $request->ref . " For  $usr->first_name " . " " . $usr->last_name . " | " . number_format($ref->payable_amount, 2);
-       Log::info($message);
+        Log::info($message);
     }
 
 
@@ -3907,7 +3862,7 @@ class TransactionController extends Controller
 
             $message = "Transfer Payment Initiated | " . $request->accountNo . " | " . $request->ref . "| ON 9PSB " . "For " . $usr->last_name . " | " . number_format($trx->payable_amount, 2);
             //Log::info('Transfer Initiated', ['message' => $message]);
-           Log::info($message);
+            Log::info($message);
 
             return response()->json([
                 'status' => true,
@@ -4067,7 +4022,7 @@ class TransactionController extends Controller
 
         $message = "Boomzy  Payment Initiated |" . $request->trx_id . "| ON 9PSB " . "For " . $usr->last_name . " | " . number_format($ref->payable_amount, 2);
         Log::info('Transfer Initiated', ['message' => $message]);
-       Log::info($message);
+        Log::info($message);
 
         $data['ref'] = $ref->manual_acc_ref;
         $data['account_no'] = $request->account_no;
@@ -4088,7 +4043,7 @@ class TransactionController extends Controller
 
 
         $message = "Wema  Payment Initiated |" . $request->trx_id . "| ON WEMA " . "For " . $usr->last_name . " | " . number_format($ref->payable_amount, 2);
-       Log::info($message);
+        Log::info($message);
 
         $data['ref'] = $ref->manual_acc_ref;
         $data['account_no'] = $request->account_no;
@@ -4271,7 +4226,6 @@ class TransactionController extends Controller
         $amountInBTC = number_format($amountInBTC, 8, '.', '');
 
 
-
         $walletData = [
             'success' => true,
             'amount_ngn' => $amountInNaira,
@@ -4284,7 +4238,6 @@ class TransactionController extends Controller
         return response()->json($walletData);
 
 
-
     }
 
 
@@ -4292,20 +4245,18 @@ class TransactionController extends Controller
     {
 
 
-
-        if($request->type == "ton"){
+        if ($request->type == "ton") {
 
             $rate = Http::get('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=ngn');
             $ngnAmount = $request->amount;
-            $trx = date('dmyhis').$request->trx;
+            $trx = date('dmyhis') . $request->trx;
             $email = $request->email;
-            $invoice = "invoice".$trx;
+            $invoice = "invoice" . $trx;
             $callbackurl = "https://web.sprintpay.online/api/cryptopayment";
             $key = env("CRYPTOKEY");
 
             $usdtRate = $rate->json()['tether']['ngn'] ?? null;
             $usdtAmount = round($ngnAmount / $usdtRate, 4);
-
 
 
             $get_wallet = Http::get("https://api.plisio.net/api/v1/invoices/new?source_currency=USD&source_amount=$usdtAmount&order_number=$trx&currency=USDT_TON&email=$email&order_name=$invoice&callback_url=$callbackurl&api_key=$key");
@@ -4323,8 +4274,7 @@ class TransactionController extends Controller
             $crypto->save();
 
 
-
-            if($status == 'success'){
+            if ($status == 'success') {
 
                 return response()->json([
                     'amount' => $wallet['data']['amount'],
@@ -4336,12 +4286,12 @@ class TransactionController extends Controller
 
             }
 
-        }elseif ($request->type == "trx"){
+        } elseif ($request->type == "trx") {
             $rate = Http::get('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=ngn');
             $ngnAmount = $request->amount;
-            $trx = date('dmyhis').$request->trx;
+            $trx = date('dmyhis') . $request->trx;
             $email = $request->email;
-            $invoice = "invoice".$trx;
+            $invoice = "invoice" . $trx;
             $callbackurl = "https://web.sprintpay.online/api/cryptopayment";
             $key = env("CRYPTOKEY");
 
@@ -4364,7 +4314,7 @@ class TransactionController extends Controller
             $crypto->save();
 
 
-            if($status == 'success'){
+            if ($status == 'success') {
 
                 return response()->json([
                     'amount' => $wallet['data']['amount'],
@@ -4375,12 +4325,12 @@ class TransactionController extends Controller
                 ]);
 
             }
-        }elseif ($request->type == "btc"){
+        } elseif ($request->type == "btc") {
             $rate = Http::get('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=ngn');
             $ngnAmount = $request->amount;
-            $trx = date('dmyhis').$request->trx;
+            $trx = date('dmyhis') . $request->trx;
             $email = $request->email;
-            $invoice = "invoice".$trx;
+            $invoice = "invoice" . $trx;
             $callbackurl = "https://web.sprintpay.online/api/cryptopayment";
             $key = env("CRYPTOKEY");
 
@@ -4403,7 +4353,7 @@ class TransactionController extends Controller
             $crypto->save();
 
 
-            if($status == 'success'){
+            if ($status == 'success') {
 
                 return response()->json([
                     'amount' => $wallet['data']['amount'],
@@ -4418,9 +4368,6 @@ class TransactionController extends Controller
 
 
     }
-
-
-
 
 
 }
