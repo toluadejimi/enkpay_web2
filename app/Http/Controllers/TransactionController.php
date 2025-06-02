@@ -1012,7 +1012,6 @@ class TransactionController extends Controller
                     $last_name = User::inRandomOrder()->first()->last_name;
                     $tremail = $request->email;
                     $phone = User::inRandomOrder()->first()->phone;
-                    $m_key = $request->key;
 
                     if($request->amount > 11000){
                         $amtt  = $request->amount + 300;
@@ -1021,7 +1020,9 @@ class TransactionController extends Controller
                     }
 
                     $code = Setting::where('id', 1)->first()->woven_collective_code;
-                    $woven_details = woven_create($amtt, $code, $last_name, $tremail, $phone, $m_key) ?? null;
+                    $m_key = $request->key;
+
+                    $woven_details = woven_create($amtt, $code, $tremail, $m_key) ?? null;
 
 
                     if ($woven_details != null) {
