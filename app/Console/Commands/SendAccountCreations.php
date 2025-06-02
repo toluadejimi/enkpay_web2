@@ -14,30 +14,30 @@ class SendAccountCreations extends Command
 
     public function handle()
     {
-           $accounts = AccountCreation::where('status', 0)->first() ?? null;
-
-           if($accounts != null) {
-
-               $code = "000027";
-               $m_key = $accounts->m_key;
-               $tremail = $accounts->email;
-               $amtt = 0;
-               $woven_details = woven_create($amtt, $code, $tremail, $m_key) ?? null;
-               $this->info("Response from woven_create: " . print_r($woven_details, true));
-
-               if ($woven_details['account_no'] != "Try_Again") {
-                   $accounts->delete();
-                   $this->info("Account ID {$accounts->id} sent and deleted.");
-               } else {
-                   $this->error("Failed to send Account ID {$accounts->id}");
-               }
-
-           }
-
-
-
+//           $accounts = AccountCreation::where('status', 0)->first() ?? null;
+//
+//           if($accounts != null) {
+//
+//               $code = "000027";
+//               $m_key = $accounts->m_key;
+//               $tremail = $accounts->email;
+//               $amtt = 0;
+//               $woven_details = woven_create($amtt, $code, $tremail, $m_key) ?? null;
+//               $this->info("Response from woven_create: " . print_r($woven_details, true));
+//
+//               if ($woven_details['account_no'] != "Try_Again") {
+//                   $accounts->delete();
+//                   $this->info("Account ID {$accounts->id} sent and deleted.");
+//               } else {
+//                   $this->error("Failed to send Account ID {$accounts->id}");
+//               }
+//
+//           }
+//
 
 
-        return 0;
+
+
+       // return 0;
     }
 }
