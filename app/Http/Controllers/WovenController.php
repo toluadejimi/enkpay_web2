@@ -247,7 +247,7 @@ class WovenController extends Controller
 
                 $type ="epayment";
                 $account_no = $request->nuban;
-                $fund = credit_user_wallet($url, $user_email, $l_amount, $order_id, $type, $session_id, $account_no);
+                $fund = credit_user_wallet($url, $user_email, $p_amount, $order_id, $type, $session_id, $account_no);
 
                 return response()->json([
                     'status' => true,
