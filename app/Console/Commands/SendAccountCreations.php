@@ -24,8 +24,6 @@ class SendAccountCreations extends Command
             $woven_details = woven_create($amtt, $code, $tremail, $m_key) ?? null;
             $this->info("Response from woven_create: " . print_r($woven_details, true));
 
-
-
             if ($woven_details['account_no'] != "Try_Again") {
                 $account->delete();
                 $this->info("Account ID {$account->id} sent and deleted.");
