@@ -14,7 +14,10 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\SendCron::class,
+        \App\Console\Commands\SendAccountCreations::class,
+
     ];
+
 
     /**
      * Define the application's command schedule.
