@@ -771,32 +771,6 @@ class TransactionController extends Controller
 
 
 
-
-
-
-        try {
-
-            $ck_account = GlobusAccount::where('email', $request->email)->where('m_key', $request->key)->first() ?? null;
-            if($ck_account == null){
-
-                $fund_url_get = Webkey::where('key', $request->key)->first();
-                $acct_creation = new AccountCreation();
-                $acct_creation->email = $request->email;
-                $acct_creation->m_key = $request->key;
-                $acct_creation->fund_url = $fund_url_get;
-                $acct_creation->save();
-
-            }
-
-
-        }catch (\Exception $th) {
-
-        }
-
-
-
-
-
         if ($request->platform == 'boomzy') {
 
 
@@ -1263,6 +1237,19 @@ class TransactionController extends Controller
 
         $get_trans_id = Webtransfer::where('trans_id', $dataref)->first() ?? null;
         $data['transref'] = $get_trans_id->manual_acc_ref ?? null;
+
+
+        $ck_account = GlobusAccount::where('email', $request->email)->where('m_key', $request->key)->first() ?? null;
+        $ck_account_cre = AccountCreation::where('email', $request->email)->where('m_key', $request->key)->first() ?? null;
+        if (!$ck_account && !$ck_account_cre) {
+            $fund_url_get = Webkey::where('key', $request->key)->first()->url_fund;
+            $acct_creation = new AccountCreation();
+            $acct_creation->email = $request->email;
+            $acct_creation->m_key = $request->key;
+            $acct_creation->fund_url = $fund_url_get;
+            $acct_creation->save();
+
+        }
 
         if ($get_trans_id == null) {
             $data['transref'] = date('ymdhis') . Str::upper(random_int(00, 99) . Str::random(2));
