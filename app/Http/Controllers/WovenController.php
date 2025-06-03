@@ -201,6 +201,67 @@ class WovenController extends Controller
 
                     $send_notification = send_api_notification($url, $user_email, $amount, $sender_name, $sender_account_no, $session_id, $account_no);
 
+                    User::where('id', $user_id)->increment('main_wallet', $l_amount);
+                    $balance = User::where('id', $user_id)->first()->main_wallet;
+                    $user = User::where('id', $user_id)->first();
+
+                    $url = $globus->fund_url ?? null;
+                    $user_email = $globus->email ?? null;
+                    $order_id = "Marchant Fund" . date('his') ?? null;
+                    $site_name = Webkey::where('key', $globus->key)->first()->site_name ?? null;
+
+                    $trasnaction = new Transaction();
+                    $trasnaction->user_id = $user_id;
+                    $trasnaction->e_ref = $order_id;
+                    $trasnaction->ref_trans_id = $order_id;
+                    $trasnaction->type = "webpay";
+                    $trasnaction->transaction_type = "VirtualFundWallet";
+                    $trasnaction->title = "Wallet Funding";
+                    $trasnaction->main_type = "WOVEN";
+                    $trasnaction->credit = $l_amount;
+                    $trasnaction->email = $user_email;
+                    $trasnaction->note = "Transaction Successful | Web Pay | for $user_email";
+                    $trasnaction->fee = $fee ?? 0;
+                    $trasnaction->amount = $l_amount;
+                    $trasnaction->e_charges = 0;
+                    $trasnaction->charge = $payable ?? 0;
+                    $trasnaction->enkPay_Cashout_profit = 0;
+                    $trasnaction->balance = $balance;
+                    $trasnaction->status = 1;
+                    $trasnaction->save();
+
+                    $message = "Business funded  | $request->nuban | $l_amount | $user->first_name " . " " . $user->last_name . " | for $user_email";
+                    Log::info($message);
+
+                    Transfertransaction::where('account_no', $acc_no)->update(['status' => 4, 'resolve' => 1]);
+                    $trasnaction = new Transfertransaction();
+                    $trasnaction->user_id = $user_id;
+                    $trasnaction->type = "webpay";
+                    $trasnaction->key = $globus->m_key;
+                    $trasnaction->email = $globus->email;
+                    $trasnaction->ref_trans_id = $order_id;
+                    $trasnaction->amount = $l_amount;
+                    $trasnaction->transaction_type = "WEBTRANSFER";
+                    $trasnaction->bank = "WOVEN";
+                    $trasnaction->ref = $order_id;
+                    $trasnaction->account_no = "Woven";
+                    $trasnaction->v_account_name = "Woven";
+                    $trasnaction->amount_to_pay = $l_amount;
+                    $trasnaction->amount_paid = $l_amount;
+                    $trasnaction->title = "WEBTRANSFER";
+                    $trasnaction->main_type = "WOVEN";
+                    $trasnaction->note = "WEBTRANSFER";
+                    $trasnaction->e_charges = 0;
+                    $trasnaction->enkPay_Cashout_profit = 0;
+                    $trasnaction->status = 4;
+                    $trasnaction->save();
+
+
+                    return response()->json([
+                        'status' => true,
+                        'message' => "Transaction Successful"
+                    ]);
+
 
                 }
 
