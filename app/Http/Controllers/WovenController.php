@@ -190,12 +190,7 @@ class WovenController extends Controller
                 if ($user_id == 294099) {
 
 
-                    if ($user_amount > 11000) {
-                        $l_amount = $p_amount;
-                    } else {
-                        $l_amount = $p_amount;
-                    }
-
+                    $l_amount = $request->amount_payable;
                     $user_email = $request->account_email;
                     $amount = $request->amount;
                     $sender_name = $request->narattion;
