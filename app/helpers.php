@@ -2095,7 +2095,6 @@ if (!function_exists('send_api_notification')) {
 
         $databody = array(
             "amount" => $amount,
-            "real_amount" => $real_amount,
             "email" => $user_email,
             "sender_name" => $sender_name,
             "sender_account_no" => $sender_account_no,
@@ -2130,9 +2129,8 @@ if (!function_exists('send_api_notification')) {
 
         if ($status == true) {
 
-            $amount = number_format($amount)
-
-            $message = "API NOTIFICATION DATA =======>>>>>>> " . $account_no . "|  | Successfully pushed |" . $url;
+            $amount_to = number_format($amount, 2);
+            $message = "API NOTIFICATION DATA =======>>>>>>> " . $account_no . "| N $amount_to  | Successfully pushed |" . $url;
             Log::info($message);
 
             return 2;

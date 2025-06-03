@@ -193,7 +193,7 @@ class WovenController extends Controller
                     $l_amount = $request->amount_payable;
                     $user_email = $request->account_email;
                     $amount = $request->amount;
-                    $sender_name = $request->narattion;
+                    $sender_name = $request->narration;
                     $sender_account_no = $request->source_nuban;
                     $session_id = $request->nip_session_id;
                     $account_no = $request->nuban;
