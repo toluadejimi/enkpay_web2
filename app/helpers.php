@@ -2297,6 +2297,10 @@ if (!function_exists('credit_user_wallet')) {
                         $acc->fund_url = $url;
                         $acc->save();
 
+
+                        $message = "GLOBUS CREATION======>" .$user_email . "| $acc->account_no | created";
+                        Log::info($message);
+
                         return 2;
 
                     } else {
