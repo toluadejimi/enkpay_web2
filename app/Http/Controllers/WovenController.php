@@ -127,6 +127,15 @@ class WovenController extends Controller
         $m_key = $request->account_reference;
         $act_name = $request->source_account_name;
 
+        if($acc_no == "6481068849" && $act_name =="Settlement"){
+            $reff = null;
+        }else{
+
+            $reff = $request->meta_data['transaction_reference'];
+
+        }
+
+
         if($acc_no == "6481068849" && $act_name =="Settlement") {
 
             Log::info("Account repushed successfully");
