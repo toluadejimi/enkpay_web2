@@ -20,7 +20,7 @@
             <td>{{$item->ref}}</td>
             <td>{{$item->email}}</td>
             <td>
-                @php $site = \App\Models\Webkey::where('key', $item->key)->first()->site_name; @endphp
+                @php $site = \App\Models\Webkey::where('key', $item->key)->first()->site_name ?? null; @endphp
                 {{$site ?? "name"}}
             </td>
             <td>{{number_format($item->amount, 2)}}</td>
