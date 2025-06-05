@@ -2242,6 +2242,8 @@ if (!function_exists('credit_user_wallet')) {
 
             }
 
+
+
             $message = "CREDIT DATA =======>>>>>>> " . json_encode($databody) . "URL ===>>>>>" . $url;
             Log::info($message);
 
@@ -2298,7 +2300,8 @@ if (!function_exists('credit_user_wallet')) {
                         $acc->save();
 
 
-                        $message = "GLOBUS CREATION======>" .$user_email . "| $acc->account_no | created";
+                        $site_name = Webkey::where('url_fund', $url)->first()->site_name;
+                        $message = "GLOBUS CREATION======>" .$user_email . "| $acc->account_no | created |".$site_name ;
                         Log::info($message);
 
                         return 2;
