@@ -125,29 +125,16 @@ class WovenController extends Controller
         $payable = $request->amount_payable;
         $fee = $request->fee;
         $m_key = $request->account_reference;
-        $reff = $request->meta_data['transaction_reference'];
+
+        if($acc_no == "6481068849"){
+            $reff = null;
+        }else{
+            $reff = $request->meta_data['transaction_reference'];
+
+        }
 
 
-//        if ($acc_no == "6481068849") {
-//
-//
-//            return response()->json([
-//                'status' => true,
-//                'message' => "successful",
-//            ]);
-//
-//
-//        } else {
-//
-//            $message = "Woven funding error =>>>>> $acc_no | $user_amount  not found on transaction";
-//            Log::info($message);
-//            return response()->json([
-//                'status' => false,
-//                'message' => "Account Not found in our database",
-//            ]);
-//
-//        }
-//
+
 
         $status = Transfertransaction::where('account_no', $acc_no)->first()->status ?? null;
         if ($status == 4) {
