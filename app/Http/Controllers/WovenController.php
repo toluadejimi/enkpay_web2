@@ -371,7 +371,7 @@ class WovenController extends Controller
 
                     Transfertransaction::where([
                         'account_no' => $acc_no,
-                        'amount_to_pay' => $user_amount,
+                        'reff' => $reff,
                         'status' => 0
                     ])->first()->update(['session_id' => $session_id, 'status' => 4, 'resolve' => 1]) ?? null;
 
