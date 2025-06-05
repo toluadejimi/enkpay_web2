@@ -125,12 +125,16 @@ class WovenController extends Controller
         $payable = $request->amount_payable;
         $fee = $request->fee;
         $m_key = $request->account_reference;
+        $act_name = $request->source_account_name;
 
-        if($acc_no == "6481068849"){
-            $reff = null;
-        }else{
-            $reff = $request->meta_data['transaction_reference'];
+        if($acc_no == "6481068849" && $act_name =="Settlement") {
 
+            Log::info("Account repushed successfully");
+
+            return response()->json([
+                'status' => true,
+                'message' => "Transaction successful",
+            ]);
         }
 
 
