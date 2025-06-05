@@ -2264,10 +2264,9 @@ if (!function_exists('credit_user_wallet')) {
 
                     $post_data = json_encode($databody);
                     $curl = curl_init();
-                    $url = "https://api.woven.finance/v2/api/vnubans/merchant_account";
 
                     curl_setopt_array($curl, array(
-                        CURLOPT_URL => $url,
+                        CURLOPT_URL => "https://api.woven.finance/v2/api/vnubans/merchant_account",
                         CURLOPT_RETURNTRANSFER => true,
                         CURLOPT_ENCODING => '',
                         CURLOPT_MAXREDIRS => 10,
@@ -2300,7 +2299,7 @@ if (!function_exists('credit_user_wallet')) {
                         $acc->save();
 
 
-                        $site_name = Webkey::where('url_fund', $url)->first()->site_name;
+                        $site_name = Webkey::where('url_fund', $url)->first()->site_name ?? null;
                         $message = "GLOBUS CREATION======>" .$user_email . "| $acc->account_no | created |".$site_name ;
                         Log::info($message);
 
