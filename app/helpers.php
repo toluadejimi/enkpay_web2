@@ -2130,7 +2130,7 @@ if (!function_exists('send_api_notification')) {
         if ($status == true) {
 
             $amount_to = number_format($amount, 2);
-            $message = "API NOTIFICATION DATA =======>>>>>>> " . $account_no . "| N $amount_to  | Successfully pushed |" . $url;
+            $message = "API NOTIFICATION DATA =======>>>>>>> " . $account_no . "| N $amount_to  | Successfully pushed |" . $url."\n\n $databody";
             Log::info($message);
 
             return 2;
@@ -2280,7 +2280,7 @@ if (!function_exists('credit_user_wallet')) {
 
 }
 
-function woven_create($amtt, $code, $tremail, $m_key)
+function woven_create($amtt, $code, $tremail, $m_key, $reff)
 {
 
 
@@ -2383,6 +2383,7 @@ function woven_create($amtt, $code, $tremail, $m_key)
         "amount" => $amtt,
         "collection_bank" => $code,
         "callback_url" => url('') . "/api/woven/callback",
+        "transaction_reference" => $reff,
 
     );
 
