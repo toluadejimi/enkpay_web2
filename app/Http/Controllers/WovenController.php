@@ -125,7 +125,7 @@ class WovenController extends Controller
         $payable = $request->amount_payable;
         $fee = $request->fee;
         $m_key = $request->account_reference;
-        $reff = $request->meta_data->transaction_reference;
+        $reff = $request->meta_data['transaction_reference'];
 
 
         $status = Transfertransaction::where('account_no', $acc_no)->first()->status ?? null;
