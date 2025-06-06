@@ -129,9 +129,10 @@ class WovenController extends Controller
 
         if($acc_no == "6481068849" && $act_name =="Settlement"){
             $reff = null;
+
         }else{
 
-            $reff = $request->meta_data['transaction_reference'];
+            $reff = $request->meta_data['transaction_reference'] ?? $request->account_reference;
 
         }
 

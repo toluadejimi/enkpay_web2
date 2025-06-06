@@ -2358,15 +2358,6 @@ if (!function_exists('credit_user_wallet')) {
 
         if ($code == "090110") {
             $bank_name = "VFD";
-
-
-
-
-
-
-
-
-
         } elseif ($code == "000017") {
             $bank_name = "WEMA";
         } elseif ($code == "000027") {
