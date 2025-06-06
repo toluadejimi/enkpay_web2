@@ -2358,6 +2358,15 @@ if (!function_exists('credit_user_wallet')) {
 
         if ($code == "090110") {
             $bank_name = "VFD";
+
+
+
+
+
+
+
+
+
         } elseif ($code == "000017") {
             $bank_name = "WEMA";
         } elseif ($code == "000027") {
@@ -2450,6 +2459,21 @@ if (!function_exists('credit_user_wallet')) {
         }
 
 
+
+
+        $ck_account = GlobusAccount::where('email', $tremail)->where('m_key', $m_key)->first() ?? null;
+        if ($ck_account != null) {
+            $data['account_no'] = $ck_account->account_no;
+            $data['bank_name'] = $ck_account->bank_name;
+            $data['account_name'] = $ck_account->account_name;
+            return $data;
+
+        }
+
+
+
+
+
         $key = env('WOVENKEY');
         $databody = array(
             "amount" => $amtt,
@@ -2505,13 +2529,7 @@ if (!function_exists('credit_user_wallet')) {
 
             }
 
-            $ck_p_account = PalmpayAccount::where('email', $tremail)->where('m_key', $m_key)->first() ?? null;
-            if ($ck_p_account != null) {
-                $data['account_no'] = $ck_account->account_no;
-                $data['bank_name'] = $ck_account->bank_name;
-                $data['account_name'] = $ck_account->account_name;
-                return $data;
-            }
+
 
 
 
