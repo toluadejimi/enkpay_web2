@@ -2533,7 +2533,7 @@ if (!function_exists('credit_user_wallet')) {
 
 
 
-            if (!$ck_account && !$ck_p_account) {
+            if (!$ck_account) {
 
                 $bank_name = "GLOBUS BANK";
                 $key = env('WOVENKEY');
