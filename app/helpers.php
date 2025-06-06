@@ -2581,14 +2581,36 @@ if (!function_exists('credit_user_wallet')) {
 
                 } else {
 
-                    $message = "WOVEN ACCOUNT GENERATION ERROR =====>>>" . json_encode($var2);
-                    Log::error($message);
 
-                    $message = "Woven Error======>" . json_encode($var2) . "\n\n" . $post_data;
-                    $data['account_no'] = "Try_Again";
-                    $data['bank_name'] = "Try_Again";
-                    $data['account_name'] = "Try_Again";
+
+                    $text = ["KEM GLOBAL", "VIVID ENT", "ROYAL LTD", "LOGI ENT", "KABS LTD", "KENS ENT"];
+                    $random_index = array_rand($text);
+                    $account_name = $text[$random_index];
+                    $psb_details = ninepsb_create($amtt, $account_name) ?? null;
+
+                    $data['account_no'] = $psb_details['account_no'];
+                    $data['account_name'] = $psb_details['account_name'];
+                    $data['bank_name'] = $psb_details['bank_name'];
                     return $data;
+
+
+                    if($psb_details == 0){
+
+                        $message = "WOVEN ACCOUNT GENERATION ERROR =====>>>" . json_encode($var2);
+                        Log::error($message);
+
+                        $message = "Woven Error======>" . json_encode($var2) . "\n\n" . $post_data;
+                        $data['account_no'] = "Try_Again";
+                        $data['bank_name'] = "Try_Again";
+                        $data['account_name'] = "Try_Again";
+                        return $data;
+
+                    }
+
+
+
+
+
 
 
                 }
@@ -2696,6 +2718,8 @@ if (!function_exists('credit_user_wallet')) {
             $data['bank_name'] = "9PSB";
             $data['account_name'] = $var->result->account_name;
             return $data;
+        }else{
+            return 0;
         }
 
 
