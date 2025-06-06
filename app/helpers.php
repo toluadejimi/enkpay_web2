@@ -2243,7 +2243,6 @@ if (!function_exists('credit_user_wallet')) {
             }
 
 
-
             $message = "CREDIT DATA =======>>>>>>> " . json_encode($databody) . "URL ===>>>>>" . $url;
             Log::info($message);
 
@@ -2300,7 +2299,7 @@ if (!function_exists('credit_user_wallet')) {
 
 
                         $site_name = Webkey::where('url_fund', $url)->first()->site_name ?? null;
-                        $message = "GLOBUS CREATION======>" .$user_email . "| $acc->account_no | created |".$site_name ;
+                        $message = "GLOBUS CREATION======>" . $user_email . "| $acc->account_no | created |" . $site_name;
                         Log::info($message);
 
                         return 2;
@@ -2496,13 +2495,99 @@ if (!function_exists('credit_user_wallet')) {
 
         } else {
 
-            $message = "WOVEN ACCOUNT GENERATION ERROR =====>>>".json_encode($var2);
-            Log::error($message);
 
-            $data['account_no'] = "Try_Again";
-            $data['bank_name'] = "Try_Again";
-            $data['account_name'] = "Try_Again";
-            return $data;
+            $ck_account = GlobusAccount::where('email', $tremail)->where('m_key', $m_key)->first() ?? null;
+            if ($ck_account != null) {
+                $data['account_no'] = $ck_account->account_no;
+                $data['bank_name'] = $ck_account->bank_name;
+                $data['account_name'] = $ck_account->account_name;
+                return $data;
+
+            }
+
+            $ck_p_account = PalmpayAccount::where('email', $tremail)->where('m_key', $m_key)->first() ?? null;
+            if ($ck_p_account != null) {
+                $data['account_no'] = $ck_account->account_no;
+                $data['bank_name'] = $ck_account->bank_name;
+                $data['account_name'] = $ck_account->account_name;
+                return $data;
+            }
+
+
+
+            if (!$ck_account && !$ck_p_account) {
+
+                $bank_name = "GLOBUS BANK";
+                $key = env('WOVENKEY');
+                $databody = array(
+                    "email" => $tremail,
+                    "name" => "PAYMENTSTAND",
+                    "customer_reference" => $m_key,
+                );
+
+
+                $post_data = json_encode($databody);
+                $curl = curl_init();
+                $url = "https://api.woven.finance/v2/api/vnubans/merchant_account";
+
+                curl_setopt_array($curl, array(
+                    CURLOPT_URL => "",// $url,
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'POST',
+                    CURLOPT_POSTFIELDS => $post_data,
+                    CURLOPT_HTTPHEADER => array(
+                        'Content-Type: application/json',
+                        "api_secret: $key"
+                    ),
+                ));
+
+                $var2 = curl_exec($curl);
+                curl_close($curl);
+                $var = json_decode($var2);
+                $message = $var->message ?? null;
+                $status = $var->message ?? null;
+
+                if ($var2 != false && $message == "The process was completed successfully") {
+
+
+                    $fund_url = Webkey::where('key', $m_key)->first()->url_fund;
+                    $acc = new GlobusAccount();
+                    $acc->email = $tremail;
+                    $acc->account_no = $var->data->vnuban;
+                    $acc->account_name = $var->data->account_name;
+                    $acc->bank_name = $bank_name;
+                    $acc->m_key = $m_key;
+                    $acc->fund_url = $fund_url;
+                    $acc->save();
+
+                    $data['account_no'] = $var->data->vnuban;
+                    $data['bank_name'] = $bank_name;
+                    $data['account_name'] = $var->data->account_name;
+                    return $data;
+
+                } else {
+
+                    $message = "WOVEN ACCOUNT GENERATION ERROR =====>>>" . json_encode($var2);
+                    Log::error($message);
+
+                    $message = "Woven Error======>" . json_encode($var2) . "\n\n" . $post_data;
+                    $data['account_no'] = "Try_Again";
+                    $data['bank_name'] = "Try_Again";
+                    $data['account_name'] = "Try_Again";
+                    return $data;
+
+
+                }
+
+            }
+
+
+
 
 
         }
