@@ -2528,10 +2528,8 @@ if (!function_exists('credit_user_wallet')) {
 
                 $post_data = json_encode($databody);
                 $curl = curl_init();
-                $url = "https://api.woven.finance/v2/api/vnubans/merchant_account";
-
                 curl_setopt_array($curl, array(
-                    CURLOPT_URL => "",// $url,
+                    CURLOPT_URL => 'https://api.woven.finance/v2/api/vnubans/merchant_account',
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_ENCODING => '',
                     CURLOPT_MAXREDIRS => 10,
@@ -2551,6 +2549,8 @@ if (!function_exists('credit_user_wallet')) {
                 $var = json_decode($var2);
                 $message = $var->message ?? null;
                 $status = $var->message ?? null;
+
+
 
                 if ($var2 != false && $message == "The process was completed successfully") {
 
