@@ -130,7 +130,7 @@ class PalmpayController extends Controller
         $amount_settled = $request->settlement_amount;
 
 
-        $inuse = PalmpayAccount::where('account_no', $acc_no)->update(['in_use', 0]) ?? null;
+        $inuse = PalmpayAccount::where('account_no', $acc_no)->update(['in_use' => 0]) ?? null;
 
 
 
