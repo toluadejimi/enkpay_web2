@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\CryptoPayment;
 use App\Models\Setting;
-use App\Models\Transaction;
 use App\Models\Transfertransaction;
 use App\Models\User;
 use App\Models\Webkey;
@@ -160,11 +159,11 @@ class CryptopayController extends Controller
                     $c_amount = $cryp->amount - 1;
                     $cur = $cryp->currency;
 
-                    if($cur == "USDT_TON"){
+                    if ($cur == "USDT_TON") {
                         User::where('id', $trx->user_id)->increment('usdt_ton', $c_amount);
-                    }elseif ($cur == "BTC"){
+                    } elseif ($cur == "BTC") {
                         User::where('id', $trx->user_id)->increment('btc', $c_amount);
-                    }elseif ($cur == "USDT_TRX"){
+                    } elseif ($cur == "USDT_TRX") {
                         User::where('id', $trx->user_id)->increment('usdt_trx', $c_amount);
                     }
 
@@ -177,7 +176,7 @@ class CryptopayController extends Controller
 
 
                     $message = "Business funded  | $ref | $l_amount | $user->first_name " . " " . $user->last_name . " | for $user_email";
-                   Log::info($message);
+                    Log::info($message);
 
                     Webtransfer::where('trans_id', $trx->trans_id)->update(['status' => 4]);
 
@@ -190,6 +189,8 @@ class CryptopayController extends Controller
                     ], 200);
 
                 }
+
+
             } else {
                 return response()->json([
                     'status' => 'pending'
@@ -211,7 +212,107 @@ class CryptopayController extends Controller
     {
 
         $message = "Crypto =====>>>" . json_encode($request->all());
-       Log::info($message);
+        Log::info($message);
+
+        $trx_id = $request->txn_id;
+        $status = $request->status;
+
+
+        if ($status == "expired") {
+            CryptoPayment::where('inv_id', $trx_id)->update(['status' => 9]);
+            return response()->json([
+                'status' => 'expired'
+            ], 200);
+        }
+
+        if ($status == "pending") {
+            return response()->json([
+                'status' => 'pending'
+            ], 200);
+        }
+
+
+        if ($status == "completed") {
+
+            $ref = CryptoPayment::where('inv_id', $trx_id)->first()->ref;
+            $ckk = Transfertransaction::where('ref_trans_id', $ref)->first()->status;
+            if ($ckk == 0) {
+
+                $crypto = CryptoPayment::where('inv_id', $trx_id)->update(['status' => 4]);
+                if ($crypto) {
+
+                    $trx = Transfertransaction::where('ref_trans_id', $ref)->first();
+                    $cryp = CryptoPayment::where('ref', $ref)->where('status', 4)->first();
+
+                    $user_amount = $trx->amount;
+                    if ($user_amount > 11000) {
+                        $p_amount = $user_amount - 300;
+                    } else {
+                        $p_amount = $user_amount - 100;
+                    }
+
+
+                    if ($user_amount > 11000) {
+                        $l_amount = $p_amount - 300;
+                    } else {
+                        $l_amount = $p_amount - 100;
+                    }
+
+
+                    if ($trx->user_id == 293677) {
+
+                        if ($user_amount > 11000) {
+                            $l_amount = $p_amount + 150;
+                        } else {
+                            $l_amount = $p_amount;
+                        }
+
+
+                    }
+
+                    $c_amount = $cryp->amount - 1;
+                    $cur = $request->currency;
+
+                    if ($cur == "USDT_TON") {
+                        User::where('id', $trx->user_id)->increment('usdt_ton', $c_amount);
+                    } elseif ($cur == "BTC") {
+                        User::where('id', $trx->user_id)->increment('btc', $c_amount);
+                    } elseif ($cur == "USDT_TRX") {
+                        User::where('id', $trx->user_id)->increment('usdt_trx', $c_amount);
+                    }
+
+                    $user = User::where('id', $trx->user_id)->first();
+
+                    $url = Webkey::where('key', $trx->key)->first()->url_fund ?? null;
+                    $user_email = $trx->email ?? null;
+                    $order_id = $trx->ref_trans_id ?? null;
+                    $site_name = Webkey::where('key', $trx->key)->first()->site_name ?? null;
+
+
+                    $message = "Business funded  | $ref | $l_amount | $user->first_name " . " " . $user->last_name . " | for $user_email";
+                    Log::info($message);
+
+                    Webtransfer::where('trans_id', $trx->trans_id)->update(['status' => 4]);
+
+                    $type = "epayment";
+                    $account_no = $ref;
+                    $fund = credit_user_wallet($url, $user_email, $trx->amount, $order_id, $type, $ref, $account_no);
+
+                    return response()->json([
+                        'status' => 'paid'
+                    ], 200);
+
+                }
+
+
+            }
+
+        }
+
+
+        return response()->json([
+            'status' => 'pending'
+        ], 200);
 
     }
 
