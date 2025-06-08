@@ -10,6 +10,7 @@ use App\Models\CompletedWebtransfer;
 use App\Models\CryptoPayment;
 use App\Models\GlobusAccount;
 use App\Models\ManualAccount;
+use App\Models\PalmpayAccount;
 use App\Models\PendingcardTransaction;
 use App\Models\Setting;
 use App\Models\Support;
@@ -1803,7 +1804,7 @@ class TransactionController extends Controller
 
                 if ($paypoint_details != null) {
 
-                        Transfertransaction::where('account_no', $paypoint_details['account_no'])->delete() ?? null;
+                    Transfertransaction::where('account_no', $paypoint_details['account_no'])->delete() ?? null;
                     $user_id = Webkey::where('key', $request->key)->first()->user_id;
                     $trx = Transfertransaction::where('account_no', $request->accountNo)->first() ?? null;
 
@@ -1857,6 +1858,9 @@ class TransactionController extends Controller
                     $data['marchant_url'] = Webkey::where('key', $request->key)->first()->url ?? null;
                     $data['recepit'] = "https://web.enkpay.com/receipt?trans_id=$trans_id&amount=$ngnAmount";
                     $data['set'] = Setting::where('id', 1)->first();
+
+                    $inuse = PalmpayAccount::where('account_no', $paypoint_details['account_no'])->update(['in_use' => 1]) ?? null;
+
 
 
                     $message = "Transfer Payment Initiated Paypoint | $acc_no " . "| $bank " . "For " . $usr->last_name . " | " . $request->amount . "| " . $request->email . "| on $sitename";

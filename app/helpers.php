@@ -3547,8 +3547,9 @@ if (!function_exists('credit_user_wallet')) {
     function paypoint_create($email, $name, $phone)
     {
 
-        $get_account = PalmpayAccount::where('email', $email)->first() ?? null;
+        $get_account = PalmpayAccount::where('email', $email)->where('in_use', 0)->first() ?? null;
         if ($get_account != null) {
+
             $data['account_no'] = $get_account->account_no;
             $data['bank_name'] = $get_account->bank_name;
             $data['account_name'] = $get_account->account_name;
@@ -3592,14 +3593,25 @@ if (!function_exists('credit_user_wallet')) {
 
         if ($status != "fail") {
 
-            $pay = new PalmpayAccount();
-            $pay->account_no = $var->bankAccounts[0]->accountNumber;
-            $pay->account_name = $var->bankAccounts[0]->accountName;
-            $pay->bank_name = $var->bankAccounts[0]->bankName;
-            $pay->reserved_account_id = $var->bankAccounts[0]->Reserved_Account_Id;
-            $pay->bank_code = $var->bankAccounts[0]->bankCode;
-            $pay->email = $email;
-            $pay->save();
+
+            $not_in_use = PalmpayAccount::where('in_use', 0)->inRandomOrder()->first() ?? null;
+            if ($not_in_use != null) {
+                $data['account_no'] = $not_in_use->account_no;
+                $data['bank_name'] = $not_in_use->bank_name;
+                $data['account_name'] = $not_in_use->account_name;
+                return $data;
+            }
+
+
+
+//            $pay = new PalmpayAccount();
+//            $pay->account_no = $var->bankAccounts[0]->accountNumber;
+//            $pay->account_name = $var->bankAccounts[0]->accountName;
+//            $pay->bank_name = $var->bankAccounts[0]->bankName;
+//            $pay->reserved_account_id = $var->bankAccounts[0]->Reserved_Account_Id;
+//            $pay->bank_code = $var->bankAccounts[0]->bankCode;
+//            $pay->email = $email;
+//            $pay->save();
 
 
             $data['account_no'] = $var->bankAccounts[0]->accountNumber;
