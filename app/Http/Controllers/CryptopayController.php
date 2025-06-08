@@ -218,6 +218,21 @@ class CryptopayController extends Controller
         $status = $request->status;
 
 
+        $ck_crypto = CryptoPayment::where('inv_id', $trx_id)->first() ?? null;
+        if($ck_crypto == null){
+            return response()->json([
+                'status' => 'not found'
+            ], 200);
+        }
+
+        if($ck_crypto->status == 4){
+            return response()->json([
+                'status' => 'paid'
+            ], 200);
+        }
+
+
+
         if ($status == "expired") {
             CryptoPayment::where('inv_id', $trx_id)->update(['status' => 9]);
             return response()->json([
