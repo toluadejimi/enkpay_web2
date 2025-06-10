@@ -2130,7 +2130,7 @@ if (!function_exists('send_api_notification')) {
         if ($status == true) {
 
             $amount_to = number_format($amount, 2);
-            $message = "API NOTIFICATION DATA =======>>>>>>> " . $account_no . "| N $amount_to  | Successfully pushed |" . $url . "\n\n $databody";
+            $message = "API NOTIFICATION DATA =======>>>>>>> " . $account_no . "| N $amount_to  | Successfully pushed |" . $url;
             Log::info($message);
 
             return 2;
