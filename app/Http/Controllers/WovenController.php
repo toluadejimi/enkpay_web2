@@ -180,18 +180,17 @@ class WovenController extends Controller
 
 
                 $set = Setting::where('id', 1)->first();
+
                 if ($user_amount > 11000) {
                     $p_amount = $user_amount - 300;
+                    $l_amount = $p_amount - 300;
+
                 } else {
                     $p_amount = $user_amount - 100;
-                }
-
-
-                if ($user_amount > 11000) {
-                    $l_amount = $p_amount - 300;
-                } else {
                     $l_amount = $p_amount - 100;
+
                 }
+
 
 
                 if ($user_id == 293677) {
@@ -319,7 +318,7 @@ class WovenController extends Controller
                 $trasnaction->status = 1;
                 $trasnaction->save();
 
-                $message = "Business funded  | $request->nuban | $l_amount | $user->first_name " . " " . $user->last_name . " | for $user_email";
+                $message = "Business funded  | $acc_no | $l_amount | $user->first_name " . " " . $user->last_name . " | for $user_email";
                 Log::info($message);
 
                 Transfertransaction::where('account_no', $acc_no)->update(['status' => 4, 'resolve' => 1]);
@@ -337,7 +336,7 @@ class WovenController extends Controller
                 $trasnaction->account_no = $acc_no;
                 $trasnaction->v_account_name = $acc_no;
                 $trasnaction->amount_to_pay = $l_amount;
-                $trasnaction->amount_paid = $p_amount;
+                $trasnaction->amount_paid = $l_amount;
                 $trasnaction->title = "WEBTRANSFER";
                 $trasnaction->main_type = "WOVEN";
                 $trasnaction->note = "WEBTRANSFER";
