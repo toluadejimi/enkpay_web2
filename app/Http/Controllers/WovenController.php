@@ -337,7 +337,7 @@ class WovenController extends Controller
                 $trasnaction->account_no = $acc_no;
                 $trasnaction->v_account_name = $acc_no;
                 $trasnaction->amount_to_pay = $l_amount;
-                $trasnaction->amount_paid = $l_amount;
+                $trasnaction->amount_paid = $p_amount;
                 $trasnaction->title = "WEBTRANSFER";
                 $trasnaction->main_type = "WOVEN";
                 $trasnaction->note = "WEBTRANSFER";
