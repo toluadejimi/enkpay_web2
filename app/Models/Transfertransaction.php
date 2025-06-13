@@ -14,7 +14,8 @@ class Transfertransaction extends Model
         'session_id',
         'amount',
         'email',
-        'account_no'
+        'account_no',
+        'ref_trans_id'
 
     ];
 }
