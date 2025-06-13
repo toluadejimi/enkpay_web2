@@ -329,7 +329,7 @@ class WovenController extends Controller
                 $trasnaction->key = $globus->m_key;
                 $trasnaction->email = $globus->email;
                 $trasnaction->ref_trans_id = $order_id;
-                $trasnaction->amount = $amount;
+                $trasnaction->amount = $user_amount;
                 $trasnaction->transaction_type = "WEBTRANSFER";
                 $trasnaction->bank = "WOVEN";
                 $trasnaction->ref = $order_id;
