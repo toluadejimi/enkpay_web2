@@ -456,7 +456,7 @@ class WovenController extends Controller
                 Log::info($message);
 
                 Webtransfer::where('trans_id', $trx->trans_id)->update(['status' => 4]);
-                Transfertransaction::where('account_no', $acc_no)->update(['status' => 4, 'resolve' => 1]);
+                Transfertransaction::where('account_no', $acc_no)->update(['status' => 4, 'resolve' => 1, 'amount_paid' => $user_amount]);
 
                 $trxck = new Transactioncheck();
                 $trxck->session_id = $session_id;
