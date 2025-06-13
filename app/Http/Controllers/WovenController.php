@@ -323,6 +323,12 @@ class WovenController extends Controller
 
                 Transfertransaction::where('account_no', $acc_no)->update(['status' => 4, 'resolve' => 1]);
 
+
+                $type = "epayment";
+                $account_no = $request->nuban;
+                $fund = credit_user_wallet($url, $user_email, $p_amount, $order_id, $type, $session_id, $account_no);
+
+
                 $trasnaction = new Transfertransaction();
                 $trasnaction->user_id = $user_id;
                 $trasnaction->type = "webpay";
@@ -346,9 +352,6 @@ class WovenController extends Controller
                 $trasnaction->save();
 
 
-                $type = "epayment";
-                $account_no = $request->nuban;
-                $fund = credit_user_wallet($url, $user_email, $p_amount, $order_id, $type, $session_id, $account_no);
 
                 return response()->json([
                     'status' => true,
