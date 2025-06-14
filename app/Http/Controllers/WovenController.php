@@ -110,14 +110,14 @@ class WovenController extends Controller
         Log::info($message);
 
 
-        if ($request->ip() != "35.162.80.204") {
-            $message = "Wrong IP request | ===>>>" . $request->ip();
-            Log::info($message);
-            return response()->json([
-                'status' => false,
-                'message' => "Wrong IP request"
-            ]);
-        }
+//        if ($request->ip() != "35.162.80.204") {
+//            $message = "Wrong IP request | ===>>>" . $request->ip();
+//            Log::info($message);
+//            return response()->json([
+//                'status' => false,
+//                'message' => "Wrong IP request"
+//            ]);
+//        }
 
         $acc_no = $request->nuban;
         $user_amount = $request->amount;
