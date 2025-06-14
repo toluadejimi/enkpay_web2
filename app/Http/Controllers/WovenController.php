@@ -295,7 +295,21 @@ class WovenController extends Controller
 
                 $url = $globus->fund_url ?? null;
                 $user_email = $globus->email ?? null;
-                $order_id = "UserDirectFund" . date('his') ?? null;
+
+
+                $get_order_id = Transfertransaction::where('account_no', $acc_no)->first()->ref ?? null;
+                if (!empty($get_order_id)) {
+                    $order_id = $get_order_id;
+                } else {
+                    $order_id = "UserDirectFund" . date('His');
+                }
+
+
+
+
+
+
+
                 $site_name = Webkey::where('key', $globus->key)->first()->site_name ?? null;
 
                 $trasnaction = new Transaction();
