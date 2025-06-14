@@ -150,16 +150,6 @@ class WovenController extends Controller
 
 
 
-        $status = Transfertransaction::where('account_no', $acc_no)->first()->status ?? null;
-        if ($status == 4) {
-
-            return response()->json([
-                'status' => false,
-                'message' => "Transaction has already been funded",
-            ]);
-
-        }
-
 
         $trx = Transfertransaction::where([
             'account_no' => $acc_no,
@@ -401,6 +391,9 @@ class WovenController extends Controller
 
 
         if ($trx != null) {
+
+
+
             $set = Setting::where('id', 1)->first();
             if ($user_amount > 11000) {
                 $p_amount = $user_amount - 300;
