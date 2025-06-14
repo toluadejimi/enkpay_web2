@@ -149,8 +149,6 @@ class WovenController extends Controller
 
 
 
-
-
         $trx = Transfertransaction::where([
             'account_no' => $acc_no,
             'reff' => $reff,
@@ -166,8 +164,6 @@ class WovenController extends Controller
 
                 $user_id = Webkey::where('key', $globus->m_key)->first()->user_id;
                 $url = $globus->fund_url ?? null;
-
-
 
                 $set = Setting::where('id', 1)->first();
 
@@ -285,16 +281,7 @@ class WovenController extends Controller
 
                 $url = $globus->fund_url ?? null;
                 $user_email = $globus->email ?? null;
-
-
-                $get_order_id = Transfertransaction::where('account_no', $acc_no)->first()->ref ?? null;
-                if (!empty($get_order_id)) {
-                    $order_id = $get_order_id;
-                } else {
-                    $order_id = "UserDirectFund" . date('His');
-                }
-
-
+                $order_id = "UserDirectFund" . date('His');
 
 
 
@@ -436,13 +423,13 @@ class WovenController extends Controller
 
                 $url = Webkey::where('key', $trx->key)->first()->url_fund ?? null;
                 $user_email = $trx->email ?? null;
-                $order_id = $trx->ref_trans_id ?? null;
+                $get_order_id = $trx->ref_trans_id ?? null;
                 $site_name = Webkey::where('key', $trx->key)->first()->site_name ?? null;
 
                 $trasnaction = new Transaction();
                 $trasnaction->user_id = $trx->user_id;
                 $trasnaction->e_ref = $request->sessionid ?? $acc_no;
-                $trasnaction->ref_trans_id = $order_id;
+                $trasnaction->ref_trans_id = $get_order_id;
                 $trasnaction->type = "webpay";
                 $trasnaction->transaction_type = "VirtualFundWallet";
                 $trasnaction->title = "Wallet Funding";
@@ -476,7 +463,7 @@ class WovenController extends Controller
 
                 $type = "epayment";
                 $account_no = $request->nuban;
-                $fund = credit_user_wallet($url, $user_email, $trx->amount, $order_id, $type, $session_id, $account_no);
+                $fund = credit_user_wallet($url, $user_email, $trx->amount, $get_order_id, $type, $session_id, $account_no);
 
                 return response()->json([
                     'status' => true,
