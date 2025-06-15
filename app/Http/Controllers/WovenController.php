@@ -201,10 +201,15 @@ class WovenController extends Controller
                     $l_amount = $request->amount_payable;
                     $user_email = $request->account_email;
                     $amount = $request->amount;
-                    $sender_name = $request->narration;
+                    $get_sender_name = $request->narration;
                     $sender_account_no = $request->source_nuban;
                     $session_id = $request->nip_session_id;
                     $account_no = $request->nuban;
+
+
+                    $string = $get_sender_name;
+                    $parts = explode('/', $string);
+                    $sender_name = isset($parts[2]) ? $parts[2] : null;
 
 
                     $send_notification = send_api_notification($url, $user_email, $amount, $sender_name, $sender_account_no, $session_id, $account_no);
